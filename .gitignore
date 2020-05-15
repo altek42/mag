@@ -6,7 +6,6 @@
 *.fdb_latexmk
 *.fls
 *.log
-*.pdf
 *.run.xml
 *.gz
 *.toc
