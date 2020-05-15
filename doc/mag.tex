@@ -17,6 +17,7 @@
 \section*{Streszczenie pracy}
 \addcontentsline{toc}{section}{\protect Streszczenie pracy}%
 Celem niniejszej pracy dyplomowej...
+W skrócie: Stworzyć kompilator który zamieni JavaScript na IL Assembler i będzie można go uruchomić na .NET. Następnie porównanie działania skryptów uruchamianych na maszynach Node.js oraz .NET. Można jeszcze porównać program napisany w C\# z programem napisanym w js.
 
 \hspace{0pt}
 \vfill
@@ -33,54 +34,125 @@ The aim of this diploma thesis was...
 
 \section{Wstęp}
 Motywacja, założenia i cele pracy.
+Nie więcej niż jedna strona.
 
-\section{Teoria}
-\par
-Nie bardzo mam pomysł jak bym mógł nazwać ten rozdział. Chciałbym tu opisać wszystkie rzeczy wokół których będzie się obracać ta magisterka.
-
-\textbf{To raczej we wstępie, drugi rozdział to z reguły (szczególnie w mgr) analiza istniejących rozwiązań. Tu warto opisać również pochodne rozwiązania (np. warto wspomnieć asm.js i WebAssembly oraz Emscripten jako rozwiązanie robiące coś w zasadzie odwrotnego), na pewno warto napisać o TypeScript, przede wszystkim node.js, może są jakieś inne rozwiązania kompilujące js.
-Te wszystkie punkty, które Pan wypisał są istotne, po dodaniu tych kilku wspomnianych elementów ten rozdział może wyjśc całkiem spory.}
-
+\section{Pojęcia i technologie}
+Wstęp do opisu technologii które będą wykorzystywane w projekcie.
+\subsection{Kompilator}
+Opis co to jest i do czego służy.
 \subsection{JavaScript}
-Opis ogólny
+Opis
 \subsection{Node.js}
 Opis
-\subsection{.NET}
+\subsection{.NET Core}
 Opis
 \subsection{IL Assembler}
 Opis
-\subsection{JScript .NET}
-Jest to implementacja JavaScript przez Microsoft. Chciałbym opisać tu różnice.
-\subsection{Kompilator}
-Opis
+
+\section{Technologie pokrewne}
+W tej sekcji będą przedstawione technologie pokrewne.
+Najpierw technologie konkurencyjne, następnie istniejące rozwiązania a na końcu rozwiązania podobne/nawiązujące w jakiś sposób do tematu.
+
+\subsection{ECMAScript}
+W sumie jest to standard języka na podstawie którego definiowana jest składnia JavaScript. Czy warto o tym wspominać?
+
+\subsection{ActionScript}
+Obiektowy język oparty na ECMAScript używany w Adobe Flash/
+
+\subsection{JScript}
+Jest to implementacja JavaScript przez Microsoft która jest uruchomiana w środowisku .NET.
+Istnieją pewne różnice w porównaniu do JavaScript.
+
+\subsection{TypeScript}
+Język programowania stworzony przez Microsoft. Uruchamiany na Node.js lub Deno. Może być przekompilowany do js es5 przez Babel.
+
+\subsection{?CoffeeScript}
+Język programowania kompilowany do JavaScript.
+Nie wiem czy warto wspominać.
+
+Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
+
+\subsection{Babel}
+Kompiluje przykładowo TypeScript do JavaScript lub JavaScript ES6 do ES5.
+
+% Maszyna inna niż Node.js
+\subsection{Deno}
+Maszyna wirtualna dla języka JavaScript oraz TypeScript.
+% Nie jestem pewien czy można na "żywca" uruchamiać na niej TypeScript. (Temat do sprawdzenia)
+
+\subsection{asm.js}
+Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
+Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
+
+\subsection{Emscripten}
+% https://pl.wikipedia.org/wiki/Emscripten
+Kompilator kodu LLVM do JavaScript.
+
+\subsection{WebAssembly}
+% https://devenv.pl/webassembly-nadciaga-rewolucja/
+Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
+(Pomija JavaScript).
+
+\subsection{C\#}
+Czy opisywać rodzinę .NET?
+
+Na maszynę .NET istnieją implementacje języków takich jak Python, Java, C++ i inne.
+
+\subsection{.NET Framework}
+Platforma programistyczna.
+
+\subsection{Mono}
+Implementacja open source platformy .NET Framework.
+
+\subsection{DotGNU}
+Alternatywa dla Mono.
+
+
 
 \section{Projekt kompilatora}
 Opis 
-\subsection{Narzędzia}
-Opis narzędzia jakie będą wykorzystywane podczas implementacji. 
-\\
-Nie bardzo wiem czy to ma znaczenie w jakim języku będzie to pisane, ale zastanawiam się nad \textit{c++} albo \textit{c\#}.
-\\
-Pytanie, czy powinienem używać narzędzi takich jak Lex i YYAC. Myślę, że można by napisać własny prostszy parser, ale nie wiem jak by to czasowo wyglądało.
+\subsection{Środowisko i narzędzia}
+Opis sprzętu na którym będzie wszystko uruchomiane.
+Do implementacji będą wykorzystane:
 
-\textbf{Można użyć flexa i bisona, ale można skorzystać np. z antlr, które ma gotowe gramatyki dla różnych języków. Język implementacji nie jest istotny.}
+\begin{itemize}
+  \item C\#
+  \item Visual Studio Code
+  \item WSL (Ubuntu 20.04 LTS)
+  \item JavaScript
+  \item Node.js
+\end{itemize}
 
 \subsection{Analiza języka JavaScript i określenie zakresu implementacji}
-Opis składni JavaScript
+Opis składni JavaScript.
+Implementacja JavaScript w standardzie ES5.
+Musi być Turing-complete. Dodatkowo implementacja funkcji.
 
-\textbf{Tu głównym elementem powinno być właśnie określenie zakresu implementacji.}
+\subsection{Parser}
+Opcje:
+1. Napiszę własną implementację, która może być mało czytelna i mieć dużo błędów. (Baza: http://informatyka.wroc.pl/node/391)
+2. Użyję ANTLR i napiszę własną gramatykę.
+3. Użyję ANTLR i użyję gotowe gramatyki.
 
-\subsection{?Struktura projektu}
-Nie wiem czy konieczne.
-\\
-Opis i diagram klas?
+Gotowe narzędzia:
+\begin{itemize}
+  \item LEX \& YYAC
+  \item ANTLR
+  \item Coco/R
+  \item ?gppg \& gplex
+  \item Owl (https://github.com/ianh/owl)
+\end{itemize}
+i więcej... https://en.wikipedia.org/wiki/Comparison\_of\_parser\_generators
 
-\textbf{Warto wrzucić kilka prostych diagramów (ja osobiście nie przepadam za UML w pracach, ale są tacy recenzenci, którzy lubią).}
+
+\subsection{Struktura projektu}
+Diagramy i opisy.
+Jak będzie wyglądał ten rozdział zależy jak wyjdzie implementacja.
+% Tak, tak, wiem, najpierw implementacja a później dokumentacja...
 
 \section{Implementacja aplikacji kompilatora}
-\subsection{?Parser}
-Jeżeli będzie wykorzystany Lex i YYAC to rozdział nie będzie potrzebny.
-\textbf{Tu nawet przy użyciu gotowych narzędzi warto napisać jedną stronę o sposobie ich użycia.}
+\subsection{Parser}
+Sposób implementacji lub przygotowania i użycia gotowych narzędzi.
 
 \subsection{Analiza leksykalna}
 Tekst
@@ -91,38 +163,41 @@ Opis sposobu przetwarzania instrukcji
 \subsection{Generowanie assemblera}
 Tekst
 
-\section{Algorytmy testujące}
-Będę chciał przetestować dwa algorytmy
-\\
-Na tę chwilę muszę się jeszcze zastanowić jakie to mogły by być, aby nie były jakoś skomplikowane ale żeby coś robiły więcej niż wyświetlanie 2+2 na konsoli.
+\section{Testy}
+Opis zakresu testów i jak będą przebiegać.
+Każdy z poniższych testów będzie sprawdzany pod kątem poprawności wykonywania działań, czasu wykonywania w porównaniu do wykonania kodu na Node.js (dla bardziej złożonych testów z czasem będzie więcej), zajętość pamięci (również tylko przy tych których to ma sens) oraz porównaniu kodu z asemblerowego wygenerowanego za pośrednictwem języka C\#.
 
-\textbf{Tu warto wykonać i opisać w krótkiej formie również proste testy. Moim zdaniem (proszę jednak pamiętać, że to Pan jest Autorem pracy i Pan podejmuje ostateczne decyzje) warto pokazać najpierw działanie prostych testów:}
-
-\begin{itemize}
-  \item \textbf{obliczenie prostego wyrażenia,}
-  \item \textbf{obsługa warunków,}
-  \item \textbf{obsługa pętli,}
-  \item \textbf{obsługa tablic,}
-  \item \textbf{obsługa struktur,}
-  \item \textbf{tworzenie i obsługa obiektów,}
-  \item \textbf{obsługa funkcji}
-\end{itemize}
-\textbf{Dopiero później powinny się znaleźć jakieś 2 bardziej złożone algorytmy}
+\subsection{Proste operacje matematyczne}
+Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.
+\subsection{Kolejność wykonywania działań}
+Test na bardziej złożonych wyrażeniach. Sprawdzenie poprawności działania nawiasów oraz kolejności wykonywania działań.
+\subsection{Wyrażenia warunkowe}
+Test wyrażeń warunkowych. Kolejność wykonywania operacji and i or.
+\subsection{Tablice}
+Test obsługi tablic jedno i wielowymiarowych.
+\subsection{Obiekty}
+Test obsługi obiektów.
+\subsection{Klasy}
+Jeśli będzie implementacja.
+Test działania obiektów klas.
+\subsection{Funkcje}
+Test działania funkcji.
+1. Funkcja "void" bez parametrów.
+2. Funkcja "void" z parametrami.
+3. Funkcja zwracająca różne typy (proste, tablice, obiekty) bez parametrów.
+4. Funkcje zwracająca różne typy z parametrami.
+5. inne
 
 \subsection{Algorytm 1}
 \subsubsection{Opracowanie pseudokodu algorytmu 1}
 \subsubsection{Implementacja algorytmu 1}
+\subsubsection{Testy algorytmu 1}
 \subsection{Algorytm 2}
 \subsubsection{Opracowanie pseudokodu algorytmu 2}
 \subsubsection{Implementacja algorytmu 2}
+\subsubsection{Testy algorytmu 2}
 
-\section{Testy działania algorytmów}
-Sprawdzenie czasu wykonywania algorytmów, przy różnych rozmiarach problemu.
-\\\\
-Czy można tu jeszcze jakieś inne testy zrobić?
-
-\textbf{ To raczej w jednym ciągu z punktem 5, dobra praca mgr powinna zawierać ten punkt całkiem spory.
-Inne testy to pokazanie wygenerowanego kodu, ciekawy testem może być disassemblacja do kodu C\# przy pomocy jakiegoś narzędzia (np. dotPeek). Ponadto można sprawdzić (przy dużych rozmiarach danych użytych w algorytmie) zajętość pamięci.}
+% Inne testy to pokazanie wygenerowanego kodu, ciekawy testem może być disassemblacja do kodu C\# przy pomocy jakiegoś narzędzia (np. dotPeek). Ponadto można sprawdzić (przy dużych rozmiarach danych użytych w algorytmie) zajętość pamięci.
 
 \section{Podsumowanie}
 
