@@ -37,76 +37,82 @@ Motywacja, założenia i cele pracy.
 Nie więcej niż jedna strona.
 
 \section{Pojęcia i technologie}
+
+\subsection{Zakres projektu}
 Wstęp do opisu technologii które będą wykorzystywane w projekcie.
-\subsection{Kompilator}
+\subsubsection{Kompilator}
 Opis co to jest i do czego służy.
-\subsection{JavaScript}
+\subsubsection{JavaScript}
 Opis
-\subsection{Node.js}
+%
+
+\subsubsection{Node.js}
 Opis
-\subsection{.NET Core}
+\subsubsection{.NET Core}
 Opis
-\subsection{IL Assembler}
+\subsubsection{IL Assembler}
 Opis
 
-\section{Technologie pokrewne}
+\subsection{Technologie pokrewne}
 W tej sekcji będą przedstawione technologie pokrewne.
 Najpierw technologie konkurencyjne, następnie istniejące rozwiązania a na końcu rozwiązania podobne/nawiązujące w jakiś sposób do tematu.
 
-\subsection{ECMAScript}
+\subsubsection{ECMAScript}
 W sumie jest to standard języka na podstawie którego definiowana jest składnia JavaScript. Czy warto o tym wspominać?
 
-\subsection{ActionScript}
+\subsubsection{ActionScript}
 Obiektowy język oparty na ECMAScript używany w Adobe Flash/
 
-\subsection{JScript}
+\subsubsection{JScript}
 Jest to implementacja JavaScript przez Microsoft która jest uruchomiana w środowisku .NET.
 Istnieją pewne różnice w porównaniu do JavaScript.
 
-\subsection{TypeScript}
+\subsubsection{TypeScript}
 Język programowania stworzony przez Microsoft. Uruchamiany na Node.js lub Deno. Może być przekompilowany do js es5 przez Babel.
 
-\subsection{?CoffeeScript}
+\subsubsection{?CoffeeScript}
 Język programowania kompilowany do JavaScript.
 Nie wiem czy warto wspominać.
 
 Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
 
-\subsection{Babel}
+\subsubsection{Babel}
 Kompiluje przykładowo TypeScript do JavaScript lub JavaScript ES6 do ES5.
 
 % Maszyna inna niż Node.js
-\subsection{Deno}
+\subsubsection{Deno}
 Maszyna wirtualna dla języka JavaScript oraz TypeScript.
 % Nie jestem pewien czy można na "żywca" uruchamiać na niej TypeScript. (Temat do sprawdzenia)
 
-\subsection{asm.js}
+\subsubsection{asm.js}
 Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
 Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
 
-\subsection{Emscripten}
+\subsubsection{Emscripten}
 % https://pl.wikipedia.org/wiki/Emscripten
 Kompilator kodu LLVM do JavaScript.
 
-\subsection{WebAssembly}
+\subsubsection{WebAssembly}
 % https://devenv.pl/webassembly-nadciaga-rewolucja/
 Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
 (Pomija JavaScript).
 
-\subsection{C\#}
+\subsubsection{C\#}
 Czy opisywać rodzinę .NET?
 
 Na maszynę .NET istnieją implementacje języków takich jak Python, Java, C++ i inne.
 
-\subsection{.NET Framework}
+\subsubsection{.NET Framework}
 Platforma programistyczna.
 
-\subsection{Mono}
+\subsubsection{Mono}
 Implementacja open source platformy .NET Framework.
 
-\subsection{DotGNU}
+\subsubsection{DotGNU}
 Alternatywa dla Mono.
 
+\subsubsection{?Roslyn}
+.NET Compiler Platform
 
 
 \section{Projekt kompilatora}
@@ -129,11 +135,15 @@ Implementacja JavaScript w standardzie ES5.
 Musi być Turing-complete. Dodatkowo implementacja funkcji.
 
 \subsection{Parser}
+Używamy ANTLR z gotową gramatyką
+
+Rozważane możliwości i wykonano przegląd narzędzi:
 Opcje:
 1. Napiszę własną implementację, która może być mało czytelna i mieć dużo błędów. (Baza: http://informatyka.wroc.pl/node/391)
 2. Użyję ANTLR i napiszę własną gramatykę.
 3. Użyję ANTLR i użyję gotowe gramatyki.
 
+po 2 zdania: 
 Gotowe narzędzia:
 \begin{itemize}
   \item LEX \& YYAC
@@ -161,7 +171,7 @@ Tekst
 \subsection{Funkcjonalności}
 Opis sposobu przetwarzania instrukcji
 \subsection{Generowanie assemblera}
-Tekst
+Opisać jak wygenerować kod .NET
 
 \section{Testy}
 Opis zakresu testów i jak będą przebiegać.
