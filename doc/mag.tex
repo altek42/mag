@@ -77,7 +77,12 @@ Jest to skryptowy język programowania, dzięki którego można realizować apli
 % https://eloquentjavascript.net/Eloquent_JavaScript.pdf
 
 \subsubsection{Node.js}
-Opis
+Jest to asynchroniczne środowisko uruchomieniowe dla języka JavaScript. Node.js został zaprojektowany do tworzenia skalowalnych aplikacji sieciowych. Pozwala na jednoczesne przetwarzanie wielu połączeń. Przy każdym połączeniu następuje wywołanie zwrotne, a w przypadku jeśli nie będzie żadnej pracy do wykonania, Node.js przejdzie w tryb uśpienia.
+\footcite{Node.js2017}
+
+\par Środowisko Node.js oparte jest na implementacji silnika ``V8'' stworzonego przez Google. Zaimplementowany głownie jest w języku C i C++, koncentrując się na wydajności i niskim zużyciu pamięci. Różnica polega na tym, że silnik ``V8'' obsługuje głównie JavaScript w przeglądarkach internetowych, a Node.js został stworzony z myślą o obsłudze długotrwałych procesów serwerowych.
+\par W celu obsługi jednoczesnego wykonywania logiki biznesowej, Node.js opiera się na asynchronicznym modelu zdarzeń wejścia i wyjścia, w przeciwieństwie do większości innych współczesnych środowisk, które oparte są na wielowątkowości. Model zdarzeń jest obsługiwany na poziomie języka, a jest to możliwe ponieważ JavaScript obsługuje wywołania zwrotne zdarzeń oraz funkcjonalny charakter JavaScript sprawia, że niezwykle łatwo jest tworzyć anonimowe obiekty funkcji, które można zarejestrować jako programy obsługi zdarzeń. \footcite{Tilkov2010}
+
 \subsubsection{.NET Core}
 Opis
 \subsubsection{IL Assembler}
