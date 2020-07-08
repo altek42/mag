@@ -95,9 +95,10 @@ Jest to asynchroniczne środowisko uruchomieniowe dla języka JavaScript. Node.j
   
 \end{itemize}
 
-
 \subsubsection{IL Assembler}
-Opis
+\par Każdy z kompilatorów przeznaczonych na platformę .NET, bez względu na wybrany język, kompiluje kod do postaci pośredniej, jakim jest kod IL.
+\par Wykonywalny kod IL jest w formacie binarnym i nie jest czytelny dla człowieka. Oczywiście jak inne wykonywalne kody binarne, mogą zostać przedstawione w postaci assemblera, tak i kod IL może zostać zaprezentowany w postaci IL Assemblera. Zestaw instrukcji jest taki jak w przypadku tradycyjnego assemblera. Przykładowo, aby dodać dwie liczby należy użyć instrukcji \texttt{add}, a w przypadku odejmowania, należy użyć instrukcji \texttt{sub}.
+\par Środowisko uruchomieniowe .NET nie potrafi jednak odczytywać bezpośrednio IL Assemblera. Aby kod napisany w IL Assemblerze można było uruchomić, trzeba skompilować go do postaci binarnej IL. \footcite{ILAsm1}
 
 \subsection{Technologie pokrewne}
 W tej sekcji będą przedstawione technologie pokrewne.
@@ -166,6 +167,8 @@ Opis
 \subsection{Środowisko i narzędzia}
 Opis sprzętu na którym będzie wszystko uruchomiane.
 Do implementacji będą wykorzystane:
+
+%mono-devel
 
 \begin{itemize}
   \item C\#
