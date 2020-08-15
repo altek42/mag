@@ -27,4 +27,12 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     string variable = Store.PopStack();
     Console.WriteLine($"Assign: [{variable}] = [{operation}]");
   }
+  
+  public override void ExitWriteStdOutput(JavaScriptParser.WriteStdOutputContext context){
+    string value = context.GetChild(2).GetText();
+    value = value.Substring(1, value.Length - 2);
+    
+    Console.WriteLine($"Write std out: {value}");
+    AsmGenerator.Instance.WriteToStdOutput(value);
+  }
 }

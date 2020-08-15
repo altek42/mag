@@ -30,7 +30,7 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine($"\n.class {this.fileName}.Program");
     outFile.WriteLine("extends [mscorlib]System.Object");
     outFile.WriteLine("{\n .method static void Main(string[] args)");
-    outFile.WriteLine(" cil managed\n {\n  .entrypoint");
+    outFile.WriteLine(" cil managed\n {\n  .entrypoint\n");
   }
 
   private void writeFileFooter() {
@@ -53,6 +53,13 @@ public class AsmGenerator : IDisposable {
       }
       return _instance;
     }
+  }
+
+  // FUNCTIONALITY
+  public void WriteToStdOutput(String value){
+    outFile.WriteLine($"ldstr \"{value}\"");
+    outFile.WriteLine("call void [mscorlib]System.Console::WriteLine(string)");
+    outFile.WriteLine();
   }
 
 }

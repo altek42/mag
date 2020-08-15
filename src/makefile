@@ -5,9 +5,10 @@ TEST_FOLDER = test
 RUN_JS_DEBUG_FILE = node ${TEST_FOLDER}/debug.js
 DIST_FOLDER = dist
 DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
+DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
 ILASM_APP = ilasm
 
-.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug
+.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug compile-debug-run
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -51,6 +52,9 @@ run-js-debug:
 
 # test-base:
 # 	${RUN_APP} ${TEST_FOLDER}/base.js
+
+compile-debug-run: compile-debug
+	${DEBUG_EXE_FILE}
 
 compile-debug: ${DEBUG_IL_FILE}
 	rm ${DIST_FOLDER}/*.exe || true

@@ -20,6 +20,11 @@ instructionLine
 instruction
   : variableDeclaratiion
   | assignOperation
+  | writeStdOutput
+  ;
+
+writeStdOutput
+  : CONSOLE_LOG OPEN_PAREN STRING CLOSE_PAREN
   ;
 
 arithmeticOperation

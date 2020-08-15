@@ -4,8 +4,10 @@ lexer grammar JavaScriptLexer;
 MULTI_LINE_COMMENT:               '/*' .*? '*/'             -> skip;
 SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
 
-PLUS  : '+';
-ASSIGN: '=';
+PLUS        : '+';
+ASSIGN      : '=';
+OPEN_PAREN  : '(';
+CLOSE_PAREN : ')';
 
 // literals
 
@@ -22,13 +24,24 @@ fragment INTEGER_NUMBER
 
 // keywords
 
-VAR
-  : 'var'
-  ;
+VAR: 'var';
+CONSOLE_LOG: 'console.log';
 
 // Identifier
 IDENTIFIER
   : [A-Za-z_][A-Za-z0-9_]*
+  ;
+
+// String 
+STRING
+  : '"' CHARACTER* '"'
+  | '\'' CHARACTER* '\''
+  ;
+
+fragment CHARACTER
+  : .
+  | '.'
+  | '\\'['"\\bfnrtv]
   ;
 
 // whites paces
