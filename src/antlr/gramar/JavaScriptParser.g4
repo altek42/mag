@@ -12,7 +12,8 @@ instructions
   ;
 
 instructionLine
-  : instruction EOL
+  : EOL
+  | instruction EOL
   | instruction EOF
   ;
 

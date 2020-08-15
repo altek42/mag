@@ -1,6 +1,9 @@
 
 lexer grammar JavaScriptLexer;
 
+MULTI_LINE_COMMENT:               '/*' .*? '*/'             -> skip;
+SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
+
 PLUS  : '+';
 ASSIGN: '=';
 
