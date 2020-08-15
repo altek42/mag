@@ -1,9 +1,10 @@
 ANTLR_DIR = antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
+RUN_JS_DEBUG_FILE = node test/debug.js
 TEST_FOLDER = test
 
-.PHONY: all install-tools run clean clean-antlr generate test-base
+.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -41,6 +42,9 @@ install-tools:
 
 run:
 	${RUN_APP}
+
+run-js-debug:
+	${RUN_JS_DEBUG_FILE}
 
 # test-base:
 # 	${RUN_APP} ${TEST_FOLDER}/base.js
