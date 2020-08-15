@@ -1,5 +1,9 @@
+ANTLR_DIR = antlr
+ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
+RUN_APP = dotnet run
+TEST_FOLDER = test
 
-.PHONY: all install-tools run clean
+.PHONY: all install-tools run clean clean-antlr generate test-base
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -36,7 +40,19 @@ install-tools:
 	sudo apt clean
 
 run:
-	dotnet run
+	${RUN_APP}
 
-clean:
+# test-base:
+# 	${RUN_APP} ${TEST_FOLDER}/base.js
+
+generate:
+	cd ${ANTLR_GRAMAR_DIR} && java -jar antlr.jar -Dlanguage=CSharp *.g4
+	mv ${ANTLR_GRAMAR_DIR}/*cs ${ANTLR_DIR}
+
+clean-antlr:
+	rm ${ANTLR_DIR}/*er.cs
+	rm ${ANTLR_GRAMAR_DIR}/*.interp
+	rm ${ANTLR_GRAMAR_DIR}/*.tokens
+
+clean: clean-antlr
 	dotnet clean

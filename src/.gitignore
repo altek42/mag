@@ -1,4 +1,10 @@
 
+# compiled files
 bin/*
 obj/*
 dist/*
+
+# generated files
+antlr/gramar/*.interp
+antlr/gramar/*.tokens
+antlr/*.cs
