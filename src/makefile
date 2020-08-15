@@ -1,10 +1,13 @@
 ANTLR_DIR = antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
-RUN_JS_DEBUG_FILE = node test/debug.js
 TEST_FOLDER = test
+RUN_JS_DEBUG_FILE = node ${TEST_FOLDER}/debug.js
+DIST_FOLDER = dist
+DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
+ILASM_APP = ilasm
 
-.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug
+.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -41,13 +44,17 @@ install-tools:
 	sudo apt clean
 
 run:
-	${RUN_APP}
+	${RUN_APP} $(ARGS)
 
 run-js-debug:
 	${RUN_JS_DEBUG_FILE}
 
 # test-base:
 # 	${RUN_APP} ${TEST_FOLDER}/base.js
+
+compile-debug: ${DEBUG_IL_FILE}
+	rm ${DIST_FOLDER}/*.exe || true
+	${ILASM_APP} ${DEBUG_IL_FILE}
 
 generate:
 	cd ${ANTLR_GRAMAR_DIR} && java -jar antlr.jar -Dlanguage=CSharp *.g4
@@ -59,4 +66,5 @@ clean-antlr:
 	rm ${ANTLR_GRAMAR_DIR}/*.tokens
 
 clean: clean-antlr
+	rm ${DIST_FOLDER}/* || true
 	dotnet clean
