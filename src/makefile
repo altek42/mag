@@ -2,7 +2,8 @@ ANTLR_DIR = antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
 TEST_FOLDER = test
-RUN_JS_DEBUG_FILE = node ${TEST_FOLDER}/debug.js
+DEBUG_JS_FILE = ${TEST_FOLDER}/debug.js
+RUN_JS_DEBUG_FILE = node ${DEBUG_JS_FILE}
 DIST_FOLDER = dist
 DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
 DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
@@ -46,6 +47,9 @@ install-tools:
 
 run:
 	${RUN_APP} $(ARGS)
+
+run-debug:
+	${RUN_APP} ${DEBUG_JS_FILE}
 
 run-js-debug:
 	${RUN_JS_DEBUG_FILE}

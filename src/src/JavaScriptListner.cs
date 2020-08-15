@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 public class JavaScriptListner : JavaScriptParserBaseListener {
 
+  private AsmGenerator asmGenerator;
   public JavaScriptListner() : base()
   {
-
+    asmGenerator = AsmGenerator.Instance;
   }
-
-  private Stack<string> stack = new Stack<string>();
 
   public override void ExitVariableDeclaratiion(JavaScriptParser.VariableDeclaratiionContext context){
     Console.WriteLine($"Var declaration: {context.GetChild(1).GetText()}");
@@ -33,6 +32,6 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     value = value.Substring(1, value.Length - 2);
     
     Console.WriteLine($"Write std out: {value}");
-    AsmGenerator.Instance.WriteToStdOutput(value);
+    asmGenerator.WriteToStdOutput(value);
   }
 }

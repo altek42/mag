@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 public class Store {
-  public Stack<String> Stack { get; private set; }
+  public Stack<string> Stack { get; private set; }
 
   private Store()
   {
