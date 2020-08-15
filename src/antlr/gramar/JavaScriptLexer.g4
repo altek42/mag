@@ -4,8 +4,11 @@ lexer grammar JavaScriptLexer;
 MULTI_LINE_COMMENT:               '/*' .*? '*/'             -> skip;
 SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
 
-PLUS        : '+';
 ASSIGN      : '=';
+PLUS        : '+';
+MINUS       : '-';
+DIVIDE      : '/';
+MULTIPLY    : '*';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
 

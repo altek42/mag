@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 
 public class Store {
-  public Stack<string> Stack { get; private set; }
+  public Stack<StoreItem> Stack { get; private set; }
 
   private Store()
   {
-      Stack = new Stack<string>();
+      Stack = new Stack<StoreItem>();
   }
 
 
@@ -17,11 +17,11 @@ public class Store {
       return _instance;
     }
   }
-  public static void PushStack(string value){
+  public static void PushStack(StoreItem value){
     Instance.Stack.Push(value);
   }
 
-  public static string PopStack(){
+  public static StoreItem PopStack(){
     return Instance.Stack.Pop();
   }
 }

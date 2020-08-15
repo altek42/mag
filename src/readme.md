@@ -3,7 +3,7 @@
 
 | Command |Description|
 |:-|:-|
-|install-tools| installing the necesary tools like: dotnet-sdk-3.1, default-jdk (Java), nodejs, mono-devel. |
+|install-tools| Installing the necesary tools like: dotnet-sdk-3.1, default-jdk (Java), nodejs, mono-devel. |
 | run ARGS=[filePath]| Run program to process file located in `filePath`. |
 | run-debug | Run program to process `test/debug.js` file. |
 | run-js-debug | Run `test/debug.js` file on nodejs enviroment. |

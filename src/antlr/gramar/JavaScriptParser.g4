@@ -28,10 +28,25 @@ writeStdOutput
   ;
 
 arithmeticOperation
-  : NUMBER PLUS NUMBER
-  | NUMBER PLUS IDENTIFIER
-  | IDENTIFIER PLUS NUMBER
-  | IDENTIFIER PLUS IDENTIFIER
+  : numberValue arithmeticSign numberValue
+  | numberValue arithmeticSign identifierValue
+  | identifierValue arithmeticSign numberValue
+  | identifierValue arithmeticSign identifierValue
+  ;
+
+arithmeticSign
+  : PLUS
+  | MINUS
+  | MULTIPLY
+  | DIVIDE
+  ;
+
+numberValue
+  : NUMBER
+  ;
+
+identifierValue
+  : IDENTIFIER
   ;
 
 variableDeclaratiion

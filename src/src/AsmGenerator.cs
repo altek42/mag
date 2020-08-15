@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+
 public class AsmGenerator : IDisposable {
   private static string DIST_DIR = "dist";
 
@@ -60,6 +61,36 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine($"ldstr \"{value}\"");
     outFile.WriteLine("call void [mscorlib]System.Console::WriteLine(string)");
     outFile.WriteLine();
+  }
+
+  public void LoadConstant(StoreItem item) {
+    if(item.IsVariable){
+      throw new ArgumentException("Item is variable.");
+    }
+    switch (item.ItemType)
+    {
+        case StoreItemType.INTEGER:
+        outFile.WriteLine($"ldc.i4 {item.Value}");
+        return;
+        case StoreItemType.DOUBLE:
+        outFile.WriteLine($"ldc.r4 {item.Value}");
+        return;
+        default: throw new ArgumentException("Unsuported item type");
+    }
+  }
+
+  public void ExecuteArithmeticOperation(StoreItem item) {
+    if(item.IsNotType(StoreItemType.ARITHMETIC_SIGN)) {
+      throw new ArgumentException("Item should be an arithmetic sign.");
+    }
+    switch (item.Value)
+    {
+        case "+": outFile.WriteLine("add\n"); return;
+        case "-": outFile.WriteLine("sub\n"); return;
+        case "*": outFile.WriteLine("mul\n"); return;
+        case "/": outFile.WriteLine("div\n"); return;
+        default: throw new ArgumentException("Unsuported item sign");
+    }
   }
 
 }
