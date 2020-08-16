@@ -50,11 +50,10 @@ public class StoreItem {
   }
 
   static public StoreItem CreateVariable(string name) {
-    StoreItem item = createVariableBase(name);
     if(Store.Variables.ContainsKey(name)){
-      item.IsInitialized = true;
+      return Store.Variables[name];
     }
-    return item;
+    return createVariableBase(name);
   }
 
   static public StoreItem CreateTemporaryVariable(StoreItemType type) {
