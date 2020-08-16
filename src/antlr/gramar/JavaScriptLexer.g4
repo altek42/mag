@@ -4,6 +4,10 @@ lexer grammar JavaScriptLexer;
 MULTI_LINE_COMMENT:               '/*' .*? '*/'             -> skip;
 SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
 
+// keywords
+CONSOLE_LOG: 'console.log';
+VAR: 'var';
+
 ASSIGN      : '=';
 PLUS        : '+';
 MINUS       : '-';
@@ -29,11 +33,6 @@ fragment INTEGER_NUMBER
   | [1-9] [0-9_]*
   ;
 
-// keywords
-
-VAR: 'var';
-CONSOLE_LOG: 'console.log';
-
 // Identifier
 IDENTIFIER
   : [A-Za-z_][A-Za-z0-9_]*
@@ -41,15 +40,29 @@ IDENTIFIER
 
 // String 
 STRING
-  : '"' CHARACTER* '"'
-  | '\'' CHARACTER* '\''
+  : '"' DoubleStringCharacter* '"'
+  | '\'' SingleStringCharacter* '\''
   ;
 
-fragment CHARACTER
-  : .
-  | '.'
-  | '\\'['"\\bfnrtv]
-  ;
+fragment DoubleStringCharacter
+    : ~["\\\r\n]
+    | '\\' SingleEscapeCharacter
+    | LineContinuation
+    ;
+
+fragment SingleStringCharacter
+    : ~['\\\r\n]
+    | '\\' SingleEscapeCharacter
+    | LineContinuation
+    ;
+
+fragment SingleEscapeCharacter
+    : ['"\\bfnrtv]
+    ;
+
+fragment LineContinuation
+    : '\\' [\r\n\u2028\u2029]
+    ;
 
 // whites paces
 

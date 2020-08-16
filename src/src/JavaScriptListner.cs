@@ -74,7 +74,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
   
-  public override void ExitWriteStdOutputContant(JavaScriptParser.WriteStdOutputContantContext context) {
+  public override void ExitWriteStdOutput(JavaScriptParser.WriteStdOutputContext context) {
     StoreItem item = Store.PopStack();
     asmGenerator.WriteToStdOutput(item);
     asmGenerator.EmptyLine();

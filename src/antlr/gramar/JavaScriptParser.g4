@@ -4,8 +4,7 @@ options {
     tokenVocab=JavaScriptLexer;
 }
 
-parse
-  : instructions;
+parse : instructions* EOF?;
 
 instructions
   : instructionLine+
@@ -13,8 +12,6 @@ instructions
 
 instructionLine
   : instruction EOL
-  | instruction EOF
-  | EOL
   ;
 
 instruction
@@ -24,12 +21,12 @@ instruction
   ;
 
 writeStdOutput
-  : writeStdOutputContant
+  : writeStdOutputConstant
   | writeStdOutputIdentifier
   | writeStdOutputArithmeticOperation
   ;
 
-writeStdOutputContant
+writeStdOutputConstant
   : CONSOLE_LOG OPEN_PAREN constantValue CLOSE_PAREN
   ;
 writeStdOutputIdentifier
@@ -51,6 +48,11 @@ arithmeticSign
   | MINUS
   | MULTIPLY
   | DIVIDE
+  ;
+
+value
+  : constantValue
+  | identifierValue
   ;
 
 constantValue
@@ -81,4 +83,5 @@ variableDeclaratiion
 
 assignOperation
   : variableDeclaratiion ASSIGN arithmeticOperation
+  | variableDeclaratiion ASSIGN value
   ;
