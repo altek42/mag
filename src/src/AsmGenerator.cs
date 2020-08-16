@@ -60,7 +60,6 @@ public class AsmGenerator : IDisposable {
   public void WriteToStdOutput(String value){
     outFile.WriteLine($"ldstr \"{value}\"");
     outFile.WriteLine("call void [mscorlib]System.Console::WriteLine(string)");
-    outFile.WriteLine();
   }
 
   public void Load(StoreItem item) {
@@ -119,6 +118,7 @@ public class AsmGenerator : IDisposable {
     }
     outFile.WriteLine($".locals init({asmType} v_{item.Value})");
     item.IsInitialized = true;
+    Store.Variables.Add(item.Value, item);
   }
 
 
@@ -128,15 +128,19 @@ public class AsmGenerator : IDisposable {
     }
     switch (item.Value)
     {
-        case "+": outFile.WriteLine("add\n"); return;
-        case "-": outFile.WriteLine("sub\n"); return;
-        case "*": outFile.WriteLine("mul\n"); return;
-        case "/": outFile.WriteLine("div\n"); return;
+        case "+": outFile.WriteLine("add"); return;
+        case "-": outFile.WriteLine("sub"); return;
+        case "*": outFile.WriteLine("mul"); return;
+        case "/": outFile.WriteLine("div"); return;
         default: throw new ArgumentException("Unsuported item sign");
     }
   }
 
   public void EmptyLine() {
     outFile.WriteLine();
+  }
+
+  public void Comment(string comment){
+    outFile.WriteLine($"// {comment}");
   }
 }

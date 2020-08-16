@@ -41,6 +41,8 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
     Store.PushStack(resultItem);
     asmGenerator.StoreVariable(resultItem);
+
+    asmGenerator.Comment($"{resultItem.Value} = {arg1.Value} {sign.Value} {arg2.Value}");
     asmGenerator.EmptyLine();
   }
 
@@ -79,6 +81,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
       asmGenerator.InitializeVariable(dist);
     }
     asmGenerator.StoreVariable(dist);
+    asmGenerator.Comment($"{dist.Value} = {source.Value}");
     asmGenerator.EmptyLine();
   }
   
@@ -88,5 +91,6 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     
     Console.WriteLine($"Write std out: {value}");
     asmGenerator.WriteToStdOutput(value);
+    asmGenerator.EmptyLine();
   }
 }
