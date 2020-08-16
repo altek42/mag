@@ -37,9 +37,31 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     StoreItem sign = Store.PopStack();
     StoreItem arg1 = Store.PopStack();
 
+    bool stringOperation = false;
+
+    if(arg1.IsType(StoreItemType.STRING)
+    || arg2.IsType(StoreItemType.STRING)
+    ) {
+      if(sign.Value != "+"){
+        throw new InvalidOperationException($"Operation is not allowed for strings.");
+      }
+      stringOperation = true;
+
+      if(arg1.IsNotType(StoreItemType.STRING)){
+        //convert to string
+      }
+      if(arg2.IsNotType(StoreItemType.STRING)){
+        //convert to string
+      }
+    }
+
     asmGenerator.Load(arg1);
     asmGenerator.Load(arg2);
-    asmGenerator.ExecuteArithmeticOperation(sign);
+    if(stringOperation){
+      asmGenerator.ConcatStrings();
+    } else {
+      asmGenerator.ExecuteArithmeticOperation(sign);
+    }
 
     StoreItem resultItem;
     if(arg1.IsTemporary){

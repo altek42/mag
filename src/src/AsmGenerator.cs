@@ -135,6 +135,10 @@ public class AsmGenerator : IDisposable {
     }
   }
 
+  public void ConcatStrings() {
+    outFile.WriteLine("call string [mscorlib]System.String::Concat(string,string)");
+  }
+
   public void EmptyLine() {
     outFile.WriteLine();
   }

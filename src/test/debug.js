@@ -9,7 +9,7 @@ var constIntChain1 = 100 + 50 - 25            // 125
 var constIntChain2 = 100 + 50 * 2             // 200
 var constIntChain3 = 100 + 100 / 2 * 3 + 10   // 260
 
-// var constStr = "Test " + "concat"
+var constStr = "Test " + "concat"
 
 console.log(constIntAdd)
 console.log(constIntSub)
@@ -20,4 +20,4 @@ console.log(constIntChain1)
 console.log(constIntChain2)
 console.log(constIntChain3)
 
-// console.log(constStr)
+console.log(constStr)
