@@ -12,6 +12,10 @@ MULTIPLY    : '*';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
 
+BOOLEAN: 'true'
+       | 'false'
+       ;
+
 // literals
 
 NUMBER
@@ -49,7 +53,9 @@ fragment CHARACTER
 
 // whites paces
 
-EOL: [\n]+;
+EOL
+  : [\r\n\u2028\u2029]+
+  ;
 
 WHITE_SPACES
   : [\t\u000B\u000C\u0020\u00A0]+ -> skip

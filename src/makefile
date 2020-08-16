@@ -9,7 +9,7 @@ DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
 DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
 ILASM_APP = ilasm
 
-.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug compile-debug-run
+.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug compile-debug-run deasm-program
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -63,6 +63,9 @@ compile-debug-run: compile-debug
 compile-debug: ${DEBUG_IL_FILE}
 	rm ${DIST_FOLDER}/*.exe || true
 	${ILASM_APP} ${DEBUG_IL_FILE}
+
+deasm-program:
+	ikdasm bin/Debug/netcoreapp3.1/src.dll > bin/test.txt
 
 generate:
 	cd ${ANTLR_GRAMAR_DIR} && java -jar antlr.jar -Dlanguage=CSharp *.g4

@@ -57,9 +57,10 @@ public class AsmGenerator : IDisposable {
   }
 
   // FUNCTIONALITY
-  public void WriteToStdOutput(String value){
-    outFile.WriteLine($"ldstr \"{value}\"");
-    outFile.WriteLine("call void [mscorlib]System.Console::WriteLine(string)");
+  public void WriteToStdOutput(StoreItem item){
+    Load(item);
+    string asmType = getAsmType(item);
+    outFile.WriteLine($"call void [mscorlib]System.Console::WriteLine({asmType})");
   }
 
   public void Load(StoreItem item) {
@@ -81,6 +82,12 @@ public class AsmGenerator : IDisposable {
         return;
         case StoreItemType.DOUBLE:
         outFile.WriteLine($"ldc.r4 {item.Value}");
+        return;
+        case StoreItemType.STRING:
+        outFile.WriteLine($"ldstr \"{item.Value}\"");
+        return;
+        case StoreItemType.BOOLEAN:
+        outFile.WriteLine($"ldc.i4.{item.Value}");
         return;
         default: throw new ArgumentException("Unsuported item type");
     }
@@ -107,15 +114,7 @@ public class AsmGenerator : IDisposable {
     if(item.IsInitialized){
       throw new ArgumentException("Variable is initialized.");
     }
-    string asmType;
-    switch (item.ItemType)
-    {
-        case StoreItemType.INTEGER: asmType = "int32"; break;
-        case StoreItemType.DOUBLE: asmType = "float32"; break;
-        case StoreItemType.BOOLEAN: asmType = "boolean"; break;
-        case StoreItemType.STRING: asmType = "string"; break;
-        default: throw new ArgumentException("Unsuported item type");
-    }
+    string asmType = getAsmType(item);
     outFile.WriteLine($".locals init({asmType} v_{item.Value})");
     item.IsInitialized = true;
     Store.Variables.Add(item.Value, item);
@@ -142,5 +141,16 @@ public class AsmGenerator : IDisposable {
 
   public void Comment(string comment){
     outFile.WriteLine($"// {comment}");
+  }
+
+  private string getAsmType(StoreItem item){
+    switch (item.ItemType)
+    {
+        case StoreItemType.INTEGER: return"int32";
+        case StoreItemType.DOUBLE: return"float32";
+        case StoreItemType.BOOLEAN: return"bool";
+        case StoreItemType.STRING: return"string";
+        default: throw new ArgumentException("Unsuported item type");
+    }
   }
 }

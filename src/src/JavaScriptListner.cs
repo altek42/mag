@@ -46,17 +46,6 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
 
-  public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {
-    string value = context.GetChild(0).GetText();
-    StoreItem item;
-    if(value.Contains(".")){
-      item = StoreItem.CreateDouble(value);
-    } else {
-      item = StoreItem.CreateInteger(value);
-    }
-    Store.PushStack(item);
-  }
-
   public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context){
     string value = context.GetChild(0).GetText();
     StoreItem item = StoreItem.CreateVariable(value);
@@ -85,12 +74,35 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
   
-  public override void ExitWriteStdOutput(JavaScriptParser.WriteStdOutputContext context){
-    string value = context.GetChild(2).GetText();
-    value = value.Substring(1, value.Length - 2);
-    
-    Console.WriteLine($"Write std out: {value}");
-    asmGenerator.WriteToStdOutput(value);
+  public override void ExitWriteStdOutputContant(JavaScriptParser.WriteStdOutputContantContext context) {
+    StoreItem item = Store.PopStack();
+    asmGenerator.WriteToStdOutput(item);
     asmGenerator.EmptyLine();
+  }
+
+  // Constants
+  public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {
+    string value = context.GetChild(0).GetText();
+    StoreItem item;
+    if(value.Contains(".")){
+      item = StoreItem.CreateDouble(value);
+    } else {
+      item = StoreItem.CreateInteger(value);
+    }
+    Store.PushStack(item);
+  }
+
+  public override void ExitStringValue(JavaScriptParser.StringValueContext context){
+    string value = context.GetChild(0).GetText();
+    value = value.Substring(1, value.Length - 2);
+    StoreItem item = StoreItem.CreateString(value);
+    Store.PushStack(item);
+  }
+
+  public override void ExitBooleanValue(JavaScriptParser.BooleanValueContext context) {
+    string value = context.GetChild(0).GetText();
+    string booleanValue = value == "true" ? "1" : "0";
+    StoreItem item = StoreItem.CreateBoolean(booleanValue);
+    Store.PushStack(item);
   }
 }
