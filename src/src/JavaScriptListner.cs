@@ -21,6 +21,18 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   }
 
   public override void ExitArithmeticOperation(JavaScriptParser.ArithmeticOperationContext context){
+    if(context.ChildCount > 1){
+      processArithmeticOperation();
+    }
+  }
+
+  public override void ExitArithmeticOperationHigher(JavaScriptParser.ArithmeticOperationHigherContext context) {
+    if(context.ChildCount > 1){
+      processArithmeticOperation();
+    }
+  }
+
+  private void processArithmeticOperation() {
     StoreItem arg2 = Store.PopStack();
     StoreItem sign = Store.PopStack();
     StoreItem arg1 = Store.PopStack();
@@ -46,21 +58,6 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
 
-  public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context){
-    string value = context.GetChild(0).GetText();
-    StoreItem item = StoreItem.CreateVariable(value);
-    if(!item.IsInitialized){
-      throw new InvalidOperationException($"Variable {item.Value} is undfined");
-    }
-    Store.PushStack(item);
-  }
-
-  public override void ExitArithmeticSign(JavaScriptParser.ArithmeticSignContext context){
-    string sign = context.GetChild(0).GetText();
-    StoreItem item = StoreItem.CreateArithmeticSign(sign);
-    Store.PushStack(item);
-  }
-
   public override void ExitAssignOperation(JavaScriptParser.AssignOperationContext context) {
     StoreItem source = Store.PopStack();
     StoreItem dist = Store.PopStack();
@@ -80,7 +77,15 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
 
-  // Constants
+  public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context){
+    string value = context.GetChild(0).GetText();
+    StoreItem item = StoreItem.CreateVariable(value);
+    if(!item.IsInitialized){
+      throw new InvalidOperationException($"Variable {item.Value} is undfined");
+    }
+    Store.PushStack(item);
+  }
+
   public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {
     string value = context.GetChild(0).GetText();
     StoreItem item;
@@ -103,6 +108,20 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     string value = context.GetChild(0).GetText();
     string booleanValue = value == "true" ? "1" : "0";
     StoreItem item = StoreItem.CreateBoolean(booleanValue);
+    Store.PushStack(item);
+  }
+
+  public override void ExitArithmeticAdditiveSign(JavaScriptParser.ArithmeticAdditiveSignContext context) {
+    processArithmeticSign(context);
+  }
+
+  public override void ExitArithmeticMultiplpicativeSign(JavaScriptParser.ArithmeticMultiplpicativeSignContext context) {
+    processArithmeticSign(context);
+  }
+
+  private void processArithmeticSign(ParserRuleContext context){
+    string sign = context.GetChild(0).GetText();
+    StoreItem item = StoreItem.CreateArithmeticSign(sign);
     Store.PushStack(item);
   }
 }

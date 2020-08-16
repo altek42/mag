@@ -37,16 +37,22 @@ writeStdOutputArithmeticOperation
   ;
 
 arithmeticOperation
-  : numberValue arithmeticSign numberValue
-  | numberValue arithmeticSign identifierValue
-  | identifierValue arithmeticSign numberValue
-  | identifierValue arithmeticSign identifierValue
+  : arithmeticOperation arithmeticAdditiveSign arithmeticOperationHigher
+  | arithmeticOperationHigher
   ;
 
-arithmeticSign
+arithmeticOperationHigher
+  : arithmeticOperationHigher arithmeticMultiplpicativeSign value
+  | value
+  ;
+
+arithmeticAdditiveSign
   : PLUS
   | MINUS
-  | MULTIPLY
+  ;
+
+arithmeticMultiplpicativeSign
+  : MULTIPLY
   | DIVIDE
   ;
 
