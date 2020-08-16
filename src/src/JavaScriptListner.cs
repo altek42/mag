@@ -4,30 +4,29 @@ using Antlr4.Runtime.Tree;
 public class JavaScriptListner : JavaScriptParserBaseListener {
 
   private AsmGenerator asmGenerator;
-  public JavaScriptListner() : base()
-  {
+  public JavaScriptListner() : base() {
     asmGenerator = AsmGenerator.Instance;
   }
 
-  public override void ExitVariableDeclaratiion(JavaScriptParser.VariableDeclaratiionContext context){
+  public override void ExitVariableDeclaratiion(JavaScriptParser.VariableDeclaratiionContext context) {
     string variableName = context.GetChild(1).GetText();
-    
-    if(Store.Variables.ContainsKey(variableName)){
+
+    if (Store.Variables.ContainsKey(variableName)) {
       throw new InvalidOperationException($"Variable `{variableName}` already initialized.");
     }
-    
+
     StoreItem item = StoreItem.CreateVariable(variableName);
     Store.PushStack(item);
   }
 
-  public override void ExitArithmeticOperation(JavaScriptParser.ArithmeticOperationContext context){
-    if(context.ChildCount > 1){
+  public override void ExitArithmeticOperation(JavaScriptParser.ArithmeticOperationContext context) {
+    if (context.ChildCount > 1) {
       processArithmeticOperation();
     }
   }
 
   public override void ExitArithmeticOperationHigher(JavaScriptParser.ArithmeticOperationHigherContext context) {
-    if(context.ChildCount > 1){
+    if (context.ChildCount > 1) {
       processArithmeticOperation();
     }
   }
@@ -39,34 +38,34 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
     bool stringOperation = false;
 
-    if(arg1.IsType(StoreItemType.STRING)
+    if (arg1.IsType(StoreItemType.STRING)
     || arg2.IsType(StoreItemType.STRING)
     ) {
-      if(sign.Value != "+"){
+      if (sign.Value != "+") {
         throw new InvalidOperationException($"Operation is not allowed for strings.");
       }
       stringOperation = true;
 
-      if(arg1.IsNotType(StoreItemType.STRING)){
+      if (arg1.IsNotType(StoreItemType.STRING)) {
         //convert to string
       }
-      if(arg2.IsNotType(StoreItemType.STRING)){
+      if (arg2.IsNotType(StoreItemType.STRING)) {
         //convert to string
       }
     }
 
     asmGenerator.Load(arg1);
     asmGenerator.Load(arg2);
-    if(stringOperation){
+    if (stringOperation) {
       asmGenerator.ConcatStrings();
     } else {
       asmGenerator.ExecuteArithmeticOperation(sign);
     }
 
     StoreItem resultItem;
-    if(arg1.IsTemporary){
+    if (arg1.IsTemporary) {
       resultItem = arg1;
-    }else if(arg2.IsTemporary){
+    } else if (arg2.IsTemporary) {
       resultItem = arg2;
     } else {
       resultItem = StoreItem.CreateTemporaryVariable(arg1.ItemType);
@@ -84,7 +83,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     StoreItem source = Store.PopStack();
     StoreItem dist = Store.PopStack();
     asmGenerator.Load(source);
-    if(!dist.IsInitialized){
+    if (!dist.IsInitialized) {
       dist.ItemType = source.ItemType;
       asmGenerator.InitializeVariable(dist);
     }
@@ -92,17 +91,17 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.Comment($"{dist.Value} = {source.Value}");
     asmGenerator.EmptyLine();
   }
-  
+
   public override void ExitWriteStdOutput(JavaScriptParser.WriteStdOutputContext context) {
     StoreItem item = Store.PopStack();
     asmGenerator.WriteToStdOutput(item);
     asmGenerator.EmptyLine();
   }
 
-  public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context){
+  public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context) {
     string value = context.GetChild(0).GetText();
     StoreItem item = StoreItem.CreateVariable(value);
-    if(!item.IsInitialized){
+    if (!item.IsInitialized) {
       throw new InvalidOperationException($"Variable {item.Value} is undfined");
     }
     Store.PushStack(item);
@@ -111,7 +110,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {
     string value = context.GetChild(0).GetText();
     StoreItem item;
-    if(value.Contains(".")){
+    if (value.Contains(".")) {
       item = StoreItem.CreateDouble(value);
     } else {
       item = StoreItem.CreateInteger(value);
@@ -119,7 +118,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     Store.PushStack(item);
   }
 
-  public override void ExitStringValue(JavaScriptParser.StringValueContext context){
+  public override void ExitStringValue(JavaScriptParser.StringValueContext context) {
     string value = context.GetChild(0).GetText();
     value = value.Substring(1, value.Length - 2);
     StoreItem item = StoreItem.CreateString(value);
@@ -141,7 +140,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     processArithmeticSign(context);
   }
 
-  private void processArithmeticSign(ParserRuleContext context){
+  private void processArithmeticSign(ParserRuleContext context) {
     string sign = context.GetChild(0).GetText();
     StoreItem item = StoreItem.CreateArithmeticSign(sign);
     Store.PushStack(item);

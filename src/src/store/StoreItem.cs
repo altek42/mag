@@ -8,12 +8,11 @@ public class StoreItem {
   public bool IsInitialized { get; set; }
 
   private static uint temporaryVariableCounter = 0;
-  
+
   private string value;
-  public string Value
-  {
-      get { return this.value; }
-      set { this.value = value; }
+  public string Value {
+    get { return this.value; }
+    set { this.value = value; }
   }
 
   private StoreItem() {
@@ -27,21 +26,21 @@ public class StoreItem {
     item.Value = value;
     return item;
   }
-  
+
   static public StoreItem CreateString(string value) {
     StoreItem item = new StoreItem();
     item.ItemType = StoreItemType.STRING;
     item.Value = value;
     return item;
   }
-  
+
   static public StoreItem CreateBoolean(string value) {
     StoreItem item = new StoreItem();
     item.ItemType = StoreItemType.BOOLEAN;
     item.Value = value;
     return item;
   }
-  
+
   static public StoreItem CreateDouble(string value) {
     StoreItem item = new StoreItem();
     item.ItemType = StoreItemType.DOUBLE;
@@ -50,7 +49,7 @@ public class StoreItem {
   }
 
   static public StoreItem CreateVariable(string name) {
-    if(Store.Variables.ContainsKey(name)){
+    if (Store.Variables.ContainsKey(name)) {
       return Store.Variables[name];
     }
     return createVariableBase(name);
@@ -63,7 +62,7 @@ public class StoreItem {
     return item;
   }
 
-  static private StoreItem createVariableBase(string name){
+  static private StoreItem createVariableBase(string name) {
     StoreItem item = new StoreItem();
     item.Value = name;
     item.IsVariable = true;

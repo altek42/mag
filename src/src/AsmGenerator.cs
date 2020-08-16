@@ -57,14 +57,14 @@ public class AsmGenerator : IDisposable {
   }
 
   // FUNCTIONALITY
-  public void WriteToStdOutput(StoreItem item){
+  public void WriteToStdOutput(StoreItem item) {
     Load(item);
     string asmType = getAsmType(item);
     outFile.WriteLine($"call void [mscorlib]System.Console::WriteLine({asmType})");
   }
 
   public void Load(StoreItem item) {
-    if(item.IsVariable){
+    if (item.IsVariable) {
       this.LoadVariable(item);
     } else {
       this.LoadConstant(item);
@@ -72,32 +72,31 @@ public class AsmGenerator : IDisposable {
   }
 
   public void LoadConstant(StoreItem item) {
-    if(item.IsVariable){
+    if (item.IsVariable) {
       throw new ArgumentException("Item is variable.");
     }
-    switch (item.ItemType)
-    {
-        case StoreItemType.INTEGER:
+    switch (item.ItemType) {
+      case StoreItemType.INTEGER:
         outFile.WriteLine($"ldc.i4 {item.Value}");
         return;
-        case StoreItemType.DOUBLE:
+      case StoreItemType.DOUBLE:
         outFile.WriteLine($"ldc.r4 {item.Value}");
         return;
-        case StoreItemType.STRING:
+      case StoreItemType.STRING:
         outFile.WriteLine($"ldstr \"{item.Value}\"");
         return;
-        case StoreItemType.BOOLEAN:
+      case StoreItemType.BOOLEAN:
         outFile.WriteLine($"ldc.i4.{item.Value}");
         return;
-        default: throw new ArgumentException("Unsuported item type");
+      default: throw new ArgumentException("Unsuported item type");
     }
   }
 
   public void LoadVariable(StoreItem item) {
-    if(!item.IsVariable) {
+    if (!item.IsVariable) {
       throw new ArgumentException("Item is not variable.");
     }
-    if(!item.IsInitialized){
+    if (!item.IsInitialized) {
       throw new ArgumentException("Variable is not initialized.");
     }
     outFile.WriteLine($"ldloc v_{item.Value}");
@@ -108,10 +107,10 @@ public class AsmGenerator : IDisposable {
   }
 
   public void InitializeVariable(StoreItem item) {
-    if(!item.IsVariable) {
+    if (!item.IsVariable) {
       throw new ArgumentException("Item is not variable.");
     }
-    if(item.IsInitialized){
+    if (item.IsInitialized) {
       throw new ArgumentException("Variable is initialized.");
     }
     string asmType = getAsmType(item);
@@ -122,16 +121,15 @@ public class AsmGenerator : IDisposable {
 
 
   public void ExecuteArithmeticOperation(StoreItem item) {
-    if(item.IsNotType(StoreItemType.ARITHMETIC_SIGN)) {
+    if (item.IsNotType(StoreItemType.ARITHMETIC_SIGN)) {
       throw new ArgumentException("Item should be an arithmetic sign.");
     }
-    switch (item.Value)
-    {
-        case "+": outFile.WriteLine("add"); return;
-        case "-": outFile.WriteLine("sub"); return;
-        case "*": outFile.WriteLine("mul"); return;
-        case "/": outFile.WriteLine("div"); return;
-        default: throw new ArgumentException("Unsuported item sign");
+    switch (item.Value) {
+      case "+": outFile.WriteLine("add"); return;
+      case "-": outFile.WriteLine("sub"); return;
+      case "*": outFile.WriteLine("mul"); return;
+      case "/": outFile.WriteLine("div"); return;
+      default: throw new ArgumentException("Unsuported item sign");
     }
   }
 
@@ -143,18 +141,17 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine();
   }
 
-  public void Comment(string comment){
+  public void Comment(string comment) {
     outFile.WriteLine($"// {comment}");
   }
 
-  private string getAsmType(StoreItem item){
-    switch (item.ItemType)
-    {
-        case StoreItemType.INTEGER: return"int32";
-        case StoreItemType.DOUBLE: return"float32";
-        case StoreItemType.BOOLEAN: return"bool";
-        case StoreItemType.STRING: return"string";
-        default: throw new ArgumentException("Unsuported item type");
+  private string getAsmType(StoreItem item) {
+    switch (item.ItemType) {
+      case StoreItemType.INTEGER: return "int32";
+      case StoreItemType.DOUBLE: return "float32";
+      case StoreItemType.BOOLEAN: return "bool";
+      case StoreItemType.STRING: return "string";
+      default: throw new ArgumentException("Unsuported item type");
     }
   }
 }
