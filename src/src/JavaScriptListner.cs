@@ -11,7 +11,11 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
   public override void ExitVariableDeclaratiion(JavaScriptParser.VariableDeclaratiionContext context){
     string variableName = context.GetChild(1).GetText();
-    Console.WriteLine($"Var declaration: {variableName}");
+    
+    if(Store.Variables.ContainsKey(variableName)){
+      throw new InvalidOperationException($"Variable `{variableName}` already initialized.");
+    }
+    
     StoreItem item = StoreItem.CreateVariable(variableName);
     Store.PushStack(item);
   }
@@ -21,10 +25,23 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     StoreItem sign = Store.PopStack();
     StoreItem arg1 = Store.PopStack();
 
-    asmGenerator.LoadConstant(arg1);
-    asmGenerator.LoadConstant(arg2);
+    asmGenerator.Load(arg1);
+    asmGenerator.Load(arg2);
     asmGenerator.ExecuteArithmeticOperation(sign);
 
+    StoreItem resultItem;
+    if(arg1.IsTemporary){
+      resultItem = arg1;
+    }else if(arg2.IsTemporary){
+      resultItem = arg2;
+    } else {
+      resultItem = StoreItem.CreateTemporaryVariable(arg1.ItemType);
+      asmGenerator.InitializeVariable(resultItem);
+    }
+
+    Store.PushStack(resultItem);
+    asmGenerator.StoreVariable(resultItem);
+    asmGenerator.EmptyLine();
   }
 
   public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {
@@ -41,6 +58,9 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context){
     string value = context.GetChild(0).GetText();
     StoreItem item = StoreItem.CreateVariable(value);
+    if(!item.IsInitialized){
+      throw new InvalidOperationException($"Variable {item.Value} is undfined");
+    }
     Store.PushStack(item);
   }
 
@@ -51,10 +71,15 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   }
 
   public override void ExitAssignOperation(JavaScriptParser.AssignOperationContext context) {
-    // string operation = Store.PopStack();
-    // string variable = Store.PopStack();
-    // Console.WriteLine($"Assign: [{variable}] = [{operation}]");
-    Console.WriteLine($"Assign");
+    StoreItem source = Store.PopStack();
+    StoreItem dist = Store.PopStack();
+    asmGenerator.Load(source);
+    if(!dist.IsInitialized){
+      dist.ItemType = source.ItemType;
+      asmGenerator.InitializeVariable(dist);
+    }
+    asmGenerator.StoreVariable(dist);
+    asmGenerator.EmptyLine();
   }
   
   public override void ExitWriteStdOutput(JavaScriptParser.WriteStdOutputContext context){

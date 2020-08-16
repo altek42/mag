@@ -63,6 +63,14 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine();
   }
 
+  public void Load(StoreItem item) {
+    if(item.IsVariable){
+      this.LoadVariable(item);
+    } else {
+      this.LoadConstant(item);
+    }
+  }
+
   public void LoadConstant(StoreItem item) {
     if(item.IsVariable){
       throw new ArgumentException("Item is variable.");
@@ -79,6 +87,41 @@ public class AsmGenerator : IDisposable {
     }
   }
 
+  public void LoadVariable(StoreItem item) {
+    if(!item.IsVariable) {
+      throw new ArgumentException("Item is not variable.");
+    }
+    if(!item.IsInitialized){
+      throw new ArgumentException("Variable is not initialized.");
+    }
+    outFile.WriteLine($"ldloc v_{item.Value}");
+  }
+
+  public void StoreVariable(StoreItem item) {
+    outFile.WriteLine($"stloc v_{item.Value}");
+  }
+
+  public void InitializeVariable(StoreItem item) {
+    if(!item.IsVariable) {
+      throw new ArgumentException("Item is not variable.");
+    }
+    if(item.IsInitialized){
+      throw new ArgumentException("Variable is initialized.");
+    }
+    string asmType;
+    switch (item.ItemType)
+    {
+        case StoreItemType.INTEGER: asmType = "int32"; break;
+        case StoreItemType.DOUBLE: asmType = "float32"; break;
+        case StoreItemType.BOOLEAN: asmType = "boolean"; break;
+        case StoreItemType.STRING: asmType = "string"; break;
+        default: throw new ArgumentException("Unsuported item type");
+    }
+    outFile.WriteLine($".locals init({asmType} v_{item.Value})");
+    item.IsInitialized = true;
+  }
+
+
   public void ExecuteArithmeticOperation(StoreItem item) {
     if(item.IsNotType(StoreItemType.ARITHMETIC_SIGN)) {
       throw new ArgumentException("Item should be an arithmetic sign.");
@@ -93,4 +136,7 @@ public class AsmGenerator : IDisposable {
     }
   }
 
+  public void EmptyLine() {
+    outFile.WriteLine();
+  }
 }

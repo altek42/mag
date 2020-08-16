@@ -1,8 +1,13 @@
 using System;
 
 public class StoreItem {
-  public StoreItemType ItemType { get; private set; }
+  public StoreItemType ItemType { get; set; }
   public bool IsVariable { get; private set; }
+  public bool IsTemporary { get; private set; }
+
+  public bool IsInitialized { get; set; }
+
+  private static uint temporaryVariableCounter = 0;
   
   private string value;
   public string Value
@@ -13,6 +18,7 @@ public class StoreItem {
 
   private StoreItem() {
     this.IsVariable = false;
+    this.IsInitialized = false;
   }
 
   static public StoreItem CreateInteger(string value) {
@@ -44,6 +50,21 @@ public class StoreItem {
   }
 
   static public StoreItem CreateVariable(string name) {
+    StoreItem item = createVariableBase(name);
+    if(Store.Variables.ContainsKey(name)){
+      item.IsInitialized = true;
+    }
+    return item;
+  }
+
+  static public StoreItem CreateTemporaryVariable(StoreItemType type) {
+    StoreItem item = createVariableBase($"tmp_{temporaryVariableCounter++}");
+    item.IsTemporary = true;
+    item.ItemType = type;
+    return item;
+  }
+
+  static private StoreItem createVariableBase(string name){
     StoreItem item = new StoreItem();
     item.Value = name;
     item.IsVariable = true;
@@ -65,4 +86,5 @@ public class StoreItem {
   public bool IsNotType(StoreItemType type) {
     return this.ItemType != type;
   }
+
 }
