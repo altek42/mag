@@ -47,10 +47,10 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
       stringOperation = true;
 
       if (arg1.IsNotType(StoreItemType.STRING)) {
-        //convert to string
+        castVariableToString(arg1);
       }
       if (arg2.IsNotType(StoreItemType.STRING)) {
-        //convert to string
+        castVariableToString(arg2);
       }
     }
 
@@ -77,6 +77,10 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
     asmGenerator.Comment($"{resultItem.Value} = {arg1.Value} {sign.Value} {arg2.Value}");
     asmGenerator.EmptyLine();
+  }
+
+  private void castVariableToString(StoreItem item){
+    
   }
 
   public override void ExitAssignOperation(JavaScriptParser.AssignOperationContext context) {

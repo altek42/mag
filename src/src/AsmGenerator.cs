@@ -57,6 +57,11 @@ public class AsmGenerator : IDisposable {
   }
 
   // FUNCTIONALITY
+  
+  public void CastVariable(StoreItem item){
+    
+  }
+
   public void WriteToStdOutput(StoreItem item) {
     Load(item);
     string asmType = getAsmType(item);
