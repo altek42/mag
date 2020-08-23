@@ -58,8 +58,27 @@ public class AsmGenerator : IDisposable {
 
   // FUNCTIONALITY
   
-  public void CastVariable(StoreItem item){
-    
+  public void CastVariable(StoreItem source, StoreItem destiny){
+    if(source.IsNotVariable){
+      StoreItem tmp = StoreItem.CreateTemporaryVariable(source.ItemType);
+      InitializeVariable(tmp);
+      Load(source);
+      StoreVariable(tmp);
+      source = tmp;
+    }
+    LoadAddress(source);
+    if(destiny.IsNotType(StoreItemType.STRING)){
+      throw new ArgumentException("Cast type is not supported.");
+    }
+    outFile.WriteLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
+    StoreVariable(destiny);
+  }
+
+  public void LoadAddress(StoreItem item) {
+    if(item.IsNotVariable){
+      throw new ArgumentException("Item should be a variable.");
+    }
+    outFile.WriteLine($"ldloca.s v_{item.Value}");
   }
 
   public void WriteToStdOutput(StoreItem item) {
@@ -156,6 +175,15 @@ public class AsmGenerator : IDisposable {
       case StoreItemType.DOUBLE: return "float32";
       case StoreItemType.BOOLEAN: return "bool";
       case StoreItemType.STRING: return "string";
+      default: throw new ArgumentException("Unsuported item type");
+    }
+  }
+
+  private string getSystemAsmType(StoreItem item) {
+    switch (item.ItemType) {
+      case StoreItemType.INTEGER: return "Int32";
+      case StoreItemType.DOUBLE: return "Single";
+      case StoreItemType.BOOLEAN: return "Boolean";
       default: throw new ArgumentException("Unsuported item type");
     }
   }

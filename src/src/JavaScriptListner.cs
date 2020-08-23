@@ -47,10 +47,10 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
       stringOperation = true;
 
       if (arg1.IsNotType(StoreItemType.STRING)) {
-        castVariableToString(arg1);
+        arg1 = castVariableToString(arg1);
       }
       if (arg2.IsNotType(StoreItemType.STRING)) {
-        castVariableToString(arg2);
+        arg2 = castVariableToString(arg2);
       }
     }
 
@@ -79,8 +79,13 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
 
-  private void castVariableToString(StoreItem item){
-    
+  private StoreItem castVariableToString(StoreItem item) {
+    StoreItem vessel = item.CreateCastVariable(StoreItemType.STRING);
+    asmGenerator.InitializeVariable(vessel);
+    asmGenerator.CastVariable(item, vessel);
+
+    asmGenerator.Comment($"{item.Value}: {item.ItemType} -> {vessel.Value}: {vessel.ItemType}\n");
+    return vessel;
   }
 
   public override void ExitAssignOperation(JavaScriptParser.AssignOperationContext context) {
