@@ -5,7 +5,41 @@
 \usepackage[polish]{babel}
 \usepackage{graphicx}
 \usepackage[defernumbers=true,backend=bibtex,style=verbose-trad2]{biblatex}
+\usepackage{csquotes}
+\usepackage{lmodern}  % for bold teletype font
+\usepackage{amsmath}  % for \hookrightarrow
+\usepackage{xcolor}   % for \textcolor
+\usepackage{listings}
+\usepackage{caption}
 
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listingFormat}{\colorbox{gray}{\parbox{0.98\textwidth}{#3}}}
+\captionsetup[lstlisting]{
+  format=listingFormat,
+  labelfont=white,
+  textfont=white
+}
+
+\lstset{
+  language=C++,
+  tabsize=2,
+  basicstyle=\footnotesize\ttfamily,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{gray}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#}
+}
+
+\DeclareQuoteStyle[polish]{polish}
+    {\itshape\textquotedblleft}
+    [\textquotedblleft]
+    {\textquotedblright}
+    [0.05em]
+    {\textquoteleft}
+    {\textquoteright}
 
 \bibliography{bib}
 \graphicspath{ {images/} }
@@ -168,29 +202,64 @@ Opis
 Opis sprzętu na którym będzie wszystko uruchomiane.
 Do implementacji będą wykorzystane:
 
-%mono-devel
-
 \begin{itemize}
   \item C\#
   \item Visual Studio Code
   \item WSL (Ubuntu 20.04 LTS)
   \item JavaScript
   \item Node.js
+  \item mono-devel (ilasm, ildasm)
 \end{itemize}
 
 \subsection{Analiza języka JavaScript i określenie zakresu implementacji}
-Opis składni JavaScript.
-Implementacja JavaScript w standardzie ES5.
-Musi być Turing-complete. Dodatkowo implementacja funkcji.
+% Opis składni JavaScript.
+% Implementacja JavaScript w standardzie ES5.
+% Musi być Turing-complete. Dodatkowo implementacja funkcji.
+
+\par W tym rozdziale zawarty zostanie zakres implementacji oraz opis poszczególnych elementów języka JavaScript. W projekcie zostanie zaimplementowana jedynie część standardu ECMAScript, a niektóre mechanizmy zostaną uproszczone.
+
+% #PYTANIE Czy warto opisać rzeczy które nie będą implementowane?
+
+\subsubsection{Wyrażenia}
+
+\par Składnia języka JavaScript zapożycza wiele rozwiązań użytych w Javie, jednak na konstrukcję miły też wpływ takie języki jak: Awk, Perl i Python. W języku JavaScript instrukcję nazywane są wyrażeniami, które rozdzielane są znakiem średniaka. Znaki białe takie jak spacja, tabulator czy znak końca linii nie mają wpływu na sposób działania kolejnych elementów wyrażeń, stanowią jedynie sposób ich oddzielenia. W kodzie źródłowym JavaScript rozróżnialna jest wielkość liter oraz wspierany jest standard znaków Unicode. ECMAScript definiuje również zestaw słów kluczowych i literałów oraz zasady automatycznego umieszczania średników ASI (Automatic semicolon insertion).
+
+\subsubsection{Komentarze}
+
+\par Rozróżniane są dwa typy komentarzy:
+\begin{enumerate}
+  \item Jednoliniowy - definiowany jest przy pomocy znaku \enquote{$\backslash\backslash$} oraz umieszczany jest na końcu linii.
+  \begin{lstlisting}
+    console.log(); \\ komentarz
+  \end{lstlisting}
+  \item Wieloliniowy - zawarty jest pomiędzy dwoma elementami \enquote{/*} oraz \enquote{*/}
+  \begin{lstlisting}
+    console.log();
+    /*
+      komentarz na
+      wiele linii
+    */
+  \end{lstlisting}
+\end{enumerate}
+
+\subsubsection{Deklaracje}
+\par Zmienne deklaruje się przy pomocy słów kluczowych \texttt{var}, \texttt{let} oraz \texttt{const}. Deklaracja przy pomocy \texttt{var} jest podstawowym sposobem tworzenia zmiennych w JavaScript. Zasięg takiej zmiennej nie może być ograniczony przez blok w którym jest zawarta, przez co może powodować błędy przy pisaniu kodu. W celu uściślenia zasięgu i przeznaczenia zmiennych powstały dwa inne sposoby deklaracji \texttt{let} oraz \texttt{const}. Oba te rodzaje deklaracji powodują, że zakres dostępności zmiennej jest ograniczony do bloku w którym została zadeklarowana. Różnicą między tymi dwoma deklaracjami jest taka, że przy pomocy \texttt{const} definiujemy stałą która musi być od razu zadeklarowana, a \texttt{let} działa podobnie jak \texttt{var}.
+\begin{lstlisting}
+  var zmienna1;
+  let zmienna2;
+  const stala = true;
+\end{lstlisting}
+\par W projekcie zostanie zaimplementowania deklaracja typu \texttt{var}.
+% opisać lepiej
+
+% https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Sk%C5%82adnia_i_typy
 
 \subsection{Parser}
 Używamy ANTLR z gotową gramatyką
 
 Rozważane możliwości i wykonano przegląd narzędzi:
-Opcje:
-1. Napiszę własną implementację, która może być mało czytelna i mieć dużo błędów. (Baza: http://informatyka.wroc.pl/node/391)
-2. Użyję ANTLR i napiszę własną gramatykę.
-3. Użyję ANTLR i użyję gotowe gramatyki.
+% Opcje:
+% 2. Użyję ANTLR i napiszę własną gramatykę.
 
 po 2 zdania: 
 Gotowe narzędzia:
