@@ -242,32 +242,57 @@ Do implementacji będą wykorzystane:
   \end{lstlisting}
 \end{enumerate}
 
-\subsubsection{Deklaracje}
+\subsubsection{Deklaracje zmiennych i stałych}
 \par Zmienne deklaruje się przy pomocy słów kluczowych \texttt{var}, \texttt{let} oraz \texttt{const}. Deklaracja przy pomocy \texttt{var} jest podstawowym sposobem tworzenia zmiennych w JavaScript. Zasięg takiej zmiennej nie może być ograniczony przez blok w którym jest zawarta, przez co może powodować błędy przy pisaniu kodu. W celu uściślenia zasięgu i przeznaczenia zmiennych powstały dwa inne sposoby deklaracji \texttt{let} oraz \texttt{const}. Oba te rodzaje deklaracji powodują, że zakres dostępności zmiennej jest ograniczony do bloku w którym została zadeklarowana. Różnicą między tymi dwoma deklaracjami jest taka, że przy pomocy \texttt{const} definiujemy stałą która musi być od razu zadeklarowana, a \texttt{let} działa podobnie jak \texttt{var}.
 \begin{lstlisting}
   var zmienna1;
   let zmienna2;
   const stala = true;
 \end{lstlisting}
-\par W projekcie zostanie zaimplementowania deklaracja typu \texttt{var}.
-% opisać lepiej
+\par Przy deklaracji zmiennych przy użyciu \texttt{var} lub \texttt{let}, których nie przypiszemy żadnej wartości to przyjmują one wartość \texttt{undefined}
+
+\subsubsection{Typy danych}
+\par W najnowszym standardzie ECMAScript zdefiniowanych jest siedem typów danych:
+\begin{enumerate}
+  \item \texttt{Boolean} - może przybierać dwie wartości \texttt{true} lub \texttt{false}.
+  \item \texttt{null} - słowo kluczowe oznaczające wartość zerową. 
+  \item \texttt{undefined} - wartość nieokreślona.
+  \item \texttt{Number} - tym przeznaczony dla literałów całkowitych jak i zmiennoprzecinkowych.
+  \item \texttt{String} - typ przeznaczony dla literałów łańcuchowych reprezentujących zero lub więcej pojedynczych znaków ujętych w podwójny lub pojedynczy cudzysłów.
+  \item \texttt{Symbol} - wprowadzony w ECMAScript 6 typ danych, który pozwala na tworzenie unikalnych i nie zmiennych wartości.
+  \item \texttt{Object} - typ złożony do którego zaliczają się funkcje, tablice, słowniki oraz instancje klas.
+\end{enumerate}
+
+\subsubsection{Operacje arytmetyczne}
+\subsubsection{Operacje warunkowe}
+\subsubsection{Zakres implementacji projektu}
+W niniejszym projekcie zostaną zaimplementowane następujące elementy: 
+\begin{itemize}
+  \item Komentarze jednoliniowe oraz wieloliniowe.
+  \item Proste typy danych: \texttt{Boolean}, \texttt{Number}, \texttt{String}.
+  \item Tworzenie zmiennych typu \texttt{var}.
+  \item Uproszczona implementacja funkcji \texttt{console.log()}.
+  \item Konwersja typów danych.
+  \item Operacje matematyczne takie jak dodawanie, odejmowanie, mnożenie oraz dzielenie.
+  \item Wyrażenia warunkowe takie jak sprawdzenie: równości, nierówności, większości lub mniejszości.
+  \item Typ \texttt{Object} pod postacią tablicy elementów oraz słownika danych.
+  \item Deklaracja oraz wywoływanie funkcji: bez parametrów oraz zwracanej wartości, bez parametrów oraz z zwracaną wartością, z parametrami bez zwracanej wartości oraz z parametrami z zwracaną wartością.
+\end{itemize}
 
 % https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Sk%C5%82adnia_i_typy
 
 \subsection{Parser}
-Używamy ANTLR z gotową gramatyką
+Używamy ANTLR z własną gramatyką ale posiłkując się gotowcem. Wykorzystanie gotowej gramatyki powoduje wygenerowanie tak dużych plików, że próba zrozumienia co jest do czego wymaga poświęcenia dużego wysiłku. Większość tych rzeczy i tak by nie została wykorzystana.
 
 Rozważane możliwości i wykonano przegląd narzędzi:
-% Opcje:
-% 2. Użyję ANTLR i napiszę własną gramatykę.
 
-po 2 zdania: 
+po 2 zdania: \\
 Gotowe narzędzia:
 \begin{itemize}
   \item LEX \& YYAC
   \item ANTLR
   \item Coco/R
-  \item ?gppg \& gplex
+  \item gppg \& gplex
   \item Owl (https://github.com/ianh/owl)
 \end{itemize}
 i więcej... https://en.wikipedia.org/wiki/Comparison\_of\_parser\_generators
