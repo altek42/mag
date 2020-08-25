@@ -1,16 +1,26 @@
+ROOT_DIR = $(shell pwd)
+
 COMPILER_DIR = compiler
 ANTLR_DIR = antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
+GO_AND_RUN_APP = cd ${ROOT_DIR}/${COMPILER_DIR} && ${RUN_APP}
 TEST_FOLDER = test
 DEBUG_JS_FILE = ${TEST_FOLDER}/debug.js
 RUN_JS_DEBUG_FILE = node ${DEBUG_JS_FILE}
 DIST_FOLDER = ${COMPILER_DIR}/dist
 DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
+TEST_IL_FILE = ${DIST_FOLDER}/Test.il
 DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
 ILASM_APP = ilasm
+TEST_SUBDIRS = $(wildcard ${TEST_FOLDER}/*/.)
 
-.PHONY: all install-tools run clean clean-antlr generate test-base run-js-debug compile-debug compile-debug-run deasm-program
+.PHONY: all install-tools run clean clean-antlr \
+				generate test-base run-js-debug \
+				compile-debug compile-debug-run deasm-program \
+				$(TEST_SUBDIRS) build-test-cs \
+				asm-test-js deasm-test-cs \
+				process-test
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -47,10 +57,10 @@ install-tools:
 	sudo apt clean
 
 run:
-	cd ${COMPILER_DIR} && ${RUN_APP} $(ARGS)
+	${GO_AND_RUN_APP} $(ARGS)
 
 run-debug:
-	cd ${COMPILER_DIR} && ${RUN_APP} ../${DEBUG_JS_FILE}
+	${GO_AND_RUN_APP} ../${DEBUG_JS_FILE}
 
 run-js-debug:
 	${RUN_JS_DEBUG_FILE}
@@ -67,6 +77,38 @@ compile-debug: ${DEBUG_IL_FILE}
 
 deasm-program:
 	ikdasm bin/Debug/netcoreapp3.1/src.dll > bin/test.txt
+
+process-test: clean-test-dir build-test-cs deasm-test-cs asm-test-js
+
+build-test-cs: $(TEST_SUBDIRS)
+	for dir in $^; do \
+		echo "Compile: $${dir}"; \
+		cd ${ROOT_DIR}/$${dir} && dotnet publish; \
+	done
+
+asm-test-js: $(TEST_SUBDIRS)
+	for dir in $^; do \
+		echo "Assembly: $${dir}"; \
+		${GO_AND_RUN_APP} ../$${dir}/test.js \
+		&& cd ${ROOT_DIR} \
+		&& mv ${TEST_IL_FILE} $${dir}/il/js.il \
+		; \
+	done
+
+deasm-test-cs: $(TEST_SUBDIRS)
+	for dir in $^; do \
+		echo "Disassembly: $${dir}"; \
+		ikdasm $${dir}/bin/Debug/netcoreapp3.1/publish/dotnet.dll > $${dir}/il/cs.il \
+		; \
+	done
+
+clean-test-dir: $(TEST_SUBDIRS)
+	for dir in $^; do \
+		echo "\nClear: $${dir}"; \
+		cd ${ROOT_DIR}/$${dir} && dotnet clean; \
+		rm ${ROOT_DIR}/$${dir}/il/* || true; \
+	done
+
 
 generate:
 	cd ${ANTLR_GRAMAR_DIR} && java -jar antlr.jar -Dlanguage=CSharp *.g4
