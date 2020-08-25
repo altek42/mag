@@ -5,7 +5,6 @@ using System.IO;
 
 class Program {
   static void Main(string[] args) {
-    Test t = new Test();
     if (args.Length < 1) {
       throw new ArgumentException("Needs file name as argument");
     }

@@ -1,10 +1,11 @@
+COMPILER_DIR = compiler
 ANTLR_DIR = antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
 TEST_FOLDER = test
 DEBUG_JS_FILE = ${TEST_FOLDER}/debug.js
 RUN_JS_DEBUG_FILE = node ${DEBUG_JS_FILE}
-DIST_FOLDER = dist
+DIST_FOLDER = ${COMPILER_DIR}/dist
 DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
 DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
 ILASM_APP = ilasm
@@ -46,10 +47,10 @@ install-tools:
 	sudo apt clean
 
 run:
-	${RUN_APP} $(ARGS)
+	cd ${COMPILER_DIR} && ${RUN_APP} $(ARGS)
 
 run-debug:
-	${RUN_APP} ${DEBUG_JS_FILE}
+	cd ${COMPILER_DIR} && ${RUN_APP} ../${DEBUG_JS_FILE}
 
 run-js-debug:
 	${RUN_JS_DEBUG_FILE}
