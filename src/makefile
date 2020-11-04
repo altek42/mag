@@ -1,7 +1,7 @@
 ROOT_DIR = $(shell pwd)
 
 COMPILER_DIR = compiler
-ANTLR_DIR = antlr
+ANTLR_DIR = ${COMPILER_DIR}/antlr
 ANTLR_GRAMAR_DIR = ${ANTLR_DIR}/gramar
 RUN_APP = dotnet run
 GO_AND_RUN_APP = cd ${ROOT_DIR}/${COMPILER_DIR} && ${RUN_APP}
@@ -13,6 +13,7 @@ DEBUG_IL_FILE = ${DIST_FOLDER}/Debug.il
 TEST_IL_FILE = ${DIST_FOLDER}/Test.il
 DEBUG_EXE_FILE = ${DIST_FOLDER}/Debug.exe
 ILASM_APP = ilasm
+IKDASM_APP = ikdasm
 TEST_SUBDIRS = $(wildcard ${TEST_FOLDER}/*/.)
 
 .PHONY: all install-tools run clean clean-antlr \
@@ -20,7 +21,9 @@ TEST_SUBDIRS = $(wildcard ${TEST_FOLDER}/*/.)
 				compile-debug compile-debug-run deasm-program \
 				$(TEST_SUBDIRS) build-test-cs \
 				asm-test-js deasm-test-cs \
-				process-test
+				process-test asm-compile-tests \
+				asm-run 
+
 
 #Prevent all echoing (echoing - lines that are executed)
 .SILENT:
@@ -76,9 +79,10 @@ compile-debug: ${DEBUG_IL_FILE}
 	${ILASM_APP} ${DEBUG_IL_FILE}
 
 deasm-program:
-	ikdasm bin/Debug/netcoreapp3.1/src.dll > bin/test.txt
+	${IKDASM_APP} bin/Debug/netcoreapp3.1/src.dll > bin/test.txt
 
-process-test: clean-test-dir build-test-cs deasm-test-cs asm-test-js
+process-test: clean-test-dir build-test-cs deasm-test-cs asm-test-js asm-compile-tests
+rebuild-all: clean generate process-test
 
 build-test-cs: $(TEST_SUBDIRS)
 	for dir in $^; do \
@@ -98,27 +102,37 @@ asm-test-js: $(TEST_SUBDIRS)
 deasm-test-cs: $(TEST_SUBDIRS)
 	for dir in $^; do \
 		echo "Disassembly: $${dir}"; \
-		ikdasm $${dir}/bin/Debug/netcoreapp3.1/publish/dotnet.dll > $${dir}/il/cs.il \
+		${IKDASM_APP} $${dir}/bin/Debug/netcoreapp3.1/publish/dotnet.dll > $${dir}/il/cs.il \
 		; \
 	done
+
+asm-compile-tests: $(TEST_SUBDIRS)
+	for dir in $^; do \
+		${ILASM_APP} $${dir}/il/js.il\
+		&& mv $${dir}/il/js.exe $${dir}/dist/ \
+		; \
+	done
+
+asm-run: 
+	${TEST_FOLDER}/$(NAME)/dist/js.exe
 
 clean-test-dir: $(TEST_SUBDIRS)
 	for dir in $^; do \
 		echo "\nClear: $${dir}"; \
 		cd ${ROOT_DIR}/$${dir} && dotnet clean; \
 		rm ${ROOT_DIR}/$${dir}/il/* || true; \
+		rm ${ROOT_DIR}/$${dir}/dist/* || true; \
 	done
-
 
 generate:
 	cd ${ANTLR_GRAMAR_DIR} && java -jar antlr.jar -Dlanguage=CSharp *.g4
 	mv ${ANTLR_GRAMAR_DIR}/*cs ${ANTLR_DIR}
 
 clean-antlr:
-	rm ${ANTLR_DIR}/*er.cs
-	rm ${ANTLR_GRAMAR_DIR}/*.interp
-	rm ${ANTLR_GRAMAR_DIR}/*.tokens
+	rm ${ANTLR_DIR}/*er.cs || true;
+	rm ${ANTLR_GRAMAR_DIR}/*.interp || true;
+	rm ${ANTLR_GRAMAR_DIR}/*.tokens || true;
 
-clean: clean-antlr
-	rm ${DIST_FOLDER}/* || true
-	dotnet clean
+clean: clean-antlr clean-test-dir
+	rm ${DIST_FOLDER}/* || true;
+	cd ${ROOT_DIR}/${COMPILER_DIR} && dotnet clean

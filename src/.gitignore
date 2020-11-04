@@ -6,6 +6,7 @@ compiler/dist/*
 test/*/obj/*
 test/*/bin/*
 test/*/il/*
+test/*/dist/*
 
 # generated files
 antlr/gramar/*.interp
