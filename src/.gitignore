@@ -7,6 +7,8 @@ test/*/obj/*
 test/*/bin/*
 test/*/il/*
 test/*/dist/*
+test/*/*.exe
+test/*/*.il
 
 # generated files
 antlr/gramar/*.interp
