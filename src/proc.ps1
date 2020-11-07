@@ -1,3 +1,9 @@
+param(
+  [string]$Function,
+  [string]$f,
+  [string]$TestName,
+  [string]$t
+)
 $rootDir = Get-Location
 
 $csc = "csc.exe"
@@ -6,6 +12,7 @@ $ildasm = "ildasm.exe"
 
 $testsDir = "$rootDir\test"
 $compilerDir = "$rootDir\compiler"
+$distDir = "$compilerDir\dist"
 
 $logFile = "$rootDir\proc.log"
 $debugJsFile = "$testsDir\debug.js"
@@ -17,6 +24,17 @@ function Write-Warning{
   param([string]$text)
   Write-Host "[WARN] " -ForegroundColor Yellow -NoNewline
   Write-Host "$text"
+}
+function Write-Error{
+  param([string]$text)
+  Write-Host "[ERROR] " -ForegroundColor Red -NoNewline
+  Write-Host "$text"
+}
+
+function Exit-WithError {
+  param([string]$text)
+  Write-Error $text
+  exit
 }
 
 function CreatePaths {
@@ -41,7 +59,7 @@ function CreatePaths {
 function ProcessTest {
   param ([Parameter(Mandatory)][string]$name)
   $paths = CreatePaths($name);
-  ClearTestFolder($name);
+  CleanTestFolder($name);
 
   if(Test-Path -Path $paths['csFile']){
     Start-Process $csc -ArgumentList /out:$($paths['exeFile']), /o, $paths['csFile'] -NoNewWindow -Wait -RedirectStandardOutput $logFile;
@@ -62,7 +80,16 @@ function ProcessTest {
   }
 }
 
-function ClearTestFolder {
+function InvokeForEachTest {
+  param ([Parameter(Mandatory)][scriptblock]$Callback)
+  $dirs = Get-ChildItem -Path $testsDir -Directory
+  $length = $dirs.Length;
+  for ($i = 0; $i -lt $length; $i++) {
+    $Callback.Invoke($dirs[$i], $i, $dirs);
+  }
+}
+
+function CleanTestFolder {
   param ([Parameter(Mandatory)][string]$name)
   $paths = CreatePaths($name);
   Remove-Item -Path $paths['csDFile'] -ErrorAction Ignore;
@@ -72,14 +99,24 @@ function ClearTestFolder {
 }
 
 function ProcessAllTests {
-  $dirs = Get-ChildItem -Path $testsDir -Directory
-  $counter = 0;
-  $length = $dirs.Length;
-  foreach ($dir in $dirs) {
-    $counter++;
-    Write-Host "[$counter\$length] Processing `"$dir`""
-    ProcessTest($dir);
-  }
+  InvokeForEachTest({
+    param([string]$element, [int]$index, [array]$array)
+    $len = $array.Length;
+    $num = $index + 1;
+    Write-Host "[$num\$len] Processing `"$element`""
+    ProcessTest($element);
+  });
+  Write-Host "Done"
+}
+
+function CleanAllTests {
+  InvokeForEachTest({
+    param([string]$element, [int]$index, [array]$array)
+    $len = $array.Length;
+    $num = $index + 1;
+    Write-Host "[$num\$len] Clean `"$element`"";
+    CleanTestFolder($element);
+  });
   Write-Host "Done"
 }
 
@@ -102,12 +139,43 @@ function GenerateParserFiles {
   Move-Item -Path "$parserGenDir\*cs" -Destination $parserDir;
 }
 
+function CleanCompiler {
+  Remove-Item -Path "$distDir\*" -ErrorAction Ignore;
+  Set-Location $compilerDir;
+  Start-Process dotnet -ArgumentList clean -NoNewWindow -Wait -RedirectStandardOutput $logFile;
+  Set-Location $rootDir;
+}
+
+function GetParam {
+  param (
+    [array] $params,
+    [string] $errorText
+  )
+  foreach($param in $params){
+    if(-not [string]::IsNullOrEmpty($param)){
+      return $param;
+    }
+  }
+  Exit-WithError $errorText
+}
+
+function GetTestNameParam {
+  return GetParam $TestName, $t -errorText "Test name not provided";
+}
+
 Try {
-  # ProcessAllTests;
-  # RunCompilerWithDebugFile;
-  # CleanParserFiles;
-  # GenerateParserFiles
-  ProcessTest("console");
+  $funcName = GetParam $Function, $f -errorText "Function name not provided";
+  switch ($funcName) {
+    "GenerateParserFiles" { GenerateParserFiles }
+    "RunCompilerWithDebugFile" { RunCompilerWithDebugFile }
+    "ProcessTest" { ProcessTest(GetTestNameParam) }
+    "ProcessAllTests" { ProcessAllTests }
+    "CleanTestFolder" { CleanTestFolder(GetTestNameParam) }
+    "CleanAllTests" { CleanAllTests }
+    "CleanParserFiles" { CleanParserFiles }
+    "CleanCompiler" { CleanCompiler }
+    Default { Exit-WithError "Function name was not recognized" }
+  }
 }
 Finally {
   Set-Location $rootDir;
