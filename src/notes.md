@@ -1,0 +1,2 @@
+- Jeżeli zmienna nie jest wykorzystana, kod dotyczący tej zmiennej jest usuwany.
+- Jeżeli w działaniu arytmetycznej są dwie stałe to obliczenia są robione w trakcie kompilacji.

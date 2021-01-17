@@ -66,11 +66,21 @@ public class AsmGenerator : IDisposable {
       StoreVariable(tmp);
       source = tmp;
     }
-    LoadAddress(source);
-    if(destiny.IsNotType(StoreItemType.STRING)){
-      throw new ArgumentException("Cast type is not supported.");
+    switch (destiny.ItemType)
+    {
+        case StoreItemType.STRING: {
+          LoadAddress(source);
+          outFile.WriteLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
+          break;
+        }
+        case StoreItemType.DOUBLE: {
+          Load(source);
+          outFile.WriteLine($"conv.r4");
+          break;
+        }
+        default:
+          throw new ArgumentException("Cast type is not supported.");
     }
-    outFile.WriteLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
     StoreVariable(destiny);
   }
 

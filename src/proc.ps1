@@ -2,7 +2,11 @@ param(
   [string]$Function,
   [string]$f,
   [string]$TestName,
-  [string]$t
+  [string]$t,
+  [string]$ExeName,
+  [string]$e,
+  [string]$Mode,
+  [string]$m
 )
 $rootDir = Get-Location
 
@@ -14,8 +18,10 @@ $testsDir = "$rootDir\test"
 $compilerDir = "$rootDir\compiler"
 $distDir = "$compilerDir\dist"
 
-$logFile = "$rootDir\proc.log"
+$logFile = "$rootDir\out.log"
 $debugJsFile = "$testsDir\debug.js"
+$debugILFile = "$distDir\Debug.il"
+$debugExeFile = "$distDir\Debug.exe"
 
 $parserDir = "$compilerDir\antlr"
 $parserGenDir = "$parserDir\gramar"
@@ -122,7 +128,7 @@ function CleanAllTests {
 
 function RunCompilerWithDebugFile {
   Set-Location $compilerDir;
-  Start-Process dotnet -ArgumentList run, $debugJsFile -NoNewWindow -Wait -RedirectStandardOutput $logFile;
+  Start-Process dotnet -ArgumentList run, $debugJsFile -NoNewWindow -Wait;
   Set-Location $rootDir;
 }
 
@@ -163,6 +169,57 @@ function GetTestNameParam {
   return GetParam $TestName, $t -errorText "Test name not provided";
 }
 
+function RunExe {
+  $testName = GetTestNameParam;
+  $exeName = GetParam $ExeName, $e -errorText "Exe file name not provided";
+  $elements = @("js", "cs");
+  if(-not ($elements -contains $exeName)){
+   Exit-WithError "Exe file name not allowed. Required one of [$elements]";
+  }
+  $paths = CreatePaths($testName);
+  if("cs" -eq $exeName) {
+    Start-Process $paths['exeFile'] -NoNewWindow -Wait;
+  } else {
+    Start-Process $paths['jsExeFile'] -NoNewWindow -Wait;
+  }
+}
+
+function RunJS {
+  $testName = GetTestNameParam;
+  $paths = CreatePaths($testName);
+  Start-Process node -ArgumentList $paths["jsFile"] -NoNewWindow -Wait;
+}
+
+function DebugCreateExe {
+  Start-Process $ilasm -ArgumentList $debugILFile, /OUTPUT=$($debugExeFile) -NoNewWindow -Wait;
+}
+
+function DebugRunJS {
+  Start-Process node -ArgumentList $debugJsFile -NoNewWindow -Wait;
+}
+
+function DebugRunCS {
+  Start-Process $debugExeFile -NoNewWindow -Wait;
+}
+
+function DebugCreateAndRun {
+  RunCompilerWithDebugFile
+  DebugCreateExe
+  DebugRunCS
+}
+
+function Debug {
+  $mode = GetParam $Mode, $m -errorText "Mode not provided";
+  switch ($mode) {
+    "createIL" { RunCompilerWithDebugFile }
+    "createEXE" { DebugCreateExe }
+    "runJS" { DebugRunJS }
+    "runCS" { DebugRunCS }
+    "createAndRun" { DebugCreateAndRun }
+    Default { Exit-WithError "Mode was not recognized" }
+  }
+}
+
 Try {
   $funcName = GetParam $Function, $f -errorText "Function name not provided";
   switch ($funcName) {
@@ -174,6 +231,9 @@ Try {
     "CleanAllTests" { CleanAllTests }
     "CleanParserFiles" { CleanParserFiles }
     "CleanCompiler" { CleanCompiler }
+    "RunExe" { RunExe }
+    "RunJS" { RunJS }
+    "Debug" { Debug }
     Default { Exit-WithError "Function name was not recognized" }
   }
 }

@@ -116,6 +116,33 @@ public class StoreItem {
     return this.ItemType != type;
   }
 
+  static public bool IsAllType(StoreItemType type, params StoreItem[] items){
+    foreach (StoreItem item in items) {
+      if(item.IsNotType(type)){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static public bool IsAllNotType(StoreItemType type, params StoreItem[] items){
+    foreach (StoreItem item in items) {
+      if(item.IsType(type)){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static public bool IsAnyType(StoreItemType type, params StoreItem[] items) {
+    foreach (StoreItem item in items) {
+      if(item.IsType(type)){
+        return true;
+      }
+    }
+    return false;
+  }
+
   private static string getNextTmpName(){
     return $"tmp_{temporaryVariableCounter++}";
   }

@@ -38,20 +38,18 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
     bool stringOperation = false;
 
-    if (arg1.IsType(StoreItemType.STRING)
-    || arg2.IsType(StoreItemType.STRING)
-    ) {
+    if (StoreItem.IsAnyType(StoreItemType.STRING, arg1, arg2)) {
       if (sign.Value != "+") {
         throw new InvalidOperationException($"Operation is not allowed for strings.");
       }
       stringOperation = true;
 
-      if (arg1.IsNotType(StoreItemType.STRING)) {
-        arg1 = castVariableToString(arg1);
-      }
-      if (arg2.IsNotType(StoreItemType.STRING)) {
-        arg2 = castVariableToString(arg2);
-      }
+      arg1 = castVariable(arg1, StoreItemType.STRING);
+      arg2 = castVariable(arg2, StoreItemType.STRING);
+    }
+    if(sign.Value == "/"){
+      arg1 = castVariable(arg1, StoreItemType.DOUBLE);
+      arg2 = castVariable(arg2, StoreItemType.DOUBLE);
     }
 
     asmGenerator.Load(arg1);
@@ -79,8 +77,12 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.EmptyLine();
   }
 
-  private StoreItem castVariableToString(StoreItem item) {
-    StoreItem vessel = item.CreateCastVariable(StoreItemType.STRING);
+  private StoreItem castVariable(StoreItem item, StoreItemType itemType){
+    if(item.ItemType == itemType){
+      return item;
+    }
+
+    StoreItem vessel = item.CreateCastVariable(itemType);
     asmGenerator.InitializeVariable(vessel);
     asmGenerator.CastVariable(item, vessel);
 
