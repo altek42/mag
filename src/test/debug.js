@@ -1,3 +1,5 @@
-var constIntChain3 = 100 + 100 / 2 * 3 + 10   // 260
-
-console.log(constIntChain3)
+var a = 10
+var b = 2
+var c = 3
+var result = 10 + 11 / 2 * 3
+console.log(result)

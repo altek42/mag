@@ -89,6 +89,7 @@ public class StoreItem {
     vessel.Value = getNextTmpName();
     vessel.IsVariable = true;
     vessel.ItemType = type;
+    vessel.IsTemporary = true;
     return vessel;
   }
 
@@ -146,5 +147,9 @@ public class StoreItem {
   private static string getNextTmpName(){
     return $"tmp_{temporaryVariableCounter++}";
   }
+
+  public String Print { get {
+    return $"{this.ItemType}:{this.value}";
+  }}
 
 }

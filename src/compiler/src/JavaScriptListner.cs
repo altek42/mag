@@ -47,7 +47,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
       arg1 = castVariable(arg1, StoreItemType.STRING);
       arg2 = castVariable(arg2, StoreItemType.STRING);
     }
-    if(sign.Value == "/"){
+    if(sign.Value == "/" || StoreItem.IsAnyType(StoreItemType.DOUBLE, arg1, arg2)){
       arg1 = castVariable(arg1, StoreItemType.DOUBLE);
       arg2 = castVariable(arg2, StoreItemType.DOUBLE);
     }
@@ -73,7 +73,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     Store.PushStack(resultItem);
     asmGenerator.StoreVariable(resultItem);
 
-    asmGenerator.Comment($"{resultItem.Value} = {arg1.Value} {sign.Value} {arg2.Value}");
+    asmGenerator.Comment($"{resultItem.Print} = {arg1.Print} {sign.Value} {arg2.Print}");
     asmGenerator.EmptyLine();
   }
 
@@ -86,7 +86,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     asmGenerator.InitializeVariable(vessel);
     asmGenerator.CastVariable(item, vessel);
 
-    asmGenerator.Comment($"{item.Value}: {item.ItemType} -> {vessel.Value}: {vessel.ItemType}\n");
+    asmGenerator.Comment($"{item.Print} -> {vessel.Print}\n");
     return vessel;
   }
 
@@ -99,7 +99,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
       asmGenerator.InitializeVariable(dist);
     }
     asmGenerator.StoreVariable(dist);
-    asmGenerator.Comment($"{dist.Value} = {source.Value}");
+    asmGenerator.Comment($"{dist.Print} = {source.Print}");
     asmGenerator.EmptyLine();
   }
 
@@ -113,7 +113,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     string value = context.GetChild(0).GetText();
     StoreItem item = StoreItem.CreateVariable(value);
     if (!item.IsInitialized) {
-      throw new InvalidOperationException($"Variable {item.Value} is undfined");
+      throw new InvalidOperationException($"Variable {item.Print} is undfined");
     }
     Store.PushStack(item);
   }
