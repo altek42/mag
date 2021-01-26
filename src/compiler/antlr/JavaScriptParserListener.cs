@@ -131,6 +131,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArithmeticOperationHigher([NotNull] JavaScriptParser.ArithmeticOperationHigherContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConditionOperation([NotNull] JavaScriptParser.ConditionOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.conditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConditionOperation([NotNull] JavaScriptParser.ConditionOperationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arithmeticAdditiveSign"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -220,6 +230,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaratiion([NotNull] JavaScriptParser.VariableDeclaratiionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConditionSign([NotNull] JavaScriptParser.ConditionSignContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConditionSign([NotNull] JavaScriptParser.ConditionSignContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignOperation"/>.
 	/// </summary>

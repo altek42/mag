@@ -46,6 +46,11 @@ arithmeticOperationHigher
   | value
   ;
 
+conditionOperation
+  : arithmeticOperation conditionSign conditionOperation
+  | arithmeticOperation
+  ;
+
 arithmeticAdditiveSign
   : PLUS
   | MINUS
@@ -87,7 +92,19 @@ variableDeclaratiion
   : VAR IDENTIFIER
   ;
 
+conditionSign
+  : LESS_THAN
+  | MORE_THAN
+  | LESS_THAN_EQUALS
+  | GREATER_THAN_EQUALS
+  | EQUALS
+  | NOT_EQUALS
+  | IDENTITY_EQUALS
+  | IDENTITY_NOT_EQUALS
+  ;
+
 assignOperation
   : variableDeclaratiion ASSIGN arithmeticOperation
+  | variableDeclaratiion ASSIGN conditionOperation
   | variableDeclaratiion ASSIGN value
   ;

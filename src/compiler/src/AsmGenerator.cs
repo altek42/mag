@@ -167,8 +167,47 @@ public class AsmGenerator : IDisposable {
     }
   }
 
+  public void ExecuteConditionOperation(StoreItem item) {
+    if (item.IsNotType(StoreItemType.CONDITION_SIGN)) {
+      throw new ArgumentException("Item should be an condition sign.");
+    }
+    switch(item.Value) {
+      case ">"  : outFile.WriteLine("cgt"); return;
+      case ">=" : outFile.WriteLine("clt");
+                  outFile.WriteLine("ldc.i4.0");
+                  outFile.WriteLine("ceq");
+                  return;
+      case "<"  : outFile.WriteLine("clt"); return;
+      case "<=" : outFile.WriteLine("cgt");
+                  outFile.WriteLine("ldc.i4.0");
+                  outFile.WriteLine("ceq");
+                  return;
+      case "==" :
+      case "===": outFile.WriteLine("ceq"); return;
+      case "!=" :
+      case "!==": outFile.WriteLine("ceq");
+                  outFile.WriteLine("ldc.i4.0");
+                  outFile.WriteLine("ceq");
+                  return;
+      default: throw new ArgumentException("Unsuported item sign");
+    }
+  }
+
   public void ConcatStrings() {
     outFile.WriteLine("call string [mscorlib]System.String::Concat(string,string)");
+  }
+
+  public void CompareStrings(StoreItem item) {
+    if (item.IsNotType(StoreItemType.CONDITION_SIGN)) {
+      throw new ArgumentException("Item should be an condition sign.");
+    }
+    switch(item.Value) {
+      case "==" :
+      case "===": outFile.WriteLine("call bool [mscorlib]System.String::op_Equality(string,string)"); return;
+      case "!=" :
+      case "!==": outFile.WriteLine("call bool [mscorlib]System.String::op_Inequality(string,string)"); return;
+      default: throw new ArgumentException("Unsuported item sign");
+    }
   }
 
   public void EmptyLine() {

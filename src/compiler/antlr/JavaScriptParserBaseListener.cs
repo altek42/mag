@@ -155,6 +155,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArithmeticOperationHigher([NotNull] JavaScriptParser.ArithmeticOperationHigherContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConditionOperation([NotNull] JavaScriptParser.ConditionOperationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.conditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConditionOperation([NotNull] JavaScriptParser.ConditionOperationContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arithmeticAdditiveSign"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -262,6 +274,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaratiion([NotNull] JavaScriptParser.VariableDeclaratiionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConditionSign([NotNull] JavaScriptParser.ConditionSignContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConditionSign([NotNull] JavaScriptParser.ConditionSignContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignOperation"/>.
 	/// <para>The default implementation does nothing.</para>

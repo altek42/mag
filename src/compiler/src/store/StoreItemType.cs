@@ -5,5 +5,6 @@ public enum StoreItemType {
   BOOLEAN,
   DOUBLE,
   NULL,
-  ARITHMETIC_SIGN
+  ARITHMETIC_SIGN,
+  CONDITION_SIGN
 }

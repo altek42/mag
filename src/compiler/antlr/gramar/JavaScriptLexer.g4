@@ -15,6 +15,16 @@ DIVIDE      : '/';
 MULTIPLY    : '*';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
+LESS_THAN:           '<';
+MORE_THAN:           '>';
+LESS_THAN_EQUALS:    '<=';
+GREATER_THAN_EQUALS: '>=';
+EQUALS:              '==';
+NOT_EQUALS:          '!=';
+IDENTITY_EQUALS:     '===';
+IDENTITY_NOT_EQUALS: '!==';
+AND:                 '&&';
+OR:                  '||';
 
 BOOLEAN: 'true'
        | 'false'

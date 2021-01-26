@@ -109,6 +109,13 @@ public class StoreItem {
     return item;
   }
 
+  static public StoreItem CreateConditionSign(string sign) {
+    StoreItem item = new StoreItem();
+    item.value = sign;
+    item.ItemType = StoreItemType.CONDITION_SIGN;
+    return item;
+  }
+
   // SUGAR
   public bool IsType(StoreItemType type) {
     return this.ItemType == type;
