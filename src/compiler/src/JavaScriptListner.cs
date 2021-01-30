@@ -207,4 +207,13 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     StoreItem item = StoreItem.CreateArithmeticSign(sign);
     Store.PushStack(item);
   }
+
+  public override void EnterIfStatement(JavaScriptParser.IfStatementContext context){
+    asmGenerator.Comment("ENTER IF");
+  }
+
+  public override void ExitIfStatement(JavaScriptParser.IfStatementContext context)
+  {
+    asmGenerator.Comment("EXIT IF");
+  }
 }

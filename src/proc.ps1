@@ -223,6 +223,7 @@ function Debug {
 Try {
   $funcName = GetParam $Function, $f -errorText "Function name not provided";
   switch ($funcName) {
+    "ReGenerateParserFiles" { CleanParserFiles; GenerateParserFiles}
     "GenerateParserFiles" { GenerateParserFiles }
     "RunCompilerWithDebugFile" { RunCompilerWithDebugFile }
     "ProcessTest" { ProcessTest(GetTestNameParam) }

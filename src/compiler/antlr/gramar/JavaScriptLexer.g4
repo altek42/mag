@@ -8,6 +8,8 @@ SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
 CONSOLE_LOG: 'console.log';
 VAR: 'var';
 
+OPEN_BRACE:  '{';
+CLOSE_BRACE: '}';
 ASSIGN      : '=';
 PLUS        : '+';
 MINUS       : '-';
@@ -29,6 +31,9 @@ OR:                  '||';
 BOOLEAN: 'true'
        | 'false'
        ;
+
+IF:    'if';
+ELSE:  'else';
 
 // literals
 

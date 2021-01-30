@@ -1,3 +1,8 @@
-var test5 = 2 == "text"
+var test = 1
 
-console.log(test5)
+if ( test == 1 ) {
+  console.log("Success!")
+} else {
+  console.log("Fail :(")
+}
+

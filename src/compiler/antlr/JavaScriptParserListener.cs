@@ -71,6 +71,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitInstruction([NotNull] JavaScriptParser.InstructionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.instructionBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInstructionBlock([NotNull] JavaScriptParser.InstructionBlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.instructionBlock"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInstructionBlock([NotNull] JavaScriptParser.InstructionBlockContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutput"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -250,4 +260,14 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignOperation([NotNull] JavaScriptParser.AssignOperationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIfStatement([NotNull] JavaScriptParser.IfStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIfStatement([NotNull] JavaScriptParser.IfStatementContext context);
 }

@@ -18,6 +18,11 @@ instruction
   : variableDeclaratiion
   | assignOperation
   | writeStdOutput
+  | ifStatement
+  ;
+
+instructionBlock
+  : OPEN_BRACE instructions CLOSE_BRACE
   ;
 
 writeStdOutput
@@ -107,4 +112,8 @@ assignOperation
   : variableDeclaratiion ASSIGN arithmeticOperation
   | variableDeclaratiion ASSIGN conditionOperation
   | variableDeclaratiion ASSIGN value
+  ;
+
+ifStatement
+  : IF '(' conditionOperation ')' instructionBlock (ELSE instructionBlock)?
   ;
