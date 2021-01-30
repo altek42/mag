@@ -236,4 +236,12 @@ public class AsmGenerator : IDisposable {
       default: throw new ArgumentException("Unsuported item type");
     }
   }
+
+  public void JumpIfFalse(string label){
+    outFile.WriteLine($"brfalse.s {label}");
+  }
+
+  public void CreateLabel(string label){
+    outFile.WriteLine($"{label}: ");
+  }
 }

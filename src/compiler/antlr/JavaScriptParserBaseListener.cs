@@ -322,6 +322,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIfStatement([NotNull] JavaScriptParser.IfStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIfStatementConditionOperation([NotNull] JavaScriptParser.IfStatementConditionOperationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.ifStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIfStatementConditionOperation([NotNull] JavaScriptParser.IfStatementConditionOperationContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

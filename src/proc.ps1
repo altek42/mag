@@ -19,6 +19,7 @@ $compilerDir = "$rootDir\compiler"
 $distDir = "$compilerDir\dist"
 
 $logFile = "$rootDir\out.log"
+$logCsFile = "$rootDir\out.cs.log"
 $debugJsFile = "$testsDir\debug.js"
 $debugILFile = "$distDir\Debug.il"
 $debugExeFile = "$distDir\Debug.exe"
@@ -68,7 +69,7 @@ function ProcessTest {
   CleanTestFolder($name);
 
   if(Test-Path -Path $paths['csFile']){
-    Start-Process $csc -ArgumentList /out:$($paths['exeFile']), /o, $paths['csFile'] -NoNewWindow -Wait -RedirectStandardOutput $logFile;
+    Start-Process $csc -ArgumentList /out:$($paths['exeFile']), /o, $paths['csFile'] -NoNewWindow -Wait -RedirectStandardOutput $logCsFile;
     Start-Process $ildasm -ArgumentList $paths['exeFile'], /out=$($paths['csDFile']) -NoNewWindow -Wait -RedirectStandardOutput $logFile;
     Remove-Item -Path $paths['resFile'] -ErrorAction Ignore;
   } else {

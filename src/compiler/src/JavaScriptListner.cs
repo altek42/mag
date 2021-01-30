@@ -26,12 +26,12 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   }
 
   public override void ExitArithmeticOperation(JavaScriptParser.ArithmeticOperationContext context) {
-    if (context.ChildCount > 1) return;
+    if (context.ChildCount <= 1) return;
     arithmeticModule.ProcessArithmeticOperation();
   }
 
   public override void ExitArithmeticOperationHigher(JavaScriptParser.ArithmeticOperationHigherContext context) {
-    if (context.ChildCount > 1) return;
+    if (context.ChildCount <= 1) return;
     arithmeticModule.ProcessArithmeticOperation();
   }
 
@@ -80,11 +80,16 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   }
 
   public override void EnterIfStatement(JavaScriptParser.IfStatementContext context){
-    asmGenerator.Comment("ENTER IF");
+    conditionModule.BeginIfStatement();
+  }
+
+  public override void ExitIfStatementConditionOperation(JavaScriptParser.IfStatementConditionOperationContext context)
+  {
+    conditionModule.IfStatementCondition();
   }
 
   public override void ExitIfStatement(JavaScriptParser.IfStatementContext context)
   {
-    asmGenerator.Comment("EXIT IF");
+    conditionModule.EndIfStatement();
   }
 }

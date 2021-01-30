@@ -22,7 +22,7 @@ instruction
   ;
 
 instructionBlock
-  : OPEN_BRACE instructions CLOSE_BRACE
+  : EOL* OPEN_BRACE EOL* instructions EOL* CLOSE_BRACE EOL*
   ;
 
 writeStdOutput
@@ -115,5 +115,9 @@ assignOperation
   ;
 
 ifStatement
-  : IF '(' conditionOperation ')' instructionBlock (ELSE instructionBlock)?
+  : IF '(' ifStatementConditionOperation ')' instructionBlock (ELSE instructionBlock)?
+  ;
+
+ifStatementConditionOperation
+  : conditionOperation
   ;

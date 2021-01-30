@@ -10,3 +10,11 @@ console.log(test2)
 console.log(test3)
 console.log(test4)
 console.log(test5)
+
+if (test1){
+  console.log("if is true")
+}
+
+if (test1 == 5){
+  console.log("if is false")
+}

@@ -6,18 +6,29 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-          string a = "test1";
-          string b = "1";
-          
-          bool test1 = a != b;
-          // bool test2 = a + a == b;
-          // bool test3 = b == a + a;
-          // bool test4 = a + a == a + a;
-          
-          Console.WriteLine(test1);
-          // Console.WriteLine(test2);
-          // Console.WriteLine(test3);
-          // Console.WriteLine(test4);
+          int a = 1;
+          bool x = a == 1;
+          bool y = x;
+          // if(x) {
+          //   Console.WriteLine("Success!");
+          // } else {
+          //   Console.WriteLine("Fail :(");
+          // }
+
+          // if(x) {
+          //   Console.WriteLine("Success 2!");
+          // }
+
+          if(x) {
+            Console.WriteLine("IF X");
+          } else if(y) {
+            Console.WriteLine("ELSE IF Y");
+          } else {
+            Console.WriteLine("ELSE");
+          }
+
+          a += a;
+          Console.WriteLine("End");
         }
     }
 }

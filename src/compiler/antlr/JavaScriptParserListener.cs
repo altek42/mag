@@ -270,4 +270,14 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitIfStatement([NotNull] JavaScriptParser.IfStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIfStatementConditionOperation([NotNull] JavaScriptParser.IfStatementConditionOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.ifStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIfStatementConditionOperation([NotNull] JavaScriptParser.IfStatementConditionOperationContext context);
 }
