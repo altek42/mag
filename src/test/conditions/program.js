@@ -12,9 +12,24 @@ console.log(test4)
 console.log(test5)
 
 if (test1){
-  console.log("if is true")
+  console.log("is true")
 }
 
-if (test1 == 5){
-  console.log("if is false")
+if (test5){
+  console.log("is false")
+}
+
+var number1 = 10;
+var number2 = 30;
+
+if (20 > number1) {
+  console.log("number1 is less than 20")
+}else {
+  console.log("number1 is greater than 20")
+}
+
+if (20 > number2) {
+  console.log("number2 is less than 20")
+}else {
+  console.log("number2 is greater than 20")
 }

@@ -82,7 +82,7 @@ fragment LineContinuation
 // whites paces
 
 EOL
-  : [\r\n\u2028\u2029]+
+  : [;]* [\r\n\u2028\u2029]+
   ;
 
 WHITE_SPACES
