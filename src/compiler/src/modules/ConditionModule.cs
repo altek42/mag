@@ -74,4 +74,14 @@ public class ConditionModule {
     int ifIndex = Store.PopIfStack();
     asmGenerator.CreateLabel($"IF_{ifIndex}");
   }
+
+  public void ElseStatement() {
+    int elseIndex = Store.NextIfIndex();
+    int ifIndex = Store.PopIfStack();
+    asmGenerator.Jump($"IF_{elseIndex}");
+    asmGenerator.CreateLabel($"IF_{ifIndex}");
+    Store.PushIfStack(elseIndex);
+
+    asmGenerator.Comment($"ELSE");
+  }
 }

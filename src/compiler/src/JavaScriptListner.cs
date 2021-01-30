@@ -92,4 +92,10 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   {
     conditionModule.EndIfStatement();
   }
+
+  public override void EnterElseStatement(JavaScriptParser.ElseStatementContext context)
+  {
+    conditionModule.ElseStatement();
+  }
+  
 }

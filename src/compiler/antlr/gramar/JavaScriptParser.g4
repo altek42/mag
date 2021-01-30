@@ -115,9 +115,13 @@ assignOperation
   ;
 
 ifStatement
-  : IF '(' ifStatementConditionOperation ')' instructionBlock (ELSE instructionBlock)?
+  : IF '(' ifStatementConditionOperation ')' instructionBlock elseStatement?
   ;
 
 ifStatementConditionOperation
   : conditionOperation
+  ;
+
+elseStatement
+  : ELSE instructionBlock
   ;

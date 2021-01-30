@@ -241,7 +241,12 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine($"brfalse.s {label}");
   }
 
+  public void Jump(string label){
+    outFile.WriteLine($"br.s {label}");
+  }
+
   public void CreateLabel(string label){
     outFile.WriteLine($"{label}: ");
   }
+
 }
