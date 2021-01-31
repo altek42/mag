@@ -12,7 +12,13 @@ namespace dotnet
             {
                 for (; num2 < 5; ++num2)
                 Console.WriteLine("i=" + (num1 + num2).ToString() + " [" + num1.ToString() + "][" + num2.ToString() + "]");
+                num2 = 1;
             }
+            Console.WriteLine("While test end");
+            int num3 = 1;
+            for (int index = 0; index < 10; ++index)
+                Console.WriteLine(num3 + index);
+            Console.WriteLine("For test end");
         }
     }
 }

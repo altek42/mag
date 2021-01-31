@@ -114,19 +114,30 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     loopModule.CheckWhileCondition();
   }
 
+  public override void EnterForExpression(JavaScriptParser.ForExpressionContext context)
+  {
+    loopModule.BeginForExpression();
+  }
 
+  public override void ExitForExpression(JavaScriptParser.ForExpressionContext context)
+  {
+    arithmeticModule.Assign();
+    loopModule.EndForExpression();
+  }
 
+  public override void EnterForStatementConditionOperation(JavaScriptParser.ForStatementConditionOperationContext context)
+  {
+    loopModule.BeginFor();
+  }
 
+  public override void ExitForStatementConditionOperation(JavaScriptParser.ForStatementConditionOperationContext context)
+  {
+    loopModule.CheckForCondition();
+  }
 
+  public override void ExitForLoop(JavaScriptParser.ForLoopContext context)
+  {
+    loopModule.EndFor();
+  }
 
-
-
-
-
-
-
-
-
-
-  
 }
