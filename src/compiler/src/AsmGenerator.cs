@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 public class AsmGenerator : IDisposable {
   private static string DIST_DIR = "dist";
 
   private string fileName;
-  private StreamWriter outFile;
+
+  private int tabSize = 1;
+
+  private List<string> asmLines;
 
   private AsmGenerator(string fileName) {
     this.fileName = formatFileName(fileName);
-    this.outFile = new StreamWriter(Path.Combine(DIST_DIR, $"{this.fileName}.il"));
-    this.writeFileHeader();
+    this.asmLines = new List<string>();
   }
 
   private string formatFileName(string fileName) {
@@ -19,23 +22,51 @@ public class AsmGenerator : IDisposable {
   }
 
   public void Dispose() {
-    this.writeFileFooter();
-    this.outFile.Dispose();
+    this.createAsmFile();
     _instance = null;
   }
 
-  private void writeFileHeader() {
+  private void writeFileHeader(StreamWriter outFile) {
     outFile.WriteLine(".assembly extern mscorlib {}");
     outFile.WriteLine($".assembly {this.fileName} {{}}");
     outFile.WriteLine($".module {this.fileName}.exe");
     outFile.WriteLine($"\n.class {this.fileName}.Program");
     outFile.WriteLine("extends [mscorlib]System.Object");
     outFile.WriteLine("{\n .method static void Main(string[] args)");
-    outFile.WriteLine(" cil managed\n {\n  .entrypoint\n");
+    outFile.WriteLine(" cil managed\n {\n  .entrypoint");
   }
 
-  private void writeFileFooter() {
+  private void writeFileFooter(StreamWriter outFile) {
     outFile.WriteLine("  ret\n }\n}");
+  }
+
+  private void initializeAllVariables(StreamWriter outFile) {
+    List<string> strVariables = new List<string>();
+    foreach(KeyValuePair<string, StoreItem> element in Store.Variables){
+      StoreItem item = element.Value;
+      string asmType = getAsmType(item);
+      strVariables.Add($"{asmType} v_{item.Value}");
+    }
+    strVariables.Sort();
+    outFile.Write("  .locals init(\n         ");
+    outFile.Write(string.Join(",\n         ", strVariables));
+    outFile.Write(")\n\n");
+  }
+
+  private void writeLine(string line) {
+    string tabStr = new String(' ', tabSize*2);
+    asmLines.Add($"{tabStr}{line}");
+  }
+
+  private void createAsmFile() {
+    StreamWriter outFile = new StreamWriter(Path.Combine(DIST_DIR, $"{this.fileName}.il"));
+    this.writeFileHeader(outFile);
+    this.initializeAllVariables(outFile);
+    foreach(string line in this.asmLines){
+      outFile.WriteLine(line);
+    }
+    this.writeFileFooter(outFile);
+    outFile.Dispose();
   }
 
   // SINGLETON
@@ -70,12 +101,12 @@ public class AsmGenerator : IDisposable {
     {
         case StoreItemType.STRING: {
           LoadAddress(source);
-          outFile.WriteLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
+          writeLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
           break;
         }
         case StoreItemType.DOUBLE: {
           Load(source);
-          outFile.WriteLine($"conv.r4");
+          writeLine($"conv.r4");
           break;
         }
         default:
@@ -88,13 +119,13 @@ public class AsmGenerator : IDisposable {
     if(item.IsNotVariable){
       throw new ArgumentException("Item should be a variable.");
     }
-    outFile.WriteLine($"ldloca.s v_{item.Value}");
+    writeLine($"ldloca.s v_{item.Value}");
   }
 
   public void WriteToStdOutput(StoreItem item) {
     Load(item);
     string asmType = getAsmType(item);
-    outFile.WriteLine($"call void [mscorlib]System.Console::WriteLine({asmType})");
+    writeLine($"call void [mscorlib]System.Console::WriteLine({asmType})");
   }
 
   public void Load(StoreItem item) {
@@ -111,16 +142,16 @@ public class AsmGenerator : IDisposable {
     }
     switch (item.ItemType) {
       case StoreItemType.INTEGER:
-        outFile.WriteLine($"ldc.i4 {item.Value}");
+        writeLine($"ldc.i4 {item.Value}");
         return;
       case StoreItemType.DOUBLE:
-        outFile.WriteLine($"ldc.r4 {item.Value}");
+        writeLine($"ldc.r4 {item.Value}");
         return;
       case StoreItemType.STRING:
-        outFile.WriteLine($"ldstr \"{item.Value}\"");
+        writeLine($"ldstr \"{item.Value}\"");
         return;
       case StoreItemType.BOOLEAN:
-        outFile.WriteLine($"ldc.i4.{item.Value}");
+        writeLine($"ldc.i4.{item.Value}");
         return;
       default: throw new ArgumentException("Unsuported item type");
     }
@@ -133,11 +164,11 @@ public class AsmGenerator : IDisposable {
     if (!item.IsInitialized) {
       throw new ArgumentException("Variable is not initialized.");
     }
-    outFile.WriteLine($"ldloc v_{item.Value}");
+    writeLine($"ldloc v_{item.Value}");
   }
 
   public void StoreVariable(StoreItem item) {
-    outFile.WriteLine($"stloc v_{item.Value}");
+    writeLine($"stloc v_{item.Value}");
   }
 
   public void InitializeVariable(StoreItem item) {
@@ -147,8 +178,8 @@ public class AsmGenerator : IDisposable {
     if (item.IsInitialized) {
       throw new ArgumentException("Variable is initialized.");
     }
-    string asmType = getAsmType(item);
-    outFile.WriteLine($".locals init({asmType} v_{item.Value})");
+    // string asmType = getAsmType(item);
+    // writeLine($".locals init({asmType} v_{item.Value})");
     item.IsInitialized = true;
     Store.Variables.Add(item.Value, item);
   }
@@ -159,10 +190,10 @@ public class AsmGenerator : IDisposable {
       throw new ArgumentException("Item should be an arithmetic sign.");
     }
     switch (item.Value) {
-      case "+": outFile.WriteLine("add"); return;
-      case "-": outFile.WriteLine("sub"); return;
-      case "*": outFile.WriteLine("mul"); return;
-      case "/": outFile.WriteLine("div"); return;
+      case "+": writeLine("add"); return;
+      case "-": writeLine("sub"); return;
+      case "*": writeLine("mul"); return;
+      case "/": writeLine("div"); return;
       default: throw new ArgumentException("Unsuported item sign");
     }
   }
@@ -172,29 +203,29 @@ public class AsmGenerator : IDisposable {
       throw new ArgumentException("Item should be an condition sign.");
     }
     switch(item.Value) {
-      case ">"  : outFile.WriteLine("cgt"); return;
-      case ">=" : outFile.WriteLine("clt");
-                  outFile.WriteLine("ldc.i4.0");
-                  outFile.WriteLine("ceq");
+      case ">"  : writeLine("cgt"); return;
+      case ">=" : writeLine("clt");
+                  writeLine("ldc.i4.0");
+                  writeLine("ceq");
                   return;
-      case "<"  : outFile.WriteLine("clt"); return;
-      case "<=" : outFile.WriteLine("cgt");
-                  outFile.WriteLine("ldc.i4.0");
-                  outFile.WriteLine("ceq");
+      case "<"  : writeLine("clt"); return;
+      case "<=" : writeLine("cgt");
+                  writeLine("ldc.i4.0");
+                  writeLine("ceq");
                   return;
       case "==" :
-      case "===": outFile.WriteLine("ceq"); return;
+      case "===": writeLine("ceq"); return;
       case "!=" :
-      case "!==": outFile.WriteLine("ceq");
-                  outFile.WriteLine("ldc.i4.0");
-                  outFile.WriteLine("ceq");
+      case "!==": writeLine("ceq");
+                  writeLine("ldc.i4.0");
+                  writeLine("ceq");
                   return;
       default: throw new ArgumentException("Unsuported item sign");
     }
   }
 
   public void ConcatStrings() {
-    outFile.WriteLine("call string [mscorlib]System.String::Concat(string,string)");
+    writeLine("call string [mscorlib]System.String::Concat(string,string)");
   }
 
   public void CompareStrings(StoreItem item) {
@@ -203,19 +234,19 @@ public class AsmGenerator : IDisposable {
     }
     switch(item.Value) {
       case "==" :
-      case "===": outFile.WriteLine("call bool [mscorlib]System.String::op_Equality(string,string)"); return;
+      case "===": writeLine("call bool [mscorlib]System.String::op_Equality(string,string)"); return;
       case "!=" :
-      case "!==": outFile.WriteLine("call bool [mscorlib]System.String::op_Inequality(string,string)"); return;
+      case "!==": writeLine("call bool [mscorlib]System.String::op_Inequality(string,string)"); return;
       default: throw new ArgumentException("Unsuported item sign");
     }
   }
 
   public void EmptyLine() {
-    outFile.WriteLine();
+    writeLine("");
   }
 
   public void Comment(string comment) {
-    outFile.WriteLine($"// {comment}");
+    writeLine($"// {comment}");
   }
 
   private string getAsmType(StoreItem item) {
@@ -238,19 +269,19 @@ public class AsmGenerator : IDisposable {
   }
 
   public void JumpIfFalse(string label){
-    outFile.WriteLine($"brfalse.s {label}");
+    writeLine($"brfalse.s {label}");
   }
 
   public void JumpIfTrue(string label) {
-    outFile.WriteLine($"brtrue.s {label}");
+    writeLine($"brtrue.s {label}");
   }
 
   public void Jump(string label){
-    outFile.WriteLine($"br.s {label}");
+    writeLine($"br.s {label}");
   }
 
   public void CreateLabel(string label){
-    outFile.WriteLine($"{label}: ");
+    writeLine($"{label}: ");
   }
 
 }
