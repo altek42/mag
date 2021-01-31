@@ -19,6 +19,7 @@ instruction
   | assignOperation
   | writeStdOutput
   | ifStatement
+  | loops
   ;
 
 instructionBlock
@@ -109,9 +110,14 @@ conditionSign
   ;
 
 assignOperation
-  : variableDeclaratiion ASSIGN arithmeticOperation
-  | variableDeclaratiion ASSIGN conditionOperation
-  | variableDeclaratiion ASSIGN value
+  : variableDeclaratiion ASSIGN assignValue
+  | identifierValue ASSIGN assignValue
+  ;
+
+assignValue
+  : arithmeticOperation
+  | conditionOperation
+  | value
   ;
 
 ifStatement
@@ -124,4 +130,30 @@ ifStatementConditionOperation
 
 elseStatement
   : ELSE instructionBlock
+  ;
+
+loops
+  : whileLoop
+  | forLoop
+  ;
+
+whileLoop
+  : WHILE '(' whileStatementConditionOperation ')' instructionBlock
+  ;
+
+whileStatementConditionOperation
+  : conditionOperation
+  ;
+
+
+forLoop
+  : FOR '(' assignOperation? ';' forStatementConditionOperation ';' forExpression? ')' instructionBlock
+  ;
+
+forStatementConditionOperation
+  : conditionOperation
+  ;
+
+forExpression
+  : identifierValue ASSIGN assignValue
   ;

@@ -1,8 +1,7 @@
 var test = 1
 
-if ( test == 1 ) {
-  console.log("Success!")
-} else {
-  console.log("Fail :(")
+while (test < 10) {
+  console.log(test);
+  test = test + 1;
 }
 

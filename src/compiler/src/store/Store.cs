@@ -4,15 +4,15 @@ using System.Collections.Generic;
 public static class Store {
   public static Stack<StoreItem> Stack { get; private set; }
 
-  public static Stack<int> IfStack { get; private set; }
-  private static int _ifStackCounter = 0;
+  public static Stack<int> LabelStack { get; private set; }
+  private static int _labelStackCounter = 0;
 
   public static Dictionary<string, StoreItem> Variables { get; private set; }
 
   static Store() {
     Stack = new Stack<StoreItem>();
     Variables = new Dictionary<string, StoreItem>();
-    IfStack = new Stack<int>();
+    LabelStack = new Stack<int>();
   }
 
   public static void PushStack(StoreItem value) {
@@ -23,19 +23,19 @@ public static class Store {
     return Stack.Pop();
   }
 
-  public static int PopIfStack() {
-    return IfStack.Pop();
+  public static int PopLabelStack() {
+    return LabelStack.Pop();
   }
   
-  public static void PushIfStack(int ifIndex) {
-    IfStack.Push(ifIndex);
+  public static void PushLabelStack(int ifIndex) {
+    LabelStack.Push(ifIndex);
   }
 
   public static int NextIfIndex() {
-    return _ifStackCounter++;
+    return _labelStackCounter++;
   }
 
-  public static int TopIfStack() {
-    return IfStack.Peek();
+  public static int TopLabelStack() {
+    return LabelStack.Peek();
   }
 }

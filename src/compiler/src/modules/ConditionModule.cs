@@ -57,30 +57,30 @@ public class ConditionModule {
 
   public void BeginIfStatement(){
     int ifIndex = Store.NextIfIndex();
-    Store.PushIfStack(ifIndex);
+    Store.PushLabelStack(ifIndex);
   }
 
   public void IfStatementCondition() {
     StoreItem item = Store.PopStack();
     asmGenerator.Load(item);
 
-    int ifIndex = Store.TopIfStack();
+    int ifIndex = Store.TopLabelStack();
     asmGenerator.JumpIfFalse($"IF_{ifIndex}");
 
     asmGenerator.Comment($"if ({item.Print} == false) JUMP IF_{ifIndex}");
   }
 
   public void EndIfStatement() {
-    int ifIndex = Store.PopIfStack();
+    int ifIndex = Store.PopLabelStack();
     asmGenerator.CreateLabel($"IF_{ifIndex}");
   }
 
   public void ElseStatement() {
     int elseIndex = Store.NextIfIndex();
-    int ifIndex = Store.PopIfStack();
+    int ifIndex = Store.PopLabelStack();
     asmGenerator.Jump($"IF_{elseIndex}");
     asmGenerator.CreateLabel($"IF_{ifIndex}");
-    Store.PushIfStack(elseIndex);
+    Store.PushLabelStack(elseIndex);
 
     asmGenerator.Comment($"ELSE");
   }

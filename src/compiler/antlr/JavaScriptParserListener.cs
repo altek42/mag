@@ -261,6 +261,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignOperation([NotNull] JavaScriptParser.AssignOperationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAssignValue([NotNull] JavaScriptParser.AssignValueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAssignValue([NotNull] JavaScriptParser.AssignValueContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -290,4 +300,64 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitElseStatement([NotNull] JavaScriptParser.ElseStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.loops"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoops([NotNull] JavaScriptParser.LoopsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.loops"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoops([NotNull] JavaScriptParser.LoopsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.whileLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhileLoop([NotNull] JavaScriptParser.WhileLoopContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.whileLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhileLoop([NotNull] JavaScriptParser.WhileLoopContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.whileStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhileStatementConditionOperation([NotNull] JavaScriptParser.WhileStatementConditionOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.whileStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhileStatementConditionOperation([NotNull] JavaScriptParser.WhileStatementConditionOperationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForLoop([NotNull] JavaScriptParser.ForLoopContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forLoop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForLoop([NotNull] JavaScriptParser.ForLoopContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForStatementConditionOperation([NotNull] JavaScriptParser.ForStatementConditionOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forStatementConditionOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForStatementConditionOperation([NotNull] JavaScriptParser.ForStatementConditionOperationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForExpression([NotNull] JavaScriptParser.ForExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForExpression([NotNull] JavaScriptParser.ForExpressionContext context);
 }

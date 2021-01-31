@@ -9,6 +9,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   private readonly ConditionModule conditionModule = ConditionModule.Instance;
   private readonly ConsoleModule consoleModule = ConsoleModule.Instance;
   private readonly VariableModule variableModule = VariableModule.Instance;
+  private readonly LoopModule loopModule = LoopModule.Instance;
 
   public JavaScriptListner() : base() {
     asmGenerator = AsmGenerator.Instance;
@@ -97,5 +98,35 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   {
     conditionModule.ElseStatement();
   }
+
+  public override void EnterWhileLoop(JavaScriptParser.WhileLoopContext context)
+  {
+    loopModule.BeginWhile();
+  }
+
+  public override void ExitWhileLoop([NotNull] JavaScriptParser.WhileLoopContext context)
+  {
+    loopModule.EndWhile();
+  }
+
+  public override void ExitWhileStatementConditionOperation([NotNull] JavaScriptParser.WhileStatementConditionOperationContext context)
+  {
+    loopModule.CheckWhileCondition();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 }

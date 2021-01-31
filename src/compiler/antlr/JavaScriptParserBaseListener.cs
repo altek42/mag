@@ -311,6 +311,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAssignOperation([NotNull] JavaScriptParser.AssignOperationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAssignValue([NotNull] JavaScriptParser.AssignValueContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAssignValue([NotNull] JavaScriptParser.AssignValueContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -346,6 +358,78 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElseStatement([NotNull] JavaScriptParser.ElseStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.loops"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLoops([NotNull] JavaScriptParser.LoopsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.loops"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLoops([NotNull] JavaScriptParser.LoopsContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.whileLoop"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhileLoop([NotNull] JavaScriptParser.WhileLoopContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.whileLoop"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhileLoop([NotNull] JavaScriptParser.WhileLoopContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.whileStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhileStatementConditionOperation([NotNull] JavaScriptParser.WhileStatementConditionOperationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.whileStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhileStatementConditionOperation([NotNull] JavaScriptParser.WhileStatementConditionOperationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forLoop"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterForLoop([NotNull] JavaScriptParser.ForLoopContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forLoop"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitForLoop([NotNull] JavaScriptParser.ForLoopContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterForStatementConditionOperation([NotNull] JavaScriptParser.ForStatementConditionOperationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forStatementConditionOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitForStatementConditionOperation([NotNull] JavaScriptParser.ForStatementConditionOperationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterForExpression([NotNull] JavaScriptParser.ForExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitForExpression([NotNull] JavaScriptParser.ForExpressionContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

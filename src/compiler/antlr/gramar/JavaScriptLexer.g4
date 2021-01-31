@@ -6,10 +6,14 @@ SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
 
 // keywords
 CONSOLE_LOG: 'console.log';
-VAR: 'var';
+VAR:         'var';
+CONTINUE:    'continue';
+FOR:         'for';
+WHILE:       'while';
 
-OPEN_BRACE:  '{';
-CLOSE_BRACE: '}';
+OPEN_BRACE  : '{';
+CLOSE_BRACE : '}';
+SEMI_COLON  : ';';
 ASSIGN      : '=';
 PLUS        : '+';
 MINUS       : '-';
