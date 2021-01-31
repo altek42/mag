@@ -26,6 +26,8 @@ namespace dotnet
 
             Console.WriteLine(10 + 1);  // 11
             Console.WriteLine(v3 + 13); // 33
+
+            Console.WriteLine(v1 + " " + v2); // 33
         }
     }
 }

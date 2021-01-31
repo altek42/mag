@@ -90,6 +90,7 @@ public class StoreItem {
     vessel.IsVariable = true;
     vessel.ItemType = type;
     vessel.IsTemporary = true;
+    vessel.IsInitialized = false;
     return vessel;
   }
 

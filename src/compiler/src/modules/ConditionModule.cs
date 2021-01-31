@@ -56,7 +56,7 @@ public class ConditionModule {
   }
 
   public void BeginIfStatement(){
-    int ifIndex = Store.NextIfIndex();
+    int ifIndex = Store.NextLabelIndex();
     Store.PushLabelStack(ifIndex);
   }
 
@@ -76,7 +76,7 @@ public class ConditionModule {
   }
 
   public void ElseStatement() {
-    int elseIndex = Store.NextIfIndex();
+    int elseIndex = Store.NextLabelIndex();
     int ifIndex = Store.PopLabelStack();
     asmGenerator.Jump($"IF_{elseIndex}");
     asmGenerator.CreateLabel($"IF_{ifIndex}");

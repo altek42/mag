@@ -269,15 +269,15 @@ public class AsmGenerator : IDisposable {
   }
 
   public void JumpIfFalse(string label){
-    writeLine($"brfalse.s {label}");
+    writeLine($"brfalse {label}");
   }
 
   public void JumpIfTrue(string label) {
-    writeLine($"brtrue.s {label}");
+    writeLine($"brtrue {label}");
   }
 
   public void Jump(string label){
-    writeLine($"br.s {label}");
+    writeLine($"br {label}");
   }
 
   public void CreateLabel(string label){

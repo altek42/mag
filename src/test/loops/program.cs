@@ -6,12 +6,12 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Loops");
-            bool a = false;
-            int x = 0;
-            while (a){
-                Console.WriteLine(x);
-                x = x + 1;
+            int num1 = 1;
+            int num2 = 1;
+            for (; num1 < 10; ++num1)
+            {
+                for (; num2 < 5; ++num2)
+                Console.WriteLine("i=" + (num1 + num2).ToString() + " [" + num1.ToString() + "][" + num2.ToString() + "]");
             }
         }
     }

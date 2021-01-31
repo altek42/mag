@@ -31,7 +31,7 @@ public static class Store {
     LabelStack.Push(ifIndex);
   }
 
-  public static int NextIfIndex() {
+  public static int NextLabelIndex() {
     return _labelStackCounter++;
   }
 

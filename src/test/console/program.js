@@ -18,3 +18,5 @@ console.log(v5)
 
 console.log(10 + 1)   // 11
 console.log(v3 + 13)  // 33
+
+console.log(v1 + " " + v2)
