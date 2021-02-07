@@ -92,6 +92,7 @@ numberValue
 
 identifierValue
   : IDENTIFIER
+  | IDENTIFIER OPEN_BRACKET (numberValue | identifierValue) CLOSE_BRACKET
   ;
 
 variableDeclaratiion

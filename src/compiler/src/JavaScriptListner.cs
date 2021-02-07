@@ -47,7 +47,11 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
   public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context) {
     string value = context.GetChild(0).GetText();
-    variableModule.CreateVariable(value);
+    if(context.ChildCount > 1) {
+      arrayModule.CreateTableVariable(value);
+    } else {
+      variableModule.CreateVariable(value);
+    }
   }
 
   public override void ExitNumberValue(JavaScriptParser.NumberValueContext context) {

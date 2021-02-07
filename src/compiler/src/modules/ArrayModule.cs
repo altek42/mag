@@ -4,7 +4,8 @@ public class ArrayModule {
 
   public static readonly ArrayModule Instance = new ArrayModule();
   
-  private AsmGenerator asmGenerator = AsmGenerator.Instance;
+  private readonly AsmGenerator asmGenerator = AsmGenerator.Instance;
+  private readonly VariableModule variableModule = VariableModule.Instance;
 
   private ArrayModule() {
   }
@@ -23,4 +24,21 @@ public class ArrayModule {
     asmGenerator.AddElementToList(array);
   }
 
+  public void CreateTableVariable(string value) {
+    StoreItem index = Store.PopStack();
+    variableModule.CreateVariable(value);
+    StoreItem array = Store.PopStack();
+
+    asmGenerator.Load(array);
+    asmGenerator.Load(index);
+    asmGenerator.GetElementFromList();
+
+    StoreItem arrayItem = StoreItem.CreateTemporaryVariable(StoreItemType.INTEGER);
+    asmGenerator.InitializeVariable(arrayItem);
+    asmGenerator.StoreVariable(arrayItem);
+    Store.PushStack(arrayItem);
+
+    asmGenerator.Comment($"{arrayItem.Value} = {array.Value}[{index.Value}]");
+    asmGenerator.EmptyLine();
+  }
 }

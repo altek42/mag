@@ -14,6 +14,7 @@ public class ArithmeticModule {
     StoreItem source = Store.PopStack();
     StoreItem dist = Store.PopStack();
     asmGenerator.Load(source);
+    asmGenerator.RemoveLastDuplicate();
     if (!dist.IsInitialized) {
       dist.ItemType = source.ItemType;
       asmGenerator.InitializeVariable(dist);

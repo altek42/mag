@@ -62,6 +62,14 @@ public class AsmGenerator : IDisposable {
     asmLines.Add($"{tabStr}{line}");
   }
 
+  public void RemoveLastDuplicate() {
+    int lastIndex = asmLines.Count - 1;
+    if(lastIndex < 1) return;
+    if(asmLines[lastIndex] == asmLines[lastIndex-1]){
+      asmLines.RemoveAt(lastIndex);
+    }
+  }
+
   private void createAsmFile() {
     StreamWriter outFile = new StreamWriter(Path.Combine(DIST_DIR, $"{this.fileName}.il"));
     this.writeFileHeader(outFile);
@@ -138,6 +146,10 @@ public class AsmGenerator : IDisposable {
     } else {
       this.LoadConstant(item);
     }
+  }
+
+  public void LoadNoRepeat(StoreItem item) {
+
   }
 
   public void LoadConstant(StoreItem item) {
@@ -298,6 +310,10 @@ public class AsmGenerator : IDisposable {
   public void AddElementToList(StoreItem array){
     writeLine("callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::Add(!0)");
     LoadVariable(array);
+  }
+
+  public void GetElementFromList() {
+    writeLine("callvirt   instance !0 class [mscorlib]System.Collections.Generic.List`1<int32>::get_Item(int32)");
   }
 
 }
