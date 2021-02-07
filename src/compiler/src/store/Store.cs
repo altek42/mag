@@ -23,6 +23,10 @@ public static class Store {
     return Stack.Pop();
   }
 
+  public static StoreItem TopStack() {
+    return Stack.Peek();
+  }
+
   public static int PopLabelStack() {
     return LabelStack.Pop();
   }

@@ -6,5 +6,6 @@ public enum StoreItemType {
   DOUBLE,
   NULL,
   ARITHMETIC_SIGN,
-  CONDITION_SIGN
+  CONDITION_SIGN,
+  ARRAY
 }

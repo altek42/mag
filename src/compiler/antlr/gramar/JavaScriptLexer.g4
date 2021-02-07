@@ -11,8 +11,11 @@ CONTINUE:    'continue';
 FOR:         'for';
 WHILE:       'while';
 
+OPEN_BRACKET: '[';
+CLOSE_BRACKET:']';
 OPEN_BRACE  : '{';
 CLOSE_BRACE : '}';
+COMMA       : ',';
 SEMI_COLON  : ';';
 ASSIGN      : '=';
 PLUS        : '+';

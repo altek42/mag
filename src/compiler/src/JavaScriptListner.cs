@@ -10,6 +10,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   private readonly ConsoleModule consoleModule = ConsoleModule.Instance;
   private readonly VariableModule variableModule = VariableModule.Instance;
   private readonly LoopModule loopModule = LoopModule.Instance;
+  private readonly ArrayModule arrayModule = ArrayModule.Instance;
 
   public JavaScriptListner() : base() {
     asmGenerator = AsmGenerator.Instance;
@@ -138,6 +139,16 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void ExitForLoop(JavaScriptParser.ForLoopContext context)
   {
     loopModule.EndFor();
+  }
+
+  public override void EnterArrayLiteral(JavaScriptParser.ArrayLiteralContext context)
+  {
+    arrayModule.CreateTempArray();
+  }
+
+  public override void ExitArrayElement([NotNull] JavaScriptParser.ArrayElementContext context)
+  {
+    arrayModule.AddElementToArray();
   }
 
 }

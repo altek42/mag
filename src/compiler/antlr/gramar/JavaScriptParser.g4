@@ -115,6 +115,11 @@ assignOperation
   ;
 
 assignValue
+  : singleExpression
+  | arrayLiteral
+  ;
+
+singleExpression
   : arithmeticOperation
   | conditionOperation
   | value
@@ -157,3 +162,15 @@ forStatementConditionOperation
 forExpression
   : identifierValue ASSIGN assignValue
   ;
+
+arrayLiteral
+    : (OPEN_BRACKET elementList CLOSE_BRACKET)
+    ;
+
+elementList
+    : COMMA* arrayElement? (COMMA+ arrayElement)* COMMA* // Yes, everything is optional
+    ;
+
+arrayElement
+    : singleExpression
+    ;

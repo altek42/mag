@@ -271,6 +271,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignValue([NotNull] JavaScriptParser.AssignValueContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.singleExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSingleExpression([NotNull] JavaScriptParser.SingleExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.singleExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSingleExpression([NotNull] JavaScriptParser.SingleExpressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.ifStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -360,4 +370,34 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitForExpression([NotNull] JavaScriptParser.ForExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayLiteral([NotNull] JavaScriptParser.ArrayLiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.arrayLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayLiteral([NotNull] JavaScriptParser.ArrayLiteralContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.elementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterElementList([NotNull] JavaScriptParser.ElementListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.elementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitElementList([NotNull] JavaScriptParser.ElementListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayElement([NotNull] JavaScriptParser.ArrayElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.arrayElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayElement([NotNull] JavaScriptParser.ArrayElementContext context);
 }

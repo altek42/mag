@@ -44,8 +44,12 @@ public class AsmGenerator : IDisposable {
     List<string> strVariables = new List<string>();
     foreach(KeyValuePair<string, StoreItem> element in Store.Variables){
       StoreItem item = element.Value;
-      string asmType = getAsmType(item);
-      strVariables.Add($"{asmType} v_{item.Value}");
+      if(item.ItemType == StoreItemType.ARRAY){
+        strVariables.Add($"class [mscorlib]System.Collections.Generic.List`1<int32> v_{item.Value}");
+      } else {
+        string asmType = getAsmType(item);
+        strVariables.Add($"{asmType} v_{item.Value}");
+      }
     }
     strVariables.Sort();
     outFile.Write("  .locals init(\n         ");
@@ -178,10 +182,17 @@ public class AsmGenerator : IDisposable {
     if (item.IsInitialized) {
       throw new ArgumentException("Variable is initialized.");
     }
-    // string asmType = getAsmType(item);
-    // writeLine($".locals init({asmType} v_{item.Value})");
     item.IsInitialized = true;
     Store.Variables.Add(item.Value, item);
+  }
+
+  public void CtorVariable(StoreItem item){
+    InitializeVariable(item);
+    if (item.ItemType == StoreItemType.ARRAY){
+      writeLine("newobj instance void class [mscorlib]System.Collections.Generic.List`1<int32>::.ctor()");
+      StoreVariable(item);
+      LoadVariable(item);
+    }
   }
 
 
@@ -282,6 +293,11 @@ public class AsmGenerator : IDisposable {
 
   public void CreateLabel(string label){
     writeLine($"{label}: ");
+  }
+  
+  public void AddElementToList(StoreItem array){
+    writeLine("callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::Add(!0)");
+    LoadVariable(array);
   }
 
 }
