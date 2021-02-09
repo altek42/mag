@@ -11,6 +11,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   private readonly VariableModule variableModule = VariableModule.Instance;
   private readonly LoopModule loopModule = LoopModule.Instance;
   private readonly ArrayModule arrayModule = ArrayModule.Instance;
+  private readonly FunctionModule functionModule = FunctionModule.Instance;
 
   public JavaScriptListner() : base() {
     asmGenerator = AsmGenerator.Instance;
@@ -153,6 +154,30 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void ExitArrayElement([NotNull] JavaScriptParser.ArrayElementContext context)
   {
     arrayModule.AddElementToArray();
+  }
+
+  public override void EnterFunctionDeclaration([NotNull] JavaScriptParser.FunctionDeclarationContext context)
+  {
+    string funcName = context.GetChild(1).GetText();
+    functionModule.BeginFunctionDeclaration(funcName);
+  }
+
+  public override void ExitFunctionDeclaration([NotNull] JavaScriptParser.FunctionDeclarationContext context)
+  {
+    string funcName = context.GetChild(1).GetText();
+    functionModule.EndFunctionDeclaration(funcName);
+  }
+
+  public override void ExitFormalParameterArg([NotNull] JavaScriptParser.FormalParameterArgContext context)
+  {
+    string parameterName = context.GetChild(0).GetText();
+    functionModule.AddParameter(parameterName);
+  }
+
+  public override void EnterFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context)
+  {
+    string funcName = context.GetChild(0).GetText();
+    asmGenerator.Comment($"FUNC CALL {funcName}");
   }
 
 }

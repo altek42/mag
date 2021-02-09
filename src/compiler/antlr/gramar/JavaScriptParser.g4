@@ -20,6 +20,8 @@ instruction
   | writeStdOutput
   | ifStatement
   | loops
+  | functionDeclaration
+  | functionCall
   ;
 
 instructionBlock
@@ -124,6 +126,7 @@ singleExpression
   : arithmeticOperation
   | conditionOperation
   | value
+  | functionCall
   ;
 
 ifStatement
@@ -175,3 +178,28 @@ elementList
 arrayElement
     : singleExpression
     ;
+
+functionDeclaration
+    : FUNCTION IDENTIFIER '(' formalParameterList? ')' instructionBlock
+    ;
+
+formalParameterList
+    : formalParameterArg (',' formalParameterArg)*
+    ;
+
+formalParameterArg
+    : IDENTIFIER
+    ;
+
+functionCall
+    : IDENTIFIER arguments
+    ;
+
+arguments
+    : '('(argument (',' argument)* ','?)?')'
+    ;
+
+argument
+    : singleExpression
+    ;
+

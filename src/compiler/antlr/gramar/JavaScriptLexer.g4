@@ -10,6 +10,7 @@ VAR:         'var';
 CONTINUE:    'continue';
 FOR:         'for';
 WHILE:       'while';
+FUNCTION:    'function';
 
 OPEN_BRACKET: '[';
 CLOSE_BRACKET:']';

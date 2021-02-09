@@ -10,6 +10,7 @@ public class AsmGenerator : IDisposable {
   private int tabSize = 1;
 
   private List<string> asmLines;
+  private Dictionary<string, List<string>> asmFunctionsLines;
 
   private AsmGenerator(string fileName) {
     this.fileName = formatFileName(fileName);

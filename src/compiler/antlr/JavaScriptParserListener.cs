@@ -400,4 +400,64 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArrayElement([NotNull] JavaScriptParser.ArrayElementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.functionDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionDeclaration([NotNull] JavaScriptParser.FunctionDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.functionDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionDeclaration([NotNull] JavaScriptParser.FunctionDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.formalParameterList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFormalParameterList([NotNull] JavaScriptParser.FormalParameterListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.formalParameterList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFormalParameterList([NotNull] JavaScriptParser.FormalParameterListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.formalParameterArg"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFormalParameterArg([NotNull] JavaScriptParser.FormalParameterArgContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.formalParameterArg"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFormalParameterArg([NotNull] JavaScriptParser.FormalParameterArgContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.arguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArguments([NotNull] JavaScriptParser.ArgumentsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.arguments"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArguments([NotNull] JavaScriptParser.ArgumentsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArgument([NotNull] JavaScriptParser.ArgumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArgument([NotNull] JavaScriptParser.ArgumentContext context);
 }
