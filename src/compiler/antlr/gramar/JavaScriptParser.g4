@@ -168,38 +168,38 @@ forExpression
   ;
 
 arrayLiteral
-    : (OPEN_BRACKET elementList CLOSE_BRACKET)
-    ;
+  : (OPEN_BRACKET elementList CLOSE_BRACKET)
+  ;
 
 elementList
-    : COMMA* arrayElement? (COMMA+ arrayElement)* COMMA* // Yes, everything is optional
-    ;
+  : COMMA* arrayElement? (COMMA+ arrayElement)* COMMA* // Yes, everything is optional
+  ;
 
 arrayElement
-    : singleExpression
-    ;
+  : singleExpression
+  ;
 
 functionDeclaration
-    : FUNCTION IDENTIFIER '(' formalParameterList? ')' instructionBlock
-    ;
+  : FUNCTION IDENTIFIER '(' formalParameterList? ')' instructionBlock
+  ;
 
 formalParameterList
-    : formalParameterArg (',' formalParameterArg)*
-    ;
+  : formalParameterArg (',' formalParameterArg)*
+  ;
 
 formalParameterArg
-    : IDENTIFIER
-    ;
+  : IDENTIFIER
+  ;
 
 functionCall
-    : IDENTIFIER arguments
-    ;
+  : IDENTIFIER arguments
+  ;
 
 arguments
-    : '('(argument (',' argument)* ','?)?')'
-    ;
+  : '('(argument (',' argument)* ','?)?')'
+  ;
 
 argument
-    : singleExpression
-    ;
+  : singleExpression
+  ;
 

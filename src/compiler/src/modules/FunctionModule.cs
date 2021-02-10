@@ -10,14 +10,22 @@ public class FunctionModule {
   }
 
   public void BeginFunctionDeclaration(string functionName){
-    asmGenerator.Comment($"Enter Function {functionName}");
+    asmGenerator.Comment($"FUNCTION {functionName}");
+    asmGenerator.EmptyLine();
+    asmGenerator.CreateFunction(functionName);
   }
 
   public void EndFunctionDeclaration(string functionName) {
-    asmGenerator.Comment($"Exit Function {functionName}");
+    asmGenerator.EndFunction();
   }
 
   public void AddParameter(string name){
     asmGenerator.Comment($"Param: {name}");
   }
+
+  public void CallFunction(string name){
+    asmGenerator.Comment($"FUNC CALL {name}");
+    asmGenerator.CallFunction(name);
+  }
+
 }

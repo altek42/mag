@@ -177,7 +177,7 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void EnterFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context)
   {
     string funcName = context.GetChild(0).GetText();
-    asmGenerator.Comment($"FUNC CALL {funcName}");
+    functionModule.CallFunction(funcName);
   }
 
 }

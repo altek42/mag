@@ -10,11 +10,14 @@ public class AsmGenerator : IDisposable {
   private int tabSize = 1;
 
   private List<string> asmLines;
-  private Dictionary<string, List<string>> asmFunctionsLines;
+  private Dictionary<string, FunctionAsmLines> asmFunctionsLines;
+
+  private string processingFunction = null;
 
   private AsmGenerator(string fileName) {
     this.fileName = formatFileName(fileName);
     this.asmLines = new List<string>();
+    this.asmFunctionsLines = new Dictionary<string, FunctionAsmLines>();
   }
 
   private string formatFileName(string fileName) {
@@ -38,7 +41,11 @@ public class AsmGenerator : IDisposable {
   }
 
   private void writeFileFooter(StreamWriter outFile) {
-    outFile.WriteLine("  ret\n }\n}");
+    outFile.WriteLine("\n}");
+  }
+
+  private void writeMainFunctionFooter(StreamWriter outFile) {
+    outFile.WriteLine("  ret\n }");
   }
 
   private void initializeAllVariables(StreamWriter outFile) {
@@ -60,7 +67,18 @@ public class AsmGenerator : IDisposable {
 
   private void writeLine(string line) {
     string tabStr = new String(' ', tabSize*2);
-    asmLines.Add($"{tabStr}{line}");
+    string asm = $"{tabStr}{line}";
+
+    if(processingFunction != null){
+      writeLineToFunction(processingFunction, asm);
+    } else {
+      asmLines.Add(asm);
+    }
+  }
+
+  private void writeLineToFunction(string functionName, string asm) {
+    FunctionAsmLines funcAsm = asmFunctionsLines[functionName];
+    funcAsm.WriteLine(asm);
   }
 
   public void RemoveLastDuplicate() {
@@ -78,8 +96,26 @@ public class AsmGenerator : IDisposable {
     foreach(string line in this.asmLines){
       outFile.WriteLine(line);
     }
+    this.writeMainFunctionFooter(outFile);
+    this.createAsmFunctions(outFile);
     this.writeFileFooter(outFile);
     outFile.Dispose();
+  }
+
+  private void createAsmFunctions(StreamWriter outFile) {
+    foreach(var item in asmFunctionsLines){
+      writeAsmFunction(outFile, item.Value);
+    }
+  }
+
+  private void writeAsmFunction(StreamWriter outFile, FunctionAsmLines functionAsmLines) {
+    outFile.WriteLine("\n");
+    outFile.WriteLine($" .method static void {functionAsmLines.Name}() cil managed\n {{");
+    foreach(string line in functionAsmLines.AsmLines){
+      outFile.WriteLine(line);
+    }
+    outFile.WriteLine("  ret");
+    outFile.WriteLine(" }");
   }
 
   // SINGLETON
@@ -315,6 +351,23 @@ public class AsmGenerator : IDisposable {
 
   public void GetElementFromList() {
     writeLine("callvirt   instance !0 class [mscorlib]System.Collections.Generic.List`1<int32>::get_Item(int32)");
+  }
+
+  public void CreateFunction(string name) {
+    FunctionAsmLines functionAsmLines = new FunctionAsmLines(name);
+    if(asmFunctionsLines.ContainsKey(name)){
+      throw new ArgumentException($"Function `{name}` already exist.");
+    }
+    asmFunctionsLines.Add(name, functionAsmLines);
+    processingFunction = name;
+  }
+
+  public void EndFunction() {
+    processingFunction = null;
+  }
+
+  public void CallFunction(string name){
+    writeLine($"call void {this.fileName}.Program::{name}()");
   }
 
 }
