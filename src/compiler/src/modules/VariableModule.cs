@@ -10,10 +10,7 @@ public class VariableModule {
   }
 
   public void DeclareVariable(string variableName) {
-    if (Store.Variables.ContainsKey(variableName)) {
-      throw new InvalidOperationException($"Variable `{variableName}` already initialized.");
-    }
-
+    Store.ChcekVariableExist(variableName);
     StoreItem item = StoreItem.CreateVariable(variableName);
     Store.PushStack(item);
   }

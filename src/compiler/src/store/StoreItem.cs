@@ -10,6 +10,11 @@ public class StoreItem {
 
   public bool IsInitialized { get; set; }
 
+  public bool IsFunctionParam { get; set; } = false;
+  public int ParamPosition { get; set; }
+
+  public StoreItem Parent { get; set; }
+
   private static uint temporaryVariableCounter = 0;
 
   private string value;
@@ -67,8 +72,9 @@ public class StoreItem {
   }
 
   static public StoreItem CreateVariable(string name) {
-    if (Store.Variables.ContainsKey(name)) {
-      return Store.Variables[name];
+    StoreItem v = Store.GetVariableIfExist(name);
+    if (null != v) {
+      return v;
     }
     return createVariableBase(name);
   }

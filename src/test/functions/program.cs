@@ -7,11 +7,13 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            func();
+            int x = func(10, 5);
+            Console.WriteLine("X: " + x);
         }
 
-        static void func() {
-            Console.WriteLine("Arrays");
+        static int func(int x, int y) {
+            Console.WriteLine("Functions");
+            return x + y;
         }
     }
 }

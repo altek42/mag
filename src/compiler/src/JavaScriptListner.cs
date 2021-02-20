@@ -174,10 +174,20 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     functionModule.AddParameter(parameterName);
   }
 
-  public override void EnterFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context)
+  public override void ExitFunctionCall([NotNull] JavaScriptParser.FunctionCallContext context)
   {
     string funcName = context.GetChild(0).GetText();
     functionModule.CallFunction(funcName);
+  }
+
+  public override void EnterArguments([NotNull] JavaScriptParser.ArgumentsContext context)
+  {
+    functionModule.InitializeCallFunctionArguments();
+  }
+
+  public override void ExitArgument([NotNull] JavaScriptParser.ArgumentContext context)
+  {
+    functionModule.AddArgument();
   }
 
 }

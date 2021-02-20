@@ -60,6 +60,7 @@ public class ArithmeticModule {
       resultItem = arg2;
     } else {
       resultItem = StoreItem.CreateTemporaryVariable(arg1.ItemType);
+      resultItem.Parent = arg1;
       asmGenerator.InitializeVariable(resultItem);
     }
 

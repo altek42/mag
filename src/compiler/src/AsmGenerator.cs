@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 public class AsmGenerator : IDisposable {
   private static string DIST_DIR = "dist";
@@ -11,8 +13,6 @@ public class AsmGenerator : IDisposable {
 
   private List<string> asmLines;
   private Dictionary<string, FunctionAsmLines> asmFunctionsLines;
-
-  private string processingFunction = null;
 
   private AsmGenerator(string fileName) {
     this.fileName = formatFileName(fileName);
@@ -48,18 +48,24 @@ public class AsmGenerator : IDisposable {
     outFile.WriteLine("  ret\n }");
   }
 
-  private void initializeAllVariables(StreamWriter outFile) {
+  private void initializeAllVariables(StreamWriter outFile, Dictionary<string, StoreItem> variables) {
     List<string> strVariables = new List<string>();
-    foreach(KeyValuePair<string, StoreItem> element in Store.Variables){
+    foreach(KeyValuePair<string, StoreItem> element in variables){
       StoreItem item = element.Value;
-      if(item.ItemType == StoreItemType.ARRAY){
+      StoreItem elem = item;
+      while(elem.IsType(StoreItemType.FUNCTION_ARG)){
+        elem = elem.Parent;
+      }
+      StoreItemType itemType = elem.ItemType;
+      if(itemType == StoreItemType.ARRAY){
         strVariables.Add($"class [mscorlib]System.Collections.Generic.List`1<int32> v_{item.Value}");
       } else {
-        string asmType = getAsmType(item);
+        string asmType = getAsmType(elem);
         strVariables.Add($"{asmType} v_{item.Value}");
       }
     }
     strVariables.Sort();
+
     outFile.Write("  .locals init(\n         ");
     outFile.Write(string.Join(",\n         ", strVariables));
     outFile.Write(")\n\n");
@@ -69,8 +75,8 @@ public class AsmGenerator : IDisposable {
     string tabStr = new String(' ', tabSize*2);
     string asm = $"{tabStr}{line}";
 
-    if(processingFunction != null){
-      writeLineToFunction(processingFunction, asm);
+    if(Store.ProcessingFunction != null){
+      writeLineToFunction(Store.ProcessingFunction, asm);
     } else {
       asmLines.Add(asm);
     }
@@ -92,7 +98,7 @@ public class AsmGenerator : IDisposable {
   private void createAsmFile() {
     StreamWriter outFile = new StreamWriter(Path.Combine(DIST_DIR, $"{this.fileName}.il"));
     this.writeFileHeader(outFile);
-    this.initializeAllVariables(outFile);
+    this.initializeAllVariables(outFile, Store.Variables);
     foreach(string line in this.asmLines){
       outFile.WriteLine(line);
     }
@@ -109,13 +115,46 @@ public class AsmGenerator : IDisposable {
   }
 
   private void writeAsmFunction(StreamWriter outFile, FunctionAsmLines functionAsmLines) {
+    string funcName = functionAsmLines.Name;
+    FunctionStore funcStore = Store.Functions[funcName];
     outFile.WriteLine("\n");
-    outFile.WriteLine($" .method static void {functionAsmLines.Name}() cil managed\n {{");
+    outFile.Write($" .method static void {funcName}(");
+    writeAsmFunctionParameters(outFile, funcStore);
+    outFile.WriteLine($") cil managed\n {{");
+    this.initializeAllVariables(outFile, funcStore.Variables);
     foreach(string line in functionAsmLines.AsmLines){
-      outFile.WriteLine(line);
+      string asnLine = line;
+      if(line.Contains('#')){
+        asnLine = functionPostProcessing(asnLine, funcStore);
+      }
+      outFile.WriteLine(asnLine);
     }
     outFile.WriteLine("  ret");
     outFile.WriteLine(" }");
+  }
+
+  private string functionPostProcessing(string line, FunctionStore store){
+    Regex regex = new Regex(@"#\w+#(\w+)");
+    Match match = regex.Match(line);
+    if(match.Success){
+      string varName = match.Groups[1].Value;
+      StoreItem variable = store.Variables[varName];
+      while(variable.IsType(StoreItemType.FUNCTION_ARG)){
+        variable = variable.Parent;
+      }
+      return regex.Replace(line, getAsmType(variable));
+    }
+    return line;
+  }
+
+  private void writeAsmFunctionParameters(StreamWriter outFile, FunctionStore funcStore){
+    List<String> elements = new List<string>();
+    string space = "\n       ";
+    foreach (KeyValuePair<string, StoreItem> pair in funcStore.Params) {
+      StoreItem item = pair.Value;
+      elements.Add($"{space}{getAsmType(item)} v_{item.Value}");
+    }
+    outFile.Write(string.Join(", ", elements));
   }
 
   // SINGLETON
@@ -217,7 +256,11 @@ public class AsmGenerator : IDisposable {
     if (!item.IsInitialized) {
       throw new ArgumentException("Variable is not initialized.");
     }
-    writeLine($"ldloc v_{item.Value}");
+    if(item.IsFunctionParam){
+      writeLine($"ldarg v_{item.Value}");
+    } else {
+      writeLine($"ldloc v_{item.Value}");
+    }
   }
 
   public void StoreVariable(StoreItem item) {
@@ -232,7 +275,7 @@ public class AsmGenerator : IDisposable {
       throw new ArgumentException("Variable is initialized.");
     }
     item.IsInitialized = true;
-    Store.Variables.Add(item.Value, item);
+    Store.AddVariable(item);
   }
 
   public void CtorVariable(StoreItem item){
@@ -315,6 +358,7 @@ public class AsmGenerator : IDisposable {
       case StoreItemType.DOUBLE: return "float32";
       case StoreItemType.BOOLEAN: return "bool";
       case StoreItemType.STRING: return "string";
+      case StoreItemType.FUNCTION_ARG: return $"#FUNC_PARAM_TYPE#{item.Value}";
       default: throw new ArgumentException("Unsuported item type");
     }
   }
@@ -359,15 +403,17 @@ public class AsmGenerator : IDisposable {
       throw new ArgumentException($"Function `{name}` already exist.");
     }
     asmFunctionsLines.Add(name, functionAsmLines);
-    processingFunction = name;
+    Store.SetFunction(name);
   }
 
   public void EndFunction() {
-    processingFunction = null;
+    Store.ClearFunction();
   }
 
-  public void CallFunction(string name){
-    writeLine($"call void {this.fileName}.Program::{name}()");
+  public void CallFunction(string name, List<StoreItem> args){
+    IEnumerable<string> argsTypes = args.Select( x => getAsmType(x) );
+    string argsAsm = string.Join(", ", argsTypes);
+    writeLine($"call void {this.fileName}.Program::{name}({argsAsm})");
   }
 
 }
