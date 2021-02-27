@@ -72,6 +72,11 @@ arithmeticMultiplpicativeSign
 value
   : constantValue
   | identifierValue
+  | arrayLength
+  ;
+
+arrayLength
+  : IDENTIFIER DOT LENGTH
   ;
 
 constantValue

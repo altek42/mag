@@ -190,4 +190,10 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     functionModule.AddArgument();
   }
 
+  public override void ExitArrayLength([NotNull] JavaScriptParser.ArrayLengthContext context)
+  {
+    string arrayName = context.GetChild(0).GetText();
+    arrayModule.GetArrayLength(arrayName);
+  }
+
 }

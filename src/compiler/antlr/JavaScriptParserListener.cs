@@ -181,6 +181,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitValue([NotNull] JavaScriptParser.ValueContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayLength"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayLength([NotNull] JavaScriptParser.ArrayLengthContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.arrayLength"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayLength([NotNull] JavaScriptParser.ArrayLengthContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.constantValue"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

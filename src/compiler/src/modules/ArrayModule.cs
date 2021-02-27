@@ -33,4 +33,21 @@ public class ArrayModule {
     asmGenerator.Comment($"{array.Value}[{index.Value}]");
     Store.PushStack(array);
   }
+
+  public void GetArrayLength(string arrayName) {
+    StoreItem array = Store.GetVariableIfExist(arrayName);
+    if(!array.IsInitialized){
+      throw new InvalidOperationException($"Variable {array.Print} is undfined");
+    }
+    if(array.IsNotType(StoreItemType.ARRAY)){
+      throw new InvalidOperationException($"Variable {array.Print} must be an array");
+    }
+    StoreItem arrLen = StoreItem.CreateTemporaryVariable(StoreItemType.INTEGER);
+    asmGenerator.InitializeVariable(arrLen);
+    asmGenerator.Load(array);
+    asmGenerator.GetListSize();
+    asmGenerator.StoreVariable(arrLen);
+    asmGenerator.Comment($"{arrLen.Print} = {array.Print}:LENGTH");
+    Store.PushStack(arrLen);
+  }
 }

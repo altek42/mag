@@ -15,7 +15,9 @@ namespace dotnet
             arr.Add(5);
 
             swap(arr, 2, 4);
-            for (int i = 0; i < 5; i ++) {
+
+            int size = arr.Count;
+            for (int i = 0; i < size; i ++) {
                 Console.WriteLine("X: " + arr[i]);
             }
         }

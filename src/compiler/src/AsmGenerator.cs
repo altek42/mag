@@ -414,6 +414,10 @@ public class AsmGenerator : IDisposable {
     writeLine("callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::set_Item(int32, !0)");
   }
 
+  public void GetListSize() {
+    writeLine("callvirt   instance int32 class [mscorlib]System.Collections.Generic.List`1<int32>::get_Count()");
+  }
+
   public void CreateFunction(string name) {
     FunctionAsmLines functionAsmLines = new FunctionAsmLines(name);
     if(asmFunctionsLines.ContainsKey(name)){

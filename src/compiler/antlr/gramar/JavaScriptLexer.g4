@@ -11,11 +11,13 @@ CONTINUE:    'continue';
 FOR:         'for';
 WHILE:       'while';
 FUNCTION:    'function';
+LENGTH:      'length';
 
 OPEN_BRACKET: '[';
 CLOSE_BRACKET:']';
 OPEN_BRACE  : '{';
 CLOSE_BRACE : '}';
+DOT         : '.';
 COMMA       : ',';
 SEMI_COLON  : ';';
 ASSIGN      : '=';
