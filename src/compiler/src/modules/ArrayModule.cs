@@ -27,18 +27,10 @@ public class ArrayModule {
   public void CreateTableVariable(string value) {
     StoreItem index = Store.PopStack();
     variableModule.CreateVariable(value);
-    StoreItem array = Store.PopStack();
-
-    asmGenerator.Load(array);
-    asmGenerator.Load(index);
-    asmGenerator.GetElementFromList();
-
-    StoreItem arrayItem = StoreItem.CreateTemporaryVariable(StoreItemType.INTEGER);
-    asmGenerator.InitializeVariable(arrayItem);
-    asmGenerator.StoreVariable(arrayItem);
-    Store.PushStack(arrayItem);
-
-    asmGenerator.Comment($"{arrayItem.Value} = {array.Value}[{index.Value}]");
-    asmGenerator.EmptyLine();
+    StoreItem array = Store.PopStack().Clone();
+    array.TableIndex= index;
+    array.ItemType = StoreItemType.ARRAY_ELEMENT;
+    asmGenerator.Comment($"{array.Value}[{index.Value}]");
+    Store.PushStack(array);
   }
 }

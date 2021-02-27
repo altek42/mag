@@ -13,15 +13,30 @@ public class ArithmeticModule {
   public void Assign(){
     StoreItem source = Store.PopStack();
     StoreItem dist = Store.PopStack();
+    if(dist.IsType(StoreItemType.ARRAY_ELEMENT)){
+      assignArrayElement(source, dist);
+      return;
+    }
     asmGenerator.Load(source);
     asmGenerator.RemoveLastDuplicate();
     if (!dist.IsInitialized) {
-      dist.ItemType = source.ItemType;
+      if(source.IsType(StoreItemType.ARRAY_ELEMENT)){
+        dist.ItemType = StoreItemType.INTEGER;
+      } else {
+        dist.ItemType = source.ItemType;
+      }
       asmGenerator.InitializeVariable(dist);
     }
     asmGenerator.StoreVariable(dist);
-    asmGenerator.Comment($"{dist.Print} = {source.Print}");
-    asmGenerator.EmptyLine();
+    asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
+  }
+
+  private void assignArrayElement(StoreItem source, StoreItem dist) {
+    asmGenerator.LoadVariableWithoutCheck(dist);
+    asmGenerator.Load(dist.TableIndex);
+    asmGenerator.Load(source);
+    asmGenerator.SetElementForList();
+    asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
   }
 
   public void ProcessArithmeticOperation() {

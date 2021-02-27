@@ -256,6 +256,17 @@ public class AsmGenerator : IDisposable {
     if (!item.IsInitialized) {
       throw new ArgumentException("Variable is not initialized.");
     }
+
+    if(item.IsType(StoreItemType.ARRAY_ELEMENT)){
+      LoadVariableWithoutCheck(item);
+      Load(item.TableIndex);
+      GetElementFromList();
+    } else {
+      LoadVariableWithoutCheck(item);
+    }
+  }
+
+  public void LoadVariableWithoutCheck(StoreItem item){
     if(item.IsFunctionParam){
       writeLine($"ldarg v_{item.Value}");
     } else {
@@ -354,11 +365,13 @@ public class AsmGenerator : IDisposable {
 
   private string getAsmType(StoreItem item) {
     switch (item.ItemType) {
+      case StoreItemType.ARRAY_ELEMENT:
       case StoreItemType.INTEGER: return "int32";
       case StoreItemType.DOUBLE: return "float32";
       case StoreItemType.BOOLEAN: return "bool";
       case StoreItemType.STRING: return "string";
       case StoreItemType.FUNCTION_ARG: return $"#FUNC_PARAM_TYPE#{item.Value}";
+      case StoreItemType.ARRAY: return "class [mscorlib]System.Collections.Generic.List`1<int32>";
       default: throw new ArgumentException("Unsuported item type");
     }
   }
@@ -395,6 +408,10 @@ public class AsmGenerator : IDisposable {
 
   public void GetElementFromList() {
     writeLine("callvirt   instance !0 class [mscorlib]System.Collections.Generic.List`1<int32>::get_Item(int32)");
+  }
+
+  public void SetElementForList() {
+    writeLine("callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::set_Item(int32, !0)");
   }
 
   public void CreateFunction(string name) {

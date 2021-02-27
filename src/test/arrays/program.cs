@@ -26,7 +26,11 @@ namespace dotnet
             45
             };
 
+
             int i = 1;
+
+            myArray[i] = 4;
+
 
             Console.WriteLine(myArray[i]);
 

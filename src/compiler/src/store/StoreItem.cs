@@ -15,6 +15,8 @@ public class StoreItem {
 
   public StoreItem Parent { get; set; }
 
+  public StoreItem TableIndex { get; set; }
+
   private static uint temporaryVariableCounter = 0;
 
   private string value;
@@ -41,6 +43,7 @@ public class StoreItem {
     this.IsInitialized = item.IsInitialized;
     this.Value = item.Value;
     this.OrginalName = item.OrginalName;
+    this.IsFunctionParam = item.IsFunctionParam;
   }
 
   static public StoreItem CreateInteger(string value) {
@@ -87,7 +90,11 @@ public class StoreItem {
   }
 
   static public StoreItem Clone(StoreItem item) {
-    return new StoreItem(item);
+    return item.Clone();
+  }
+
+  public StoreItem Clone() {
+    return new StoreItem(this);
   }
 
   public StoreItem CreateCastVariable(StoreItemType type) {
@@ -163,7 +170,11 @@ public class StoreItem {
   }
 
   public String Print { get {
-    return $"{this.ItemType}:{this.value}";
+    string name = this.value;
+    if(this.IsType(StoreItemType.ARRAY_ELEMENT)){
+      name = $"{name}[{this.TableIndex.Print}]";
+    }
+    return $"{this.ItemType}:{name}";
   }}
 
 }

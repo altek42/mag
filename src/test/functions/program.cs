@@ -7,13 +7,23 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            int x = func(10, 5);
-            Console.WriteLine("X: " + x);
+            List<int> arr = new List<int>();
+            arr.Add(1);
+            arr.Add(2);
+            arr.Add(3);
+            arr.Add(4);
+            arr.Add(5);
+
+            swap(arr, 2, 4);
+            for (int i = 0; i < 5; i ++) {
+                Console.WriteLine("X: " + arr[i]);
+            }
         }
 
-        static int func(int x, int y) {
-            Console.WriteLine("Functions");
-            return x + y;
+        static void swap(List<int> arr, int i1, int i2) {
+            int tmp = arr[i1];
+            arr[i1] = arr[i2];
+            arr[i2] = tmp;
         }
     }
 }
