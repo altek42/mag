@@ -5,6 +5,7 @@ public class VariableModule {
   public static readonly VariableModule Instance = new VariableModule();
   
   private AsmGenerator asmGenerator = AsmGenerator.Instance;
+  private bool declarationVariablesMode = false;
 
   private VariableModule() {
   }
@@ -14,6 +15,14 @@ public class VariableModule {
     StoreItem item = StoreItem.CreateVariable(variableName);
     Store.PushStack(item);
   }
+
+  public void DeclareUndefinedVariable(string variableName){
+    this.DeclareVariable(variableName);
+    StoreItem item = Store.PopStack();
+    item.ItemType = StoreItemType.UNDEFINED;
+    Store.AddVariable(item);
+  }
+
 
   public StoreItem CastVariable(StoreItem item, StoreItemType itemType){
     if(item.ItemType == itemType){
@@ -29,8 +38,12 @@ public class VariableModule {
   }
 
   public void CreateVariable(string value) {
+    if(declarationVariablesMode){
+      Store.ChcekVariableExist(value);
+    }
+
     StoreItem item = StoreItem.CreateVariable(value);
-    if (!item.IsInitialized) {
+    if (!item.IsInitialized && !declarationVariablesMode && item.IsNotType(StoreItemType.UNDEFINED)) {
       throw new InvalidOperationException($"Variable {item.Print} is undfined");
     }
     Store.PushStack(item);
@@ -57,4 +70,13 @@ public class VariableModule {
     StoreItem item = StoreItem.CreateBoolean(booleanValue);
     Store.PushStack(item);
   }
+
+  public void BeginDeclareVariables() {
+    declarationVariablesMode = true;
+  }
+
+  public void EndDeclareVariables() {
+    declarationVariablesMode = false;
+  }
+
 }

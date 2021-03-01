@@ -289,6 +289,16 @@ public class AsmGenerator : IDisposable {
     Store.AddVariable(item);
   }
 
+  public void InitializeVariableFromUndefined(StoreItem item) {
+     if (!item.IsVariable) {
+      throw new ArgumentException("Item is not variable.");
+    }
+    if (item.IsInitialized) {
+      throw new ArgumentException("Variable is initialized.");
+    }
+    item.IsInitialized = true;
+  }
+
   public void CtorVariable(StoreItem item){
     InitializeVariable(item);
     if (item.ItemType == StoreItemType.ARRAY){

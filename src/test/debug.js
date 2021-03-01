@@ -1,14 +1,7 @@
-function swap(arr, firstIndex, secondIndex) {
-  var temp = arr[firstIndex];
-  arr[firstIndex] = arr[secondIndex];
-  arr[secondIndex] = temp;
-}
+var zmienna1 = 1, zmienna2, zmienna3 = "z3"
 
-var arr = [1,2,3,4,5];
+zmienna2 = 'z2'
 
-swap(arr, 2, 4);
-
-var size = arr.length
-for(var i = 0; i < size; i = i + 1){
-  console.log(arr[i])
-}
+console.log(zmienna1)
+console.log(zmienna2)
+console.log(zmienna3)

@@ -16,6 +16,7 @@ instructionLine
 
 instruction
   : variableDeclaratiion
+  | variableDeclarationList
   | assignOperation
   | writeStdOutput
   | ifStatement
@@ -106,6 +107,15 @@ variableDeclaratiion
   : VAR IDENTIFIER
   ;
 
+variableDeclarationList
+  : VAR ( variableDeclarationListElement ) (COMMA variableDeclarationListElement)+
+  ;
+
+variableDeclarationListElement
+  : singleAssignOperation
+  | IDENTIFIER
+  ;
+
 conditionSign
   : LESS_THAN
   | MORE_THAN
@@ -119,7 +129,11 @@ conditionSign
 
 assignOperation
   : variableDeclaratiion ASSIGN assignValue
-  | identifierValue ASSIGN assignValue
+  | singleAssignOperation
+  ;
+
+singleAssignOperation
+  : identifierValue ASSIGN assignValue
   ;
 
 assignValue

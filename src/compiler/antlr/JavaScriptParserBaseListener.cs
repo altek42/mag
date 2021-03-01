@@ -299,6 +299,30 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaratiion([NotNull] JavaScriptParser.VariableDeclaratiionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.variableDeclarationList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.variableDeclarationList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.variableDeclarationListElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVariableDeclarationListElement([NotNull] JavaScriptParser.VariableDeclarationListElementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.variableDeclarationListElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVariableDeclarationListElement([NotNull] JavaScriptParser.VariableDeclarationListElementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -322,6 +346,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAssignOperation([NotNull] JavaScriptParser.AssignOperationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.singleAssignOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSingleAssignOperation([NotNull] JavaScriptParser.SingleAssignOperationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.singleAssignOperation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSingleAssignOperation([NotNull] JavaScriptParser.SingleAssignOperationContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
 	/// <para>The default implementation does nothing.</para>

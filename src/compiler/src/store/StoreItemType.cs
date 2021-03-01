@@ -9,5 +9,6 @@ public enum StoreItemType {
   CONDITION_SIGN,
   ARRAY,
   ARRAY_ELEMENT,
-  FUNCTION_ARG
+  FUNCTION_ARG,
+  UNDEFINED
 }

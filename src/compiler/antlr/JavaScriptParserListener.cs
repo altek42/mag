@@ -251,6 +251,26 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaratiion([NotNull] JavaScriptParser.VariableDeclaratiionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.variableDeclarationList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.variableDeclarationList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.variableDeclarationListElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariableDeclarationListElement([NotNull] JavaScriptParser.VariableDeclarationListElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.variableDeclarationListElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariableDeclarationListElement([NotNull] JavaScriptParser.VariableDeclarationListElementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.conditionSign"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -270,6 +290,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignOperation([NotNull] JavaScriptParser.AssignOperationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.singleAssignOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSingleAssignOperation([NotNull] JavaScriptParser.SingleAssignOperationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.singleAssignOperation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSingleAssignOperation([NotNull] JavaScriptParser.SingleAssignOperationContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.assignValue"/>.
 	/// </summary>

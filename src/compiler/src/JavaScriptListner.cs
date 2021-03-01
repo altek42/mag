@@ -196,4 +196,25 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     arrayModule.GetArrayLength(arrayName);
   }
 
+  public override void EnterVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context)
+  {
+    variableModule.BeginDeclareVariables();
+  }
+
+  public override void ExitVariableDeclarationList([NotNull] JavaScriptParser.VariableDeclarationListContext context)
+  {
+    variableModule.EndDeclareVariables();
+  }
+
+  public override void ExitVariableDeclarationListElement([NotNull] JavaScriptParser.VariableDeclarationListElementContext context)
+  {
+    IParseTree child = context.GetChild(0);
+    if(child.ChildCount > 0){
+      arithmeticModule.Assign();
+    }else {
+      string variableName = child.GetText();
+      variableModule.DeclareUndefinedVariable(variableName);
+    }
+  }
+
 }

@@ -20,12 +20,17 @@ public class ArithmeticModule {
     asmGenerator.Load(source);
     asmGenerator.RemoveLastDuplicate();
     if (!dist.IsInitialized) {
+      StoreItemType distOrginalType = dist.ItemType;
       if(source.IsType(StoreItemType.ARRAY_ELEMENT)){
         dist.ItemType = StoreItemType.INTEGER;
       } else {
         dist.ItemType = source.ItemType;
       }
-      asmGenerator.InitializeVariable(dist);
+      if(distOrginalType == StoreItemType.UNDEFINED){
+        asmGenerator.InitializeVariableFromUndefined(dist);
+      } else {
+        asmGenerator.InitializeVariable(dist);
+      }
     }
     asmGenerator.StoreVariable(dist);
     asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
