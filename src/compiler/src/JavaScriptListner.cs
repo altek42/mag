@@ -217,4 +217,9 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     }
   }
 
+  public override void ExitReturnStatement([NotNull] JavaScriptParser.ReturnStatementContext context)
+  {
+    functionModule.ProcessReturn();
+  }
+
 }

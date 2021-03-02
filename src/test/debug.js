@@ -1,7 +1,11 @@
-var zmienna1 = 1, zmienna2, zmienna3 = "z3"
+function nameFunc(a, b) {
+    var zm = a + b;
+    console.log(zm);
+    return zm;
+}
 
-zmienna2 = 'z2'
-
-console.log(zmienna1)
-console.log(zmienna2)
-console.log(zmienna3)
+var a = 3;
+var b = 5;
+var c = nameFunc(a,b);
+console.log(c);
+  

@@ -177,4 +177,11 @@ public class StoreItem {
     return $"{this.ItemType}:{name}";
   }}
 
+  public StoreItem RootItem { get{
+    StoreItem item = this;
+    while(item.IsType(StoreItemType.FUNCTION_ARG)){
+      item = item.Parent;
+    }
+    return item;
+  }}
 }

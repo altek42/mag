@@ -78,6 +78,7 @@ public class AsmGenerator : IDisposable {
     if(Store.ProcessingFunction != null){
       writeLineToFunction(Store.ProcessingFunction, asm);
     } else {
+
       asmLines.Add(asm);
     }
   }
@@ -118,16 +119,17 @@ public class AsmGenerator : IDisposable {
     string funcName = functionAsmLines.Name;
     FunctionStore funcStore = Store.Functions[funcName];
     outFile.WriteLine("\n");
-    outFile.Write($" .method static void {funcName}(");
+    string returnValueType = getAsmReturnType(funcStore.ReturnValue);
+    outFile.Write($" .method static {returnValueType} {funcName}(");
     writeAsmFunctionParameters(outFile, funcStore);
     outFile.WriteLine($") cil managed\n {{");
     this.initializeAllVariables(outFile, funcStore.Variables);
     foreach(string line in functionAsmLines.AsmLines){
-      string asnLine = line;
+      string asmLine = line;
       if(line.Contains('#')){
-        asnLine = functionPostProcessing(asnLine, funcStore);
+        asmLine = functionPostProcessing(asmLine, funcStore);
       }
-      outFile.WriteLine(asnLine);
+      outFile.WriteLine(asmLine);
     }
     outFile.WriteLine("  ret");
     outFile.WriteLine(" }");
@@ -138,10 +140,7 @@ public class AsmGenerator : IDisposable {
     Match match = regex.Match(line);
     if(match.Success){
       string varName = match.Groups[1].Value;
-      StoreItem variable = store.Variables[varName];
-      while(variable.IsType(StoreItemType.FUNCTION_ARG)){
-        variable = variable.Parent;
-      }
+      StoreItem variable = store.Variables[varName].RootItem;
       return regex.Replace(line, getAsmType(variable));
     }
     return line;
@@ -386,6 +385,18 @@ public class AsmGenerator : IDisposable {
     }
   }
 
+  private string getAsmReturnType(StoreItem item) {
+    StoreItem returnVariable = item.RootItem;
+    try
+    {
+      return getAsmType(returnVariable);
+    }
+    catch (System.Exception)
+    {
+      return "void";
+    }
+  }
+
   private string getSystemAsmType(StoreItem item) {
     switch (item.ItemType) {
       case StoreItemType.INTEGER: return "Int32";
@@ -444,7 +455,15 @@ public class AsmGenerator : IDisposable {
   public void CallFunction(string name, List<StoreItem> args){
     IEnumerable<string> argsTypes = args.Select( x => getAsmType(x) );
     string argsAsm = string.Join(", ", argsTypes);
-    writeLine($"call void {this.fileName}.Program::{name}({argsAsm})");
+
+    FunctionStore funcStore = Store.Functions[name];
+    string returnValueType = getAsmReturnType(funcStore.ReturnValue);
+    
+    writeLine($"call {returnValueType} {this.fileName}.Program::{name}({argsAsm})");
+  }
+
+  public void Pop(){
+    writeLine("pop");
   }
 
 }

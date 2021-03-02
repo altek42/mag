@@ -41,14 +41,24 @@ public class FunctionModule {
     }
     for(int i = 0; i< argCount; i++){
       StoreItem elem = tmpStack.Pop();
-      Store.PushStack(elem);
       args.Add(elem);
       Store.SetFunctionParamType(name, elem.ItemType, i);
       asmGenerator.Load(elem);
     }
-
     asmGenerator.Comment($"FUNC CALL {name}");
     asmGenerator.CallFunction(name, args);
+
+    FunctionStore functionStore = Store.Functions[name];
+    if(functionStore.IsReturnVoid) {
+      asmGenerator.Pop();
+    } else {
+      StoreItem retItem = StoreItem.CreateTemporaryVariable(functionStore.ReturnValue.RootItem.ItemType);
+      retItem.Parent = functionStore.ReturnValue;
+      asmGenerator.InitializeVariable(retItem);
+      asmGenerator.StoreVariable(retItem);
+      Store.PushStack(retItem);
+      asmGenerator.Comment($"{retItem.Print} = {functionStore.Print}\n");
+    }
   }
 
   public void InitializeCallFunctionArguments() {
@@ -57,6 +67,13 @@ public class FunctionModule {
 
   public void AddArgument() {
     Store.FunctionCallArgumentIncrement();
+  }
+
+  public void ProcessReturn() {
+    StoreItem item = Store.PopStack();
+    Store.SetFunctionReturnValue(item);
+    asmGenerator.Load(item);
+    asmGenerator.Comment($"RETURN {item.Print}");
   }
 
 }

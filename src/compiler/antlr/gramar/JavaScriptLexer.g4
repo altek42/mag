@@ -12,6 +12,7 @@ FOR:         'for';
 WHILE:       'while';
 FUNCTION:    'function';
 LENGTH:      'length';
+RETURN:      'return';
 
 OPEN_BRACKET: '[';
 CLOSE_BRACKET:']';

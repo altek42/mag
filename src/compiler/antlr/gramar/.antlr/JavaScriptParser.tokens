@@ -39,6 +39,7 @@ IDENTIFIER=38
 STRING=39
 EOL=40
 WHITE_SPACES=41
+RETURN=42
 'console.log'=3
 'var'=4
 'continue'=5

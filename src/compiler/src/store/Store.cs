@@ -89,6 +89,10 @@ public static class Store {
     ProcessingFunction = funcName;
   }
 
+  public static void SetFunctionReturnValue(StoreItem item) {
+    Functions[ProcessingFunction].ReturnValue = item;
+  }
+
   public static void ClearFunction() {
     ProcessingFunction = null;
   }

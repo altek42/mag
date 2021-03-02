@@ -32,6 +32,7 @@ public class ArithmeticModule {
         asmGenerator.InitializeVariable(dist);
       }
     }
+    dist.Parent = source.Parent;
     asmGenerator.StoreVariable(dist);
     asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
   }

@@ -23,10 +23,16 @@ instruction
   | loops
   | functionDeclaration
   | functionCall
+  | returnStatement
   ;
 
 instructionBlock
   : EOL* OPEN_BRACE EOL* instructions EOL* CLOSE_BRACE EOL*
+  ;
+
+returnStatement
+  : RETURN value
+  | RETURN functionCall
   ;
 
 writeStdOutput

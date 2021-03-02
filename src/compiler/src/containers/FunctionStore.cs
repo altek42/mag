@@ -7,6 +7,22 @@ public class FunctionStore {
   public Dictionary<string, StoreItem> Params { get; private set; }
   public String Name { get; private set;}
 
+  public StoreItem ReturnValue { get; set; }
+
+  public bool IsReturnVoid { get {
+    switch (ReturnValue.ItemType)
+    {
+        case StoreItemType.INTEGER:
+        case StoreItemType.STRING:
+        case StoreItemType.BOOLEAN:
+        case StoreItemType.DOUBLE:
+        case StoreItemType.ARRAY:
+        case StoreItemType.ARRAY_ELEMENT:
+        case StoreItemType.FUNCTION_ARG:
+                 return false;
+        default: return true;
+    }
+  }}
   public FunctionStore(string name)
   {
       Name = name;
@@ -46,4 +62,8 @@ public class FunctionStore {
     get { return GetVariable(variableName); }
     set { AddVariable(value); }
   }
+
+  public string Print { get {
+    return $"{this.Name}(...)";
+  }}
 }
