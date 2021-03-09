@@ -140,7 +140,7 @@ public class AsmGenerator : IDisposable {
     Match match = regex.Match(line);
     if(match.Success){
       string varName = match.Groups[1].Value;
-      StoreItem variable = store.Variables[varName].RootItem;
+      StoreItem variable = store.GetVariable(varName).RootItem;
       return regex.Replace(line, getAsmType(variable));
     }
     return line;
@@ -386,9 +386,9 @@ public class AsmGenerator : IDisposable {
   }
 
   private string getAsmReturnType(StoreItem item) {
-    StoreItem returnVariable = item.RootItem;
     try
     {
+      StoreItem returnVariable = item.RootItem;
       return getAsmType(returnVariable);
     }
     catch (System.Exception)

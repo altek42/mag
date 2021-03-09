@@ -114,7 +114,7 @@ variableDeclaratiion
   ;
 
 variableDeclarationList
-  : VAR ( variableDeclarationListElement ) (COMMA variableDeclarationListElement)+
+  : VAR variableDeclarationListElement (commaSeparator variableDeclarationListElement)+
   ;
 
 variableDeclarationListElement
@@ -198,6 +198,10 @@ arrayLiteral
 
 elementList
   : COMMA* arrayElement? (COMMA+ arrayElement)* COMMA* // Yes, everything is optional
+  ;
+
+commaSeparator
+  : EOL* COMMA EOL*
   ;
 
 arrayElement

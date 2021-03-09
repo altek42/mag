@@ -95,4 +95,5 @@ public class ArithmeticModule {
     StoreItem item = StoreItem.CreateArithmeticSign(sign);
     Store.PushStack(item);
   }
+  
 }

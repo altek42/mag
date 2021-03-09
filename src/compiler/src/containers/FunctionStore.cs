@@ -10,6 +10,7 @@ public class FunctionStore {
   public StoreItem ReturnValue { get; set; }
 
   public bool IsReturnVoid { get {
+    if(null == ReturnValue) return true;
     switch (ReturnValue.ItemType)
     {
         case StoreItemType.INTEGER:

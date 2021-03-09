@@ -441,6 +441,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitElementList([NotNull] JavaScriptParser.ElementListContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.commaSeparator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCommaSeparator([NotNull] JavaScriptParser.CommaSeparatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.commaSeparator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCommaSeparator([NotNull] JavaScriptParser.CommaSeparatorContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayElement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

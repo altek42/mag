@@ -22,6 +22,7 @@ DOT         : '.';
 COMMA       : ',';
 SEMI_COLON  : ';';
 ASSIGN      : '=';
+PLUS_PLUS   : '++';
 PLUS        : '+';
 MINUS       : '-';
 DIVIDE      : '/';

@@ -527,6 +527,18 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElementList([NotNull] JavaScriptParser.ElementListContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.commaSeparator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommaSeparator([NotNull] JavaScriptParser.CommaSeparatorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.commaSeparator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommaSeparator([NotNull] JavaScriptParser.CommaSeparatorContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayElement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
