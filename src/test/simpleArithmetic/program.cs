@@ -8,6 +8,9 @@ namespace dotnet
         {
             int unAssigment;
 
+            int negative = -2;
+            Console.WriteLine(negative);
+
             int constIntAdd = 10 + 15;   // 25
             int constIntSub = 10 - 15;   // -5
             int constIntMul = 10 * 15;   // 150

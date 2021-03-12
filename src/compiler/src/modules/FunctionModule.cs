@@ -42,7 +42,7 @@ public class FunctionModule {
     for(int i = 0; i< argCount; i++){
       StoreItem elem = tmpStack.Pop();
       args.Add(elem);
-      Store.SetFunctionParamType(name, elem.ItemType, i);
+      Store.SetFunctionParamType(name, elem, i);
       asmGenerator.Load(elem);
     }
     asmGenerator.Comment($"FUNC CALL {name}");

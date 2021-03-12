@@ -127,8 +127,12 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
 
   public override void ExitForExpression(JavaScriptParser.ForExpressionContext context)
   {
-    arithmeticModule.Assign();
     loopModule.EndForExpression();
+  }
+
+  public override void ExitForExpressionAssign([NotNull] JavaScriptParser.ForExpressionAssignContext context)
+  {
+    arithmeticModule.Assign();
   }
 
   public override void EnterForStatementConditionOperation(JavaScriptParser.ForStatementConditionOperationContext context)
@@ -220,6 +224,11 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
   public override void ExitReturnStatement([NotNull] JavaScriptParser.ReturnStatementContext context)
   {
     functionModule.ProcessReturn();
+  }
+
+  public override void ExitIncrementVariable([NotNull] JavaScriptParser.IncrementVariableContext context)
+  {
+    arithmeticModule.IncrementVariable();
   }
 
 }

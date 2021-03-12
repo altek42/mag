@@ -11,7 +11,7 @@ instructions
   ;
 
 instructionLine
-  : instruction EOL
+  : instruction EOL?
   ;
 
 instruction
@@ -24,6 +24,7 @@ instruction
   | functionDeclaration
   | functionCall
   | returnStatement
+  | incrementVariable
   ;
 
 instructionBlock
@@ -39,6 +40,7 @@ writeStdOutput
   : writeStdOutputConstant
   | writeStdOutputIdentifier
   | writeStdOutputArithmeticOperation
+  | writeStdOutputFunctionCall
   ;
 
 writeStdOutputConstant
@@ -49,6 +51,9 @@ writeStdOutputIdentifier
   ;
 writeStdOutputArithmeticOperation
   : CONSOLE_LOG OPEN_PAREN arithmeticOperation CLOSE_PAREN
+  ;
+writeStdOutputFunctionCall
+  : CONSOLE_LOG OPEN_PAREN functionCall CLOSE_PAREN
   ;
 
 arithmeticOperation
@@ -106,7 +111,7 @@ numberValue
 
 identifierValue
   : IDENTIFIER
-  | IDENTIFIER OPEN_BRACKET (numberValue | identifierValue) CLOSE_BRACKET
+  | IDENTIFIER OPEN_BRACKET (numberValue | identifierValue | arithmeticOperation) CLOSE_BRACKET
   ;
 
 variableDeclaratiion
@@ -181,7 +186,11 @@ whileStatementConditionOperation
 
 
 forLoop
-  : FOR '(' assignOperation? ';' forStatementConditionOperation ';' forExpression? ')' instructionBlock
+  : FOR '(' forAssignSection? ';' forStatementConditionOperation ';' forExpression? ')' instructionBlock
+  ;
+
+forAssignSection
+  : assignOperation (COMMA+ assignOperation)*
   ;
 
 forStatementConditionOperation
@@ -189,6 +198,11 @@ forStatementConditionOperation
   ;
 
 forExpression
+  : forExpressionAssign
+  | incrementVariable
+  ;
+
+forExpressionAssign
   : identifierValue ASSIGN assignValue
   ;
 
@@ -229,6 +243,10 @@ arguments
   ;
 
 argument
-  : singleExpression
+  : assignValue
+  ;
+
+incrementVariable
+  : identifierValue PLUS_PLUS
   ;
 

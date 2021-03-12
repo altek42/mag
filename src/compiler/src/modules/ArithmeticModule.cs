@@ -96,4 +96,14 @@ public class ArithmeticModule {
     Store.PushStack(item);
   }
   
+  public void IncrementVariable() {
+    StoreItem item = Store.PopStack();
+    StoreItem one = StoreItem.CreateInteger("1");
+    asmGenerator.Load(item);
+    asmGenerator.Load(one);
+    StoreItem addSign = StoreItem.CreateArithmeticSign("+");
+    asmGenerator.ExecuteArithmeticOperation(addSign);
+    asmGenerator.StoreVariable(item);
+    asmGenerator.Comment($"{item.Print}++");
+  }
 }

@@ -138,6 +138,16 @@ public class StoreItem {
     return this.ItemType != type;
   }
 
+  public bool IsNotType(params StoreItemType[] types){
+    foreach (StoreItemType t in types)
+    {
+        if(this.IsType(t)){
+          return false;
+        }
+    }
+    return true;
+  }
+
   static public bool IsAllType(StoreItemType type, params StoreItem[] items){
     foreach (StoreItem item in items) {
       if(item.IsNotType(type)){

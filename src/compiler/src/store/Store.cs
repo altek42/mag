@@ -120,7 +120,8 @@ public static class Store {
         && Functions[ProcessingFunction].containsVariable(variableName);
   }
 
-  public static void SetFunctionParamType(string functionName, StoreItemType itemType, int position){
-    Functions[functionName].SetParamType(itemType, position);
+  public static void SetFunctionParamType(string functionName, StoreItem item, int position){
+    Functions[functionName].SetParamParent(item, position);
+    Functions[functionName].SetParamType(item.ItemType, position);
   }
 }

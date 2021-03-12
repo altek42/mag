@@ -11,7 +11,11 @@ public class ConsoleModule {
 
   public void WriteStdOutput(){
     StoreItem item = Store.PopStack();
-    asmGenerator.WriteToStdOutput(item);
+    if(item.IsType(StoreItemType.ARRAY)){
+      asmGenerator.WriteArrayToStdOutput(item);
+    }else {
+      asmGenerator.WriteToStdOutput(item);
+    }
     asmGenerator.EmptyLine();
   }
 }

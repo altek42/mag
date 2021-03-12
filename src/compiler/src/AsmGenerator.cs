@@ -151,7 +151,7 @@ public class AsmGenerator : IDisposable {
     string space = "\n       ";
     foreach (KeyValuePair<string, StoreItem> pair in funcStore.Params) {
       StoreItem item = pair.Value;
-      elements.Add($"{space}{getAsmType(item)} v_{item.Value}");
+      elements.Add($"{space}{getAsmType(item.RootItem)} v_{item.Value}");
     }
     outFile.Write(string.Join(", ", elements));
   }
@@ -213,6 +213,16 @@ public class AsmGenerator : IDisposable {
     Load(item);
     string asmType = getAsmType(item);
     writeLine($"call void [mscorlib]System.Console::WriteLine({asmType})");
+  }
+
+  public void WriteArrayToStdOutput(StoreItem item) {
+    writeLine("ldstr   \"[\"");
+    writeLine("ldstr   \", \"");
+    Load(item);
+    writeLine($"call string [mscorlib]System.String::Join<int32>(string, class [mscorlib]System.Collections.Generic.IEnumerable`1<!!0/*int32*/>)");
+    writeLine("ldstr   \"]\"");
+    writeLine($"call string [mscorlib]System.String::Concat(string, string, string)");
+    writeLine($"call void [mscorlib]System.Console::WriteLine(string)");
   }
 
   public void Load(StoreItem item) {

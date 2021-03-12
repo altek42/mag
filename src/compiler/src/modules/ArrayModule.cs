@@ -39,7 +39,7 @@ public class ArrayModule {
     if(!array.IsInitialized){
       throw new InvalidOperationException($"Variable {array.Print} is undfined");
     }
-    if(array.IsNotType(StoreItemType.ARRAY)){
+    if(array.IsNotType(StoreItemType.ARRAY, StoreItemType.FUNCTION_ARG)){
       throw new InvalidOperationException($"Variable {array.Print} must be an array");
     }
     StoreItem arrLen = StoreItem.CreateTemporaryVariable(StoreItemType.INTEGER);

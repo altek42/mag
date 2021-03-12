@@ -57,7 +57,7 @@ NUMBER
 
 fragment INTEGER_NUMBER
   : '0'
-  | [1-9] [0-9_]*
+  | '-'?[1-9] [0-9_]*
   ;
 
 // Identifier

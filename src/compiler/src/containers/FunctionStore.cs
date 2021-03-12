@@ -44,6 +44,10 @@ public class FunctionStore {
     Params.Values.Where( x => x.ParamPosition == position ).First().ItemType = itemType;
   }
 
+  public void SetParamParent(StoreItem item, int position){
+    Params.Values.Where( x => x.ParamPosition == position ).First().Parent = item;
+  }
+
   public bool containsVariable(string variableName){
     return Variables.ContainsKey(variableName)
         || Params.ContainsKey(variableName);

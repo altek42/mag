@@ -43,7 +43,7 @@ public class VariableModule {
     }
 
     StoreItem item = StoreItem.CreateVariable(value);
-    if (!item.IsInitialized && !declarationVariablesMode && item.IsNotType(StoreItemType.UNDEFINED)) {
+    if (!item.IsInitialized && !declarationVariablesMode && item.IsNotType(StoreItemType.UNDEFINED, StoreItemType.NULL)) {
       throw new InvalidOperationException($"Variable {item.Print} is undfined");
     }
     Store.PushStack(item);

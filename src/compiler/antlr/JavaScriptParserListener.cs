@@ -131,6 +131,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitWriteStdOutputArithmeticOperation([NotNull] JavaScriptParser.WriteStdOutputArithmeticOperationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arithmeticOperation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -401,6 +411,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitForLoop([NotNull] JavaScriptParser.ForLoopContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forAssignSection"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForAssignSection([NotNull] JavaScriptParser.ForAssignSectionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forAssignSection"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForAssignSection([NotNull] JavaScriptParser.ForAssignSectionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.forStatementConditionOperation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -420,6 +440,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitForExpression([NotNull] JavaScriptParser.ForExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.forExpressionAssign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForExpressionAssign([NotNull] JavaScriptParser.ForExpressionAssignContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.forExpressionAssign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForExpressionAssign([NotNull] JavaScriptParser.ForExpressionAssignContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayLiteral"/>.
 	/// </summary>
@@ -520,4 +550,14 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArgument([NotNull] JavaScriptParser.ArgumentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.incrementVariable"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIncrementVariable([NotNull] JavaScriptParser.IncrementVariableContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.incrementVariable"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIncrementVariable([NotNull] JavaScriptParser.IncrementVariableContext context);
 }

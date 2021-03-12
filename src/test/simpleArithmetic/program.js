@@ -1,5 +1,8 @@
 var unAssigment
 
+var negative = -2;
+console.log(negative);
+
 var constIntAdd = 10 + 15   // 25
 var constIntSub = 10 - 15   // -5
 var constIntMul = 10 * 15   // 150
@@ -57,3 +60,7 @@ zmienna2 = 'z2'
 console.log(zmienna1)
 console.log(zmienna2)
 console.log(zmienna3)
+
+var x = 1;
+x++;
+console.log(x);

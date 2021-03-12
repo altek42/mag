@@ -31,9 +31,7 @@ namespace dotnet
 
             myArray[i] = 4;
 
-
-            Console.WriteLine(myArray[i]);
-
+            Console.WriteLine("["+string.Join(", ", myArray)+"]");
         }
     }
 }
