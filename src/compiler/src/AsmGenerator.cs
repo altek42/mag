@@ -59,6 +59,8 @@ public class AsmGenerator : IDisposable {
       StoreItemType itemType = elem.ItemType;
       if(itemType == StoreItemType.ARRAY){
         strVariables.Add($"class [mscorlib]System.Collections.Generic.List`1<int32> v_{item.Value}");
+      } else if (itemType == StoreItemType.UNDEFINED) {
+        continue;
       } else {
         string asmType = getAsmType(elem);
         strVariables.Add($"{asmType} v_{item.Value}");
@@ -118,15 +120,18 @@ public class AsmGenerator : IDisposable {
   private void writeAsmFunction(StreamWriter outFile, FunctionAsmLines functionAsmLines) {
     string funcName = functionAsmLines.Name;
     FunctionStore funcStore = Store.Functions[funcName];
+    if(!funcStore.IsUsed){
+      return;
+    }
     outFile.WriteLine("\n");
     string returnValueType = getAsmReturnType(funcStore.ReturnValue);
-    outFile.Write($" .method static {returnValueType} {funcName}(");
+    outFile.Write($" .method static {returnValueType} f_{funcName}(");
     writeAsmFunctionParameters(outFile, funcStore);
     outFile.WriteLine($") cil managed\n {{");
     this.initializeAllVariables(outFile, funcStore.Variables);
     foreach(string line in functionAsmLines.AsmLines){
       string asmLine = line;
-      if(line.Contains('#')){
+      while(asmLine.Contains('#')){
         asmLine = functionPostProcessing(asmLine, funcStore);
       }
       outFile.WriteLine(asmLine);
@@ -136,12 +141,19 @@ public class AsmGenerator : IDisposable {
   }
 
   private string functionPostProcessing(string line, FunctionStore store){
-    Regex regex = new Regex(@"#\w+#(\w+)");
+    Regex regex = new Regex(@"#\w+#(\w+)(@(\w+))?");
     Match match = regex.Match(line);
     if(match.Success){
       string varName = match.Groups[1].Value;
-      StoreItem variable = store.GetVariable(varName).RootItem;
-      return regex.Replace(line, getAsmType(variable));
+      FunctionStore variableStore = store;
+      string funcName = match.Groups[3].Value;
+      if(!string.IsNullOrEmpty(funcName)){
+        variableStore = Store.Functions[funcName];
+      }
+
+      StoreItem variable = variableStore.GetVariable(varName).RootItem;
+
+      return regex.Replace(line, getAsmType(variable), 1);
     }
     return line;
   }
@@ -399,6 +411,9 @@ public class AsmGenerator : IDisposable {
     try
     {
       StoreItem returnVariable = item.RootItem;
+      if(null == returnVariable && item.IsType(StoreItemType.FUNCTION_ARG)){
+        returnVariable = item;
+      }
       return getAsmType(returnVariable);
     }
     catch (System.Exception)
@@ -468,8 +483,15 @@ public class AsmGenerator : IDisposable {
 
     FunctionStore funcStore = Store.Functions[name];
     string returnValueType = getAsmReturnType(funcStore.ReturnValue);
+    if(
+      null != funcStore.ReturnValue &&
+      funcStore.ReturnValue.IsType(StoreItemType.FUNCTION_ARG) &&
+      returnValueType.Contains('#')
+    ){
+      returnValueType += $"@{name}";
+    }
     
-    writeLine($"call {returnValueType} {this.fileName}.Program::{name}({argsAsm})");
+    writeLine($"call {returnValueType} {this.fileName}.Program::f_{name}({argsAsm})");
   }
 
   public void Pop(){

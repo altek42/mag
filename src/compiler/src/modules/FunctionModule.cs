@@ -49,10 +49,13 @@ public class FunctionModule {
     asmGenerator.CallFunction(name, args);
 
     FunctionStore functionStore = Store.Functions[name];
-    if(functionStore.IsReturnVoid) {
-      asmGenerator.Pop();
-    } else {
-      StoreItem retItem = StoreItem.CreateTemporaryVariable(functionStore.ReturnValue.RootItem.ItemType);
+    functionStore.IsUsed = true;
+    if(!functionStore.IsReturnVoid) {
+      StoreItem rootItem = functionStore.ReturnValue.RootItem;
+      if(null == rootItem){
+        rootItem = functionStore.ReturnValue;
+      }
+      StoreItem retItem = StoreItem.CreateTemporaryVariable(rootItem.ItemType);
       retItem.Parent = functionStore.ReturnValue;
       asmGenerator.InitializeVariable(retItem);
       asmGenerator.StoreVariable(retItem);

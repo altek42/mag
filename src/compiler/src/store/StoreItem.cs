@@ -191,6 +191,7 @@ public class StoreItem {
     StoreItem item = this;
     while(item.IsType(StoreItemType.FUNCTION_ARG)){
       item = item.Parent;
+      if(null == item) return null;
     }
     return item;
   }}

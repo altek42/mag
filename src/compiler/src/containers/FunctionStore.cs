@@ -6,6 +6,7 @@ public class FunctionStore {
   public Dictionary<string, StoreItem> Variables { get; private set; }
   public Dictionary<string, StoreItem> Params { get; private set; }
   public String Name { get; private set;}
+  public bool IsUsed { get; set; } = false;
 
   public StoreItem ReturnValue { get; set; }
 
