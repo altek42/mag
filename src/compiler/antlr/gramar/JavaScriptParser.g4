@@ -25,6 +25,7 @@ instruction
   | functionCall
   | returnStatement
   | incrementVariable
+  | SINGLE_LINE_COMMENT
   ;
 
 instructionBlock
@@ -85,6 +86,11 @@ value
   : constantValue
   | identifierValue
   | arrayLength
+  | notStatement
+  ;
+
+notStatement
+  : NOT value
   ;
 
 arrayLength
@@ -249,4 +255,3 @@ argument
 incrementVariable
   : identifierValue PLUS_PLUS
   ;
-

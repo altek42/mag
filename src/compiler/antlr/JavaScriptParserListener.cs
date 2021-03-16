@@ -201,6 +201,16 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitValue([NotNull] JavaScriptParser.ValueContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="JavaScriptParser.notStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNotStatement([NotNull] JavaScriptParser.NotStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="JavaScriptParser.notStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNotStatement([NotNull] JavaScriptParser.NotStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arrayLength"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -2,7 +2,7 @@
 lexer grammar JavaScriptLexer;
 
 MULTI_LINE_COMMENT:               '/*' .*? '*/'             -> skip;
-SINGLE_LINE_COMMENT:              '//' ~[\r\n\u2028\u2029]* -> skip;
+SINGLE_LINE_COMMENT:              '//' (~[\r\n\u2028\u2029])*;
 
 // keywords
 CONSOLE_LOG: 'console.log';
@@ -22,6 +22,7 @@ DOT         : '.';
 COMMA       : ',';
 SEMI_COLON  : ';';
 ASSIGN      : '=';
+NOT         : '!';
 PLUS_PLUS   : '++';
 PLUS        : '+';
 MINUS       : '-';

@@ -141,19 +141,32 @@ public class AsmGenerator : IDisposable {
   }
 
   private string functionPostProcessing(string line, FunctionStore store){
-    Regex regex = new Regex(@"#\w+#(\w+)(@(\w+))?");
+    Regex regex = new Regex(@"#(\w+)#(\w+)(@(\w+))?(#(\w+))?");
     Match match = regex.Match(line);
     if(match.Success){
-      string varName = match.Groups[1].Value;
+      string pragma = match.Groups[1].Value;
+      string funcName = match.Groups[4].Value;
+
       FunctionStore variableStore = store;
-      string funcName = match.Groups[3].Value;
       if(!string.IsNullOrEmpty(funcName)){
         variableStore = Store.Functions[funcName];
       }
 
-      StoreItem variable = variableStore.GetVariable(varName).RootItem;
-
-      return regex.Replace(line, getAsmType(variable), 1);
+      switch (pragma)
+      {
+          case "CAST_VARIABLE":
+              string src = match.Groups[2].Value;
+              StoreItem srcVar = variableStore.GetVariable(src);
+              string castAsm = $"call instance string [mscorlib]System.{getSystemAsmType(srcVar)}::ToString()";
+              return regex.Replace(line, castAsm, 1);
+          case "FUNC_PARAM_TYPE":
+              string varName = match.Groups[2].Value;
+              StoreItem variable = variableStore.GetVariable(varName).RootItem;
+              return regex.Replace(line, getAsmType(variable), 1);
+          default:
+            break;
+      }
+      
     }
     return line;
   }
@@ -200,7 +213,15 @@ public class AsmGenerator : IDisposable {
     {
         case StoreItemType.STRING: {
           LoadAddress(source);
-          writeLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
+          if(source.IsType(StoreItemType.FUNCTION_ARG)){
+            string funcName = "";
+            if(Store.ProcessingFunction != null){
+              funcName = "@" + Store.ProcessingFunction;
+            }
+            writeLine($"#CAST_VARIABLE#{source.Value}{funcName}");
+          }else {
+            writeLine($"call instance string [mscorlib]System.{getSystemAsmType(source)}::ToString()");
+          }
           break;
         }
         case StoreItemType.DOUBLE: {
