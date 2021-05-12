@@ -76,6 +76,7 @@ public class FunctionModule {
     StoreItem item = Store.PopStack();
     Store.SetFunctionReturnValue(item);
     asmGenerator.Load(item);
+    asmGenerator.Return();
     asmGenerator.Comment($"RETURN {item.Print}");
   }
 

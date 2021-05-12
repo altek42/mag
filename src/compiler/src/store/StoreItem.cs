@@ -104,6 +104,7 @@ public class StoreItem {
     vessel.ItemType = type;
     vessel.IsTemporary = true;
     vessel.IsInitialized = false;
+    vessel.IsFunctionParam = false;
     return vessel;
   }
 

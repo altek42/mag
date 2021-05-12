@@ -231,4 +231,9 @@ public class JavaScriptListner : JavaScriptParserBaseListener {
     arithmeticModule.IncrementVariable();
   }
 
+  public override void ExitNotStatement([NotNull] JavaScriptParser.NotStatementContext context)
+  {
+    conditionModule.NotStatement();
+  }
+
 }

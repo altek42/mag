@@ -239,7 +239,11 @@ public class AsmGenerator : IDisposable {
     if(item.IsNotVariable){
       throw new ArgumentException("Item should be a variable.");
     }
-    writeLine($"ldloca.s v_{item.Value}");
+    if(item.IsFunctionParam){
+      writeLine($"ldarga v_{item.Value}");
+    } else {
+      writeLine($"ldloca.s v_{item.Value}");
+    }
   }
 
   public void WriteToStdOutput(StoreItem item) {
@@ -518,5 +522,12 @@ public class AsmGenerator : IDisposable {
   public void Pop(){
     writeLine("pop");
   }
+  public void Return(){
+    writeLine("ret");
+  }
 
+  public void Negation() {
+    writeLine("ldc.i4.0");
+    writeLine("ceq");
+  }
 }

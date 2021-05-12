@@ -84,4 +84,15 @@ public class ConditionModule {
 
     asmGenerator.Comment($"ELSE");
   }
+
+  public void NotStatement() {
+    StoreItem item = Store.PopStack();
+    asmGenerator.Load(item);
+    asmGenerator.Negation();
+    StoreItem resultItem = StoreItem.CreateTemporaryVariable(StoreItemType.BOOLEAN);
+    asmGenerator.InitializeVariable(resultItem);
+    asmGenerator.StoreVariable(resultItem);
+    Store.PushStack(resultItem);
+    asmGenerator.Comment($"{resultItem.Print} = !{item.Print}");
+  }
 }
