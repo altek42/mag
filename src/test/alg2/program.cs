@@ -7,22 +7,22 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-          int a = myFunc(10);
-          int b = myFunc(12);
-          int c = a + b;
-          bool x = false;
-          bool y = !x;
-          Console.WriteLine(x);
-          Console.WriteLine(y);
-
-          Console.WriteLine("" + a + " + " + b + " = " + c);
+            List<int> items = new List<int>() { 2, 5, 3, 7, 8, 10, 15, 18, 24, 111, 12, 19, 87 };
+            bool item = itemSearch(items, 15);
+            if(!item) {
+                Console.WriteLine("Item does not exist!");
+            }
         }
 
-        static int myFunc(int value){
-            value = value + 2;
-            String valueStr = value.ToString();
-            Console.WriteLine("Tekst" + valueStr);
-            return value;
+        static bool itemSearch(List<int> items, int item){
+            for (int i = 0; i < items.Count; i++)
+            {
+                if(items[i] == item){
+                    Console.WriteLine("Found item " + item + " at index " + i);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

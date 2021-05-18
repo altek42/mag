@@ -11,6 +11,7 @@ param(
 $rootDir = Get-Location
 
 $csc = "csc.exe"
+$jsc = "jsc.exe"
 $ilasm = "ilasm.exe"
 $ildasm = "ildasm.exe"
 
@@ -20,6 +21,7 @@ $distDir = "$compilerDir\dist"
 
 $logFile = "$rootDir\out.log"
 $logCsFile = "$rootDir\out.cs.log"
+$logJsmFile = "$rootDir\out.jsm.log"
 $debugJsFile = "$testsDir\debug.js"
 $debugILFile = "$distDir\Debug.il"
 $debugExeFile = "$distDir\Debug.exe"
@@ -52,14 +54,24 @@ function CreatePaths {
     destFolder = $destFolder
     jsFile = "$destFolder\program.js"
     csFile = "$destFolder\program.cs"
+    jsmFile = "$destFolder\programm.js"
   
     csDFile = "$destFolder\cs.il"
     exeFile = "$destFolder\cs.exe"
     resFile = "$destFolder\cs.res"
+    resJsmFile = "$destFolder\jsm.res"
     jsIlFile = "$destFolder\js.il"
     jsExeFile = "$destFolder\js.exe"
+    jsmIlFile = "$destFolder\jsm.il"
+    jsmExeFile = "$destFolder\jsm.exe"
+
+    csOutFile = "$destFolder\cs.out"
+    jsOutFile = "$destFolder\js.out"
+    jsmOutFile = "$destFolder\jsm.out"
 
     jsIlDistFile = "$compilerDir\dist\Program.il"
+
+    sizeFile = "$destFolder\size.out"
   }
 }
 
@@ -85,6 +97,62 @@ function ProcessTest {
   } else {
     Write-Warning "$($paths['jsFile']) not exist".
   }
+
+  if(Test-Path -Path $paths['jsmFile']){
+    Start-Process $jsc -ArgumentList /out:$($paths['jsmExeFile']), $paths['jsmFile'] -NoNewWindow -Wait -RedirectStandardOutput $logJsmFile;
+    Start-Process $ildasm -ArgumentList $paths['jsmExeFile'], /out=$($paths['jsmIlFile']) -NoNewWindow -Wait -RedirectStandardOutput $logFile;
+    Remove-Item -Path $paths['resJsmFile'] -ErrorAction Ignore;
+  }else {
+    Write-Warning "$($paths['jsmFile']) not exist".
+  }
+}
+
+function RunTest {
+  param ([Parameter(Mandatory)][string]$name)
+  $paths = CreatePaths($name);
+  Remove-Item -Path $paths['csOutFile'] -ErrorAction Ignore;
+  Remove-Item -Path $paths['jsOutFile'] -ErrorAction Ignore;
+  Remove-Item -Path $paths['jsmOutFile'] -ErrorAction Ignore;
+  
+  if(Test-Path -Path $paths['exeFile']){
+    Start-Process $paths['exeFile'] -NoNewWindow -Wait -RedirectStandardOutput $paths['csOutFile'];
+  }
+  if(Test-Path -Path $paths['jsExeFile']){
+    Start-Process $paths['jsExeFile'] -NoNewWindow -Wait -RedirectStandardOutput $paths['jsOutFile'];
+  }
+  if(Test-Path -Path $paths['jsmExeFile']){
+    Start-Process $paths['jsmExeFile'] -NoNewWindow -Wait -RedirectStandardOutput $paths['jsmOutFile'];
+  }
+}
+
+function CreateStatsTest {
+  param ([Parameter(Mandatory)][string]$name)
+  $paths = CreatePaths($name);
+  Remove-Item -Path $paths['sizeFile'] -ErrorAction Ignore;
+
+  $outtext = "EXE:`n";
+  if(Test-Path -Path $paths['exeFile']){
+    $outtext += [string]::Format("CS:  {0:0.00} kB`n", (Get-Item $paths['exeFile']).length / 1KB);
+  }
+  if(Test-Path -Path $paths['jsExeFile']){
+    $outtext += [string]::Format("JS:  {0:0.00} kB`n", (Get-Item $paths['jsExeFile']).length / 1KB);
+  }
+  if(Test-Path -Path $paths['jsmExeFile']){
+    $outtext += [string]::Format("JSM: {0:0.00} kB`n", (Get-Item $paths['jsmExeFile']).length / 1KB);
+  }
+
+  $outtext += "`nIL:`n";
+  if(Test-Path -Path $paths['csDFile']){
+    $outtext += [string]::Format("CS:  {0:0.00} kB`n", (Get-Item $paths['csDFile']).length / 1KB);
+  }
+  if(Test-Path -Path $paths['jsIlFile']){
+    $outtext += [string]::Format("JS:  {0:0.00} kB`n", (Get-Item $paths['jsIlFile']).length / 1KB);
+  }
+  if(Test-Path -Path $paths['jsmIlFile']){
+    $outtext += [string]::Format("JSM: {0:0.00} kB`n", (Get-Item $paths['jsmIlFile']).length / 1KB);
+  }
+
+  Set-Content -Path $paths['sizeFile'] -Value $outtext;
 }
 
 function InvokeForEachTest {
@@ -103,6 +171,8 @@ function CleanTestFolder {
   Remove-Item -Path $paths['exeFile'] -ErrorAction Ignore;
   Remove-Item -Path $paths['jsIlFile'] -ErrorAction Ignore;
   Remove-Item -Path $paths['jsExeFile'] -ErrorAction Ignore;
+  Remove-Item -Path $paths['jsmIlFile'] -ErrorAction Ignore;
+  Remove-Item -Path $paths['jsmExeFile'] -ErrorAction Ignore;
 }
 
 function ProcessAllTests {
@@ -180,6 +250,8 @@ function RunExe {
   $paths = CreatePaths($testName);
   if("cs" -eq $exeName) {
     Start-Process $paths['exeFile'] -NoNewWindow -Wait;
+  } elseif ("jsm" -eq $exeName) {
+    Start-Process $paths['jsmExeFile'] -NoNewWindow -Wait;
   } else {
     Start-Process $paths['jsExeFile'] -NoNewWindow -Wait;
   }
@@ -228,6 +300,8 @@ Try {
     "GenerateParserFiles" { GenerateParserFiles }
     "RunCompilerWithDebugFile" { RunCompilerWithDebugFile }
     "ProcessTest" { ProcessTest(GetTestNameParam) }
+    "RunTest" { RunTest(GetTestNameParam) }
+    "CreateStatsTest" { CreateStatsTest(GetTestNameParam) }
     "ProcessAllTests" { ProcessAllTests }
     "CleanTestFolder" { CleanTestFolder(GetTestNameParam) }
     "CleanAllTests" { CleanAllTests }

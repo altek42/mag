@@ -3,33 +3,39 @@ using System.Collections.Generic;
 
 namespace dotnet
 {
-    class Program
+  class Program
+  {
+    static void swap(List<int> arr, int firstIndex, int secondIndex)
     {
-        static void Main(string[] args)
-        {
-          List<int> list = new List<int>() { 3, 6, 2, 5, -75, 4, 1 };
-          list = bubbleSortAlgo(list);
-          for(int i = 0; i < list.Count; i++){
-            Console.Write(list[i] + ", ");
-          }
-        }
-
-        static void swap(List<int> arr, int i1, int i2) {
-           int temp = arr[i1];
-           arr[i1] = arr[i2];
-           arr[i2] = temp;
-        }
-
-       static List<int> bubbleSortAlgo(List<int> v_arraaytest)
-        {
-          int count = v_arraaytest.Count;
-          for (int index1 = 0; index1 < count; ++index1)
-          {
-            int num = 0;
-            for (int index2 = count - index1; num < index2; ++num)
-              Console.WriteLine("[" + index1.ToString() + "," + num.ToString() + "]");
-          }
-          return v_arraaytest;
-        }
+      int temp = arr[firstIndex];
+      arr[firstIndex] = arr[secondIndex];
+      arr[secondIndex] = temp;
     }
+
+    static List<int> bubbleSortAlgo(List<int> arraaytest)
+    {
+      int len = arraaytest.Count, i, j, stop;
+      for (i = 0; i < len; i++)
+      {
+        for (j = 0, stop = len - i - 1; j < stop; j++)
+        {
+          if (arraaytest[j] > arraaytest[j + 1])
+          {
+            swap(arraaytest, j, j + 1);
+          }
+        }
+      }
+      return arraaytest;
+    }
+
+    static void Main(string[] args)
+    {
+      List<int> l = new List<int>() { 3, 6, 2, 5, -75, 4, 1 };
+      List<int> r = bubbleSortAlgo(l);
+      for (int i = 0; i < r.Count; i++)
+      {
+        Console.Write(r[i] + ", ");
+      }
+    }
+  }
 }
