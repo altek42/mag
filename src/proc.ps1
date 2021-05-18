@@ -72,6 +72,7 @@ function CreatePaths {
     jsIlDistFile = "$compilerDir\dist\Program.il"
 
     sizeFile = "$destFolder\size.out"
+    timeFile = "$destFolder\time.out"
   }
 }
 
@@ -125,7 +126,7 @@ function RunTest {
   }
 }
 
-function CreateStatsTest {
+function SizeTest {
   param ([Parameter(Mandatory)][string]$name)
   $paths = CreatePaths($name);
   Remove-Item -Path $paths['sizeFile'] -ErrorAction Ignore;
@@ -153,6 +154,39 @@ function CreateStatsTest {
   }
 
   Set-Content -Path $paths['sizeFile'] -Value $outtext;
+}
+
+function TimeTest {
+  param ([Parameter(Mandatory)][string]$name)
+  $paths = CreatePaths($name);
+  Remove-Item -Path $paths['timeFile'] -ErrorAction Ignore;
+
+  $outtext = "";
+  if(Test-Path -Path $paths['exeFile']){
+    $outtext += "CS:  ";
+    $outtext += Measure-Command -Expression { Start-Process $paths['exeFile'] -NoNewWindow -Wait -RedirectStandardOutput $logFile; };
+    $outtext += "`n";
+  }
+  if(Test-Path -Path $paths['jsExeFile']){
+    $outtext += "JS:  ";
+    $outtext += Measure-Command -Expression { Start-Process $paths['jsExeFile'] -NoNewWindow -Wait -RedirectStandardOutput $logFile; };
+    $outtext += "`n";
+  }
+  if(Test-Path -Path $paths['jsmExeFile']){
+    $outtext += "JSM: ";
+    $outtext += Measure-Command -Expression { Start-Process $paths['jsmExeFile'] -NoNewWindow -Wait -RedirectStandardOutput $logFile; };
+    $outtext += "`n";
+  }
+
+  Set-Content -Path $paths['timeFile'] -Value $outtext;
+}
+
+function Test {
+  param ([Parameter(Mandatory)][string]$name)
+  ProcessTest($name);
+  RunTest($name);
+  SizeTest($name);
+  TimeTest($name);
 }
 
 function InvokeForEachTest {
@@ -301,7 +335,9 @@ Try {
     "RunCompilerWithDebugFile" { RunCompilerWithDebugFile }
     "ProcessTest" { ProcessTest(GetTestNameParam) }
     "RunTest" { RunTest(GetTestNameParam) }
-    "CreateStatsTest" { CreateStatsTest(GetTestNameParam) }
+    "SizeTest" { SizeTest(GetTestNameParam) }
+    "TimeTest" { TimeTest(GetTestNameParam) }
+    "Test" {Test(GetTestNameParam)}
     "ProcessAllTests" { ProcessAllTests }
     "CleanTestFolder" { CleanTestFolder(GetTestNameParam) }
     "CleanAllTests" { CleanAllTests }
