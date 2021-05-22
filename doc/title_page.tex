@@ -1,0 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Układ strony tytułowej
+% Szablon pracy dyplomowej
+% Wydział Informatyki 
+% Zachodniopomorski Uniwersytet Technologiczny w Szczecinie
+% autor Joanna Kołodziejczyk (jkolodziejczyk@zut.edu.pl)
+% Bardzo wczesnym pierwowzorem szablonu był
+% The Legrand Orange Book
+% Version 2.1 (26/09/2018)
+%
+% Modifications to LOB assigned by %JK
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	STRONA TYTUŁOWA - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+\begingroup
+\sffamily  %Set sans serif fonts for title page
+\centering %Center all paragraphs
+\thispagestyle{empty} % Suppress headers and footers on the title page
+
+%----------------------------------------------------------------------------------------
+%	LOGOTYPY - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+  \begin{tabular}{p{7cm}p{7cm}}
+      \includegraphics{zut.png}&  \includegraphics[scale=.25]{wi.png}\\
+    \end{tabular}\\[1cm]
+
+%----------------------------------------------------------------------------------------
+%	AUTOR - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+ {\color{blueZUT} {\large\textbf\authornames}} \\[.5cm]
+  
+%%%
+       \normalsize{numer albumu: }{\albumno}\\[.25cm]
+        \normalsize{kierunek studiów: }{\field}\\[.25cm]
+        \normalsize{specjalność: }{\speciality}\\[.25cm]
+        \normalsize{forma studiów: }{\studyform}\\[1cm]
+        \vfill
+
+
+%----------------------------------------------------------------------------------------
+%	TYTUŁ - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+  {\color{blueZUT} {\large\bfseries  \MakeUppercase \ttitle }}\\[.5cm]% Thesis title
+  {\large\bfseries\MakeUppercase \ttitleEng }\\[1cm]% Thesis title in English
+  \vfill
+
+%----------------------------------------------------------------------------------------
+%	TYP - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+{\degreename}\\[.5cm]
+
+
+%----------------------------------------------------------------------------------------
+%	OPIEKUN PRACY - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+{napisana pod kierunkiem:} \\[.25cm]
+{\normalsize\textbf\supname}\\[.25cm]
+\normalsize{\departmentname}\\[1cm]
+\vfill
+
+%----------------------------------------------------------------------------------------
+%	DÓŁ STRONY - NIE ZMIENIAĆ
+%----------------------------------------------------------------------------------------
+\begin{flushleft}
+Data wydania tematu pracy: \datetitle \\[.2cm]
+Data dopuszczenia pracy do egzaminu: \dotfill\\
+{\scriptsize (uzupełnia pisemnie Dziekanat)}
+\end{flushleft}
+\vfill
+ \rm \large{\sffamily  \placesubmit, \yearsubmit}\\
+
+\endgroup
+

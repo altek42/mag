@@ -1,0 +1,456 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plik konfigurujący
+% Szablon pracy dyplomowej
+% Wydział Informatyki 
+% Zachodniopomorski Uniwersytet Technologiczny w Szczecinie
+% autor Joanna Kołodziejczyk (jkolodziejczyk@zut.edu.pl)
+% Bardzo wczesnym pierwowzorem szablonu był
+% The Legrand Orange Book
+% Version 2.1 (26/09/2018)
+%
+% Modifications to LOB assigned by %JK
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%----------------------------------------------------------------------------------------
+%	VARIOUS REQUIRED PACKAGES AND CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+%GEOMETRY
+\usepackage[top=3.2cm,bottom=3.5cm,left=2.5cm,right=2.5cm,headsep=1.5ex,bindingoffset=1cm,a4paper]{geometry} % Page margins
+
+% GRAPHICS
+\usepackage{graphicx} % Required for including pictures
+\graphicspath{{Pictures/}} % Specifies the directory where pictures are stored
+
+% For math equations, theorems, symbols, etc
+\usepackage{amsmath,amsfonts,amssymb,amsthm} 
+
+% Customize lists
+\usepackage{enumitem} 
+\setlist{nolistsep} % Reduce spacing between bullet points and numbered lists
+\setlist[itemize]{label=--}
+
+% Required for nicer horizontal rules in tables
+\usepackage{booktabs} 
+
+\usepackage{xcolor} % Required for specifying colors by name
+% Define blue colors used for highlighting throughout the book- based on the WI ZUT colors
+\definecolor{blueWI}{cmyk}{.6,.2,0,.0} % JK - Define the blue colour used for highlighting throughout the book
+\definecolor{blueZUT}{cmyk}{1,.75,0,.2} % JK - Define the blue colour used for highlighting throughout the book
+\definecolor{grayZUT}{cmyk}{0,0,0,0.4} % JK - Define the blue colour used for highlighting throughout the book
+
+%other definision
+\newcommand{\rulecolor}[1]{\color{#1}\rule}
+
+%----------------------------------------------------------------------------------------
+%	FONTS AND LANGUAGE (JK - configuring and styling)
+%----------------------------------------------------------------------------------------
+%
+\usepackage{newtxmath,newtxtext}
+\usepackage{t1enc}
+\usepackage[polish]{babel}% moved after to avoid conflict between polish babel and amsmath
+\usepackage[utf8]{inputenc} 
+%\usepackage{avant} % Use the Avantgarde font for headings
+
+%----------------------------------------------------------------------------------------
+%	PAGE HEADERS AND FOOTERS (JK - Styling for the current chapter in the header)
+%----------------------------------------------------------------------------------------
+
+\usepackage{fancyhdr} % Required for header and footer configuration
+\setlength{\headheight}{2.5ex}
+\pagestyle{fancy} % Enable the custom headers and footers
+
+\renewcommand{\chaptermark}[1]{\markboth{\sffamily\normalsize\thechapter.\hspace{5pt} #1}{}} % JK - Styling for the current chapter in the header
+\renewcommand{\sectionmark}[1]{\markright{\sffamily\normalsize\thesection\hspace{5pt} #1}{}} % Styling for the current section in the header
+
+\fancyhf{} % Clear default headers and footers
+
+% JK - header with page hanging  and chapter title in the box
+\fancyhead[EL]{%
+  \textcolor{white}{%
+    \llap{%
+      \colorbox{blueZUT}{%
+        \makebox[7ex][r]{\sffamily\thepage}%
+      }%
+      \hspace{1.25\marginparsep}%
+      \hspace{-\fboxsep}%
+    }%
+    \textcolor{black}{%
+      \colorbox{blueWI!20}{%
+        \makebox[\textwidth][l]{\sffamily\shorttitle}}}
+     \addtolength{\headheight}{5ex} % Increase the spacing around the header slightly
+  }%
+}
+\fancyhead[OR]{%
+  \textcolor{white}{%
+    \llap{%
+      \colorbox{blueZUT}{%
+        \makebox[7ex][r]{\sffamily\thepage}%
+      }%
+      \hspace{1.25\marginparsep}%
+      \hspace{-\fboxsep}%
+    }%
+    \textcolor{black}{%
+      \colorbox{blueWI!20}{%
+        \makebox[\textwidth][l]{\sffamily\leftmark}}}%{\rightmark}}}
+    \addtolength{\headheight}{5ex} % Increase the spacing around the header slightly    
+  }%
+}
+
+\fancypagestyle{plain}{%
+   \fancyhead{} % get rid of headers
+   \fancyfoot[RE,RO]{
+  	\textcolor{white}{%
+    	\llap{%
+      	\colorbox{blueZUT}{%
+        	\makebox[7ex][l]{\sffamily\thepage}%
+      }%
+      \hspace{-6\marginparsep}%separation from the margin
+      \hspace{-5\fboxsep}%
+     }%
+     }%
+    } 
+   \addtolength{\headheight}{18pt} % Increase the spacing around the header slightly
+}
+
+
+\renewcommand*{\headrulewidth}{0pt}
+\renewcommand*{\footrulewidth}{0pt}
+
+% Removes the header from odd empty pages at the end of chapters
+\makeatletter
+\renewcommand{\cleardoublepage}{
+\clearpage\ifodd\c@page\else
+\hbox{}
+\vspace*{\fill}
+\thispagestyle{empty}
+\newpage
+\fi}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY (JK - configuring and styling)
+%----------------------------------------------------------------------------------------
+% 
+\usepackage[
+style=numeric,% style alphabetic or numeric
+citestyle=verbose,
+sorting=nyt,%name -year -title
+sortcites=true,
+autopunct=true,
+autolang=hyphen,
+hyperref=true, % if the citation is the link to bibliography
+backend=biber,
+defernumbers=true]{biblatex}
+\addbibresource{bibliography.bib} % BibTeX bibliography file
+\defbibheading{bibempty}{}
+
+
+%\usepackage{calc} % For simpler calculation - used for spacing the index letter headings correctly
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER & SECTION HEADINGS
+%----------------------------------------------------------------------------------------
+
+\usepackage[explicit]{titlesec}
+
+% \titleformat{<command>}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
+
+\titleformat{\chapter}[block]
+  {\huge\sffamily\color{blueZUT}}
+  {\hspace{- 3ex}{\thechapter.} \hspace{0.5em}{#1\strut}}
+  {0pt}
+  {}
+
+\titleformat{name = \chapter, numberless}[block]
+  {\huge\sffamily\color{blueZUT}}
+  {{#1\strut}}
+  {0pt}
+  {}
+
+%----------------------------------------------------------------------------------------
+%	Hanging SECTION NUMBERING (MARGIN)
+%----------------------------------------------------------------------------------------
+
+\makeatletter
+\renewcommand{\@seccntformat}[1]{\llap{\textcolor{blueZUT}{\csname the#1\endcsname}\hspace{1em}}}                    
+
+\renewcommand{\section}
+{\@startsection{section}{1}{\z@}
+{-4ex \@plus -1ex \@minus -.4ex}
+{1ex \@plus.2ex }
+{\normalfont\large\sffamily\bfseries}}
+
+\renewcommand{\subsection}{\@startsection {subsection}{2}{\z@}
+{-3ex \@plus -0.1ex \@minus -.4ex}
+{0.5ex \@plus.2ex }
+{\normalfont\sffamily\bfseries}}
+
+\renewcommand{\subsubsection}{\@startsection {subsubsection}{3}{\z@}
+{-2ex \@plus -0.1ex \@minus -.2ex}
+{.2ex \@plus.2ex }
+{\normalfont\small\sffamily\bfseries}}                        
+
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}
+{-2ex \@plus-.2ex \@minus .2ex}
+{.1ex}
+{\normalfont\small\sffamily\bfseries}}
+
+
+
+%----------------------------------------------------------------------------------------
+%	MAIN TABLE OF CONTENTS (JK modification: style, indentation, colors,)
+%----------------------------------------------------------------------------------------
+
+\usepackage{titletoc} % Required for manipulating the table of contents
+\contentsmargin{0cm} % Removes the default margin
+
+% Chapter text styling
+\titlecontents{chapter}[1.25cm] % Indentation
+{\addvspace{12pt}\large\sffamily} % Spacing and font options for chapters
+{\color{blueZUT!60}\contentslabel[\Large\thecontentslabel]{1.25cm}\color{blueZUT}} % JK Chapter number
+{\color{blueZUT}}  
+{\color{blueZUT!60}\normalsize\;\titlerule*[.5pc]{.}\;\thecontentspage} % Page number
+
+% Section text styling
+\titlecontents{section}
+	[1.25cm] % Left indentation
+	{\addvspace{3pt}\sffamily} % Spacing and font options for sections
+	{\contentslabel[\thecontentslabel]{1.25cm}} % Formatting of numbered sections of this type
+	{} % Formatting of numberless sections of this type
+	{\;\titlerule*[.5pc]{.}\;\color{black}\thecontentspage} % Formatting of the filler to the right of the heading and the page number
+
+% Subsection text styling
+\titlecontents{subsection}
+	[2.5cm] % Left indentation
+	{\addvspace{1pt}\sffamily\small} % Spacing and font options for subsections
+	{\contentslabel[\thecontentslabel]{1.25cm}} % Formatting of numbered sections of this type
+	{} % Formatting of numberless sections of this type
+	{\ \titlerule*[.5pc]{.}\;\thecontentspage} % Formatting of the filler to the right of the heading and the page number
+
+%%%%% JK Add figures and tables
+% Figure text styling
+\titlecontents{figure}
+	[0em] % Left indentation
+	{\addvspace{3pt}\sffamily} % Spacing and font options for figures
+	{\contentslabel[\thecontentslabel]{1.25cm}} % Formatting of numbered sections of this type
+	{} % Formatting of numberless sections of this type
+	{\ \titlerule*[.5pc]{.}\;\thecontentspage} % Formatting of the filler to the right of the heading and the page number
+
+% Table text styling
+\titlecontents{table}
+	[0em] % Left indentation
+	{\addvspace{3pt}\sffamily} % Spacing and font options for tables
+	{\contentslabel[\thecontentslabel]{1.25cm}} % Formatting of numbered sections of this type
+	{} % Formatting of numberless sections of this type
+	{\ \titlerule*[.5pc]{.}\;\thecontentspage} % Formatting of the filler to the right of the heading and the page number
+
+
+%----------------------------------------------------------------------------------------
+%	THEOREM STYLES
+%----------------------------------------------------------------------------------------
+
+\newcommand{\intoo}[2]{\mathopen{]}#1\,;#2\mathclose{[}}
+\newcommand{\ud}{\mathop{\mathrm{{}d}}\mathopen{}}
+\newcommand{\intff}[2]{\mathopen{[}#1\,;#2\mathclose{]}}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\renewcommand{\thmname}{Twierdzenie}
+
+% Boxed/framed environments
+\newtheoremstyle{blueZUTnumbox}% Theorem style name
+{0pt}% Space above
+{0pt}% Space below
+{\normalfont}% Body font
+{}% Indent amount
+{\small\bf\sffamily\color{blueZUT}}% Theorem head font
+{\;}% Punctuation after theorem head
+{0.25em}% Space after theorem head
+{\small\sffamily\color{blueZUT}\thmname{#1}\nobreakspace\thmnumber{\@ifnotempty{#1}{}\@upn{#2}}% Theorem text (e.g. Theorem 2.1)
+\thmnote{\nobreakspace\the\thm@notefont\sffamily\bfseries\color{black}---\nobreakspace#3.}} % Optional theorem note
+
+% \newtheoremstyle{blacknumex}% Theorem style name
+% {5pt}% Space above
+% {5pt}% Space below
+% {\normalfont}% Body font
+% {} % Indent amount
+% {\small\bf\sffamily}% Theorem head font
+% {\;}% Punctuation after theorem head
+% {0.25em}% Space after theorem head
+% {\small\sffamily{\tiny\ensuremath{\blacksquare}}\nobreakspace\thmname{#1}\nobreakspace\thmnumber{\@ifnotempty{#1}{}\@upn{#2}}% Theorem text (e.g. Theorem 2.1)
+% \thmnote{\nobreakspace\the\thm@notefont\sffamily\bfseries---\nobreakspace#3.}}% Optional theorem note
+
+\newtheoremstyle{blacknumbox} % Theorem style name
+{5pt}% Space above
+{5pt}% Space below
+{\normalfont}% Body font
+{}% Indent amount
+{\small\bf\sffamily}% Theorem head font
+{\;}% Punctuation after theorem head
+{0.25em}% Space after theorem head
+{\small\sffamily\thmname{#1}\nobreakspace\thmnumber{\@ifnotempty{#1}{}\@upn{#2}}% Theorem text (e.g. Theorem 2.1)
+\thmnote{\nobreakspace\the\thm@notefont\sffamily\bfseries---\nobreakspace#3.}}% Optional theorem note
+
+% Non-boxed/non-framed environments
+\newtheoremstyle{blueZUTnum}% Theorem style name
+{5pt}% Space above
+{5pt}% Space below
+{\normalfont}% Body font
+{}% Indent amount
+{\small\bf\sffamily\color{blueZUT}}% Theorem head font
+{\;}% Punctuation after theorem head
+{0.25em}% Space after theorem head
+{\small\sffamily\color{blueZUT}\thmname{#1}\nobreakspace\thmnumber{\@ifnotempty{#1}{}\@upn{#2}}% Theorem text (e.g. Theorem 2.1)
+\thmnote{\nobreakspace\the\thm@notefont\sffamily\bfseries\color{black}---\nobreakspace#3.}} % Optional theorem note
+\makeatother
+
+% Defines the theorem text style for each type of theorem to one of the three styles above
+\newcounter{dummy} 
+\numberwithin{dummy}{section}
+\theoremstyle{blueZUTnumbox}
+\newtheorem{theoremeT}[dummy]{Twierdzenie}
+\theoremstyle{blueZUTnum}
+\newtheorem{exampleT}{Przykład}[chapter]
+\theoremstyle{blacknumbox}
+\newtheorem{definitionT}{Definicja}[section]
+
+
+%----------------------------------------------------------------------------------------
+%	DEFINITION OF COLORED BOXES
+%----------------------------------------------------------------------------------------
+
+\RequirePackage[framemethod=default]{mdframed} % Required for creating the theorem, definition, exercise and corollary boxes
+
+% Theorem box
+\newmdenv[skipabove=7pt,
+skipbelow=7pt,
+backgroundcolor=black!3,
+linecolor=blueZUT,
+innerleftmargin=5pt,
+innerrightmargin=5pt,
+innertopmargin=5pt,
+leftmargin=0cm,
+rightmargin=0cm,
+innerbottommargin=5pt]{tBox}
+
+
+% Definition box
+\newmdenv[skipabove=7pt,
+skipbelow=7pt,
+rightline=false,
+leftline=true,
+topline=false,
+bottomline=false,
+linecolor=blueZUT,
+innerleftmargin=5pt,
+innerrightmargin=5pt,
+innertopmargin=0pt,
+leftmargin=0cm,
+rightmargin=0cm,
+linewidth=2pt,
+innerbottommargin=0pt]{dBox}	
+
+% Creates an environment for each type of theorem and assigns it a theorem text style from the "Theorem Styles" section above and a colored box from above
+\newenvironment{theorem}{\begin{tBox}\begin{theoremeT}}{\end{theoremeT}\end{tBox}}				  
+\newenvironment{definition}{\begin{dBox}\begin{definitionT}}{\end{definitionT}\end{dBox}}	
+\newenvironment{example}{\begin{exampleT}}{\hfill{\tiny\ensuremath{\blacksquare}}\end{exampleT}}		
+
+
+
+%----------------------------------------------------------------------------------------
+%	LISTING ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+\usepackage{listings}
+
+%Polish set of letteres accepted in the listings
+\lstset{
+literate=%
+{ą}{{\k{a}}}1
+{Ą}{{\k{A}}}1
+{ć}{{\'c}}1
+{Ć}{{\'{C}}}1
+{ę}{{\k{e}}}1
+{Ę}{{\k{E}}}1
+{ł}{{\l{}}}1
+{Ł}{{\L{}}}1
+{ń}{{\'n}}1
+{Ń}{{\'N}}1
+{ó}{{\'o}}1
+{Ó}{{\'O}}1
+{ś}{{\'s}}1
+{Ś}{{\'S}}1
+{ż}{{\.z}}1
+{Ż}{{\.Z}}1
+{ź}{{\'z}}1
+{Ź}{{\'Z}}1
+}
+
+\renewcommand{\lstlistingname}{\small\sffamily\bfseries\color{blueZUT} Algorytm} % Change default listing caption to Algorthm
+\renewcommand{\lstlistlistingname}{Lista \lstlistingname ów}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{mystyle}{
+ %   backgroundcolor=\color{grayZUT!10},   
+    basicstyle= \small\fontfamily{lmss}\selectfont,%\footnotesize\fontfamily{cmss}\selectfont,
+    commentstyle=\color{codegray},
+    keywordstyle=\color{violet},
+    numberstyle=\tiny\color{codegray},%numeracja linijek
+    identifierstyle={\color{black}},
+    numbers=left,%numeracja linijek
+    numbersep=10pt,%numeracja linijek
+    stringstyle=\color{codegreen},
+    breakatwhitespace=true,         
+    breaklines=true,                 
+    captionpos=b,                    
+    %keepspaces=false,                
+    %showspaces=false,                
+    showstringspaces=false,
+    showtabs=true,                  
+    tabsize=2,
+    frame=leftline,
+    rulecolor = \color{blueWI},
+    xleftmargin=5ex,
+    xrightmargin=5ex
+    }
+ 
+\lstset{style=mystyle}
+
+%----------------------------------------------------------------------------------------
+% CAPTIONS ( JK - design and implementation)
+%----------------------------------------------------------------------------------------
+
+\usepackage{caption}
+\captionsetup[figure]{name={\small\sffamily\color{blueZUT} Rysunek}}
+\captionsetup[table]{name={\small\sffamily\color{blueZUT} Tabela}}
+\captionsetup{font={small,sf,singlespacing}}
+
+
+%----------------------------------------------------------------------------------------
+%	HYPERLINKS IN THE DOCUMENTS
+%----------------------------------------------------------------------------------------
+
+\usepackage{hyperref}
+%\hypersetup{hidelinks,backref=true,pagebackref=true,hyperindex=true,colorlinks=false,breaklinks=true,urlcolor=blueZUT,bookmarks=true,bookmarksopen=false}
+\hypersetup{hidelinks,breaklinks=true,urlcolor=blueZUT,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
+
+%----------------------------------------------------------------------------------------
+%	Listings languages
+%----------------------------------------------------------------------------------------
+
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}

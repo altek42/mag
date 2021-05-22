@@ -1,0 +1,116 @@
+\chapter{Pojęcia i technologie}
+\label{rozdzial1}
+
+\section{Zakres projektu}
+\index{Zakres projektu}
+
+Projekt będzie realizował zaprojektowanie i implementację kompilatora języka JavaScript na platformę uruchomieniową .NET core. W tym rozdziale zostaną opisane pojęcia oraz technologie, które będą wykorzystywane w realizacji tego projektu. Na początku opisane będą takie pojęcia jak \textit{kompilator} oraz \textit{maszyna wirtualna}. Następie zostaną omówione technologie wiodące w projekcie takie jak \textit{JavaScript}, \textit{Node.js}, \textit{.NET Core} oraz \textit{IL Assembler}.
+
+\subsection{Kompilator}
+\index{Kompilator}
+W dzisiejszych czasach niezbędnym narzędziem programisty jest kompilator. Jest to narzędzie, którego zadaniem jest tłumaczenie programu napisanego przez programistę, na program który będzie można uruchomić na konkretnym środowisku uruchomieniowym.
+\par Mówiąc ściślej kompilator to program napisany w języku implementacyjnym, który odczytuje język źródłowy i tłumaczy go na język wynikowy. Proces zamiany kodu źródłowego na wynikowy nazywany jest \textbf{kompilacją}. Kodem wynikowym procesu kompilacji może być od razu kod maszynowy, który interpretowany jest bezpośrednio przez procesor lub maszynę wirtualną, albo do kodu pośredniego, który też może zostać skompilowany przez inny kompilator.
+\par Kompilatory mogą być napisane w dowolnym języku programowania. Istnieje kilka specjalnie zaprojektowanych do tego zadania języków, takie jak \textit{Pascal} czy \textit{Algol 68}. Nie mniej jednak, wybór języka do implementacji kompilatora przez twórcę, powinien się opierać na założeniu, że powinien on zminimalizować wysiłek implementacyjny i zmaksymalizować jakość kompilatora.
+\par Język źródłowy który przetwarzany jest przez kompilator prawie zawsze jest oparty na wcześniej zdefiniowanej gramatyce. Dzięki temu program kompilatora potrafi odróżnić od siebie kolejne instrukcje i zamienić je na równoważne ciągi instrukcji w języku docelowym.
+\footcite[1-4]{Mckeeman1974}
+\par Podobnym w działaniu jest \textbf{interpreter}, który tak jak kompilator, jest pisany w jednym implementacyjnym oraz odczytuje język kodu źródłowego, ale nie produkuje kodu wynikowego, tylko odczytany kod jest od razu wykonywany. Niektóre języki przyjmują schematy zawierające wykorzystanie kompilatora oraz interpretera w procesie wytwarzania oprogramowania. Jednym z przykładów jest język \textbf{Java}, który kompilowany jest do postaci nazywanej \textit{bytecode}, a następnie interpretowany jest przez maszynę wirtualną Java (Java Virtual Machine, JVM).\footcite[3,4]{EngineeringCompiler}
+
+\subsection{Maszyna wirtualna}
+% https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1430629
+
+\par Wirtualizacja stała się ważnym narzędziem w projektowaniu systemów komputerowych, a maszyny wirtualne używane są w wielu obszarach informatycznych, od systemów operacyjnych po architektury procesorów języków programowania.
+\par Dla programistów oraz użytkowników wirtualizacja likwiduje tradycyjne interfejsy oraz ograniczenia zasobów związanych z różnymi urządzeniami. Maszyny wirtualne zwiększają interoperacyjność oprogramowania oraz wszechstronność platformy, dlatego też często się je wykorzystuje.
+\par Maszyna wirtualna to nic innego jak program uruchamiany na prawdziwej maszynie, który potrafi obsługiwać pożądaną architekturę. W ten sposób można obejść rzeczywistą kompatybilność maszyny i ograniczenia zasobów sprzętowych. Pozwala to, między innymi na równoczesne tworzenie oprogramowania dla wielu platform, bez konieczności stosowania bezpośrednio interfejsów rzeczywistej maszyny, a jedynie wykorzystanie tych udostępnianych przez maszynę wirtualną. \footcite{Smith2005}
+
+\subsection{JavaScript}
+Jest to skryptowy język programowania, dzięki którego można realizować aplikacje w paradygmacie imperatywnym, obiektowym oraz funkcyjnym. Najczęściej jest wykorzystywany w stronach internetowych, gdzie kolejne instrukcje wykonywane są przez przeglądarkę sieci Web, ale również zyskuje popularność w innych środowiskach. \footcite{aboutJS}
+\par JavaScript został wdrożony w roku 1995 roku, jako sposób dodawania programów do stron internetowych. Jako pierwszą przeglądarką obsługującą JavaScript to Netscape Navigator. Następnie inne, głównie graficzne przeglądarki wprowadzały możliwość uruchamiania kodu napisanego w JavaScript. Umożliwiło to tworzenie nowoczesnych stron internetowych z którymi można było bezpośrednio współpracować, bez konieczności ponownego pobierania strony po każdej wykonanej akcji.
+\par W momencie kiedy zaczęto używać JavaScript poza Netscape, został stworzony dokument standaryzujący, który opisuje sposób działania języka. Utworzono go, aby wszystkie nowo tworzone oprogramowanie mające wykorzystywać JavaScript, faktycznie używały tego samego języka. Dokument ten nazywany jest standardem \textbf{ECMAScript}, który został nazwany po organizacji Ecma International, twórców tego dokumentu.
+\par JavaScript jest językiem bardzo elastycznym, przez co ma też swoje wady i zalety. Przez swoją elastyczność pozwala na wykorzystywanie wielu technik i praktyk programistycznych które mogą być niemożliwe w innych językach.
+\par Jako, że jest to język skryptowy, to tak jak podobne tego typu języki posiada dynamiczne typowanie zmiennych. Oznacza to, że każda ze zmiennej jest definiowana poprzez słowo kluczowe \texttt{var}, a w nowszej wersji można to zrobić już przy pomocy dwóch różnych słów \texttt{const} oraz \texttt{let}. Kolejną z podstawowych rzeczy w JavaScript są funkcje. Dzięki nim można pisać programy we wspomnianych wcześniej paradygmatach. Pozwalają one nie tylko na wydzielenie kodu na mniejsze części ale również na definiowanie bardziej złożonych struktur czy klas.\footcite{EloquentJavaScript}
+% https://eloquentjavascript.net/Eloquent_JavaScript.pdf
+
+\subsection{Node.js}
+Jest to asynchroniczne środowisko uruchomieniowe dla języka JavaScript. Node.js został zaprojektowany do tworzenia skalowalnych aplikacji sieciowych. Pozwala na jednoczesne przetwarzanie wielu połączeń. Przy każdym połączeniu następuje wywołanie zwrotne, a w przypadku jeśli nie będzie żadnej pracy do wykonania, Node.js przejdzie w tryb uśpienia.
+\footcite{Node.js2017}
+
+\par Środowisko Node.js oparte jest na implementacji silnika ``V8'' stworzonego przez Google. Zaimplementowany głownie jest w języku C i C++, koncentrując się na wydajności i niskim zużyciu pamięci. Różnica polega na tym, że silnik ``V8'' obsługuje głównie JavaScript w przeglądarkach internetowych, a Node.js został stworzony z myślą o obsłudze długotrwałych procesów serwerowych.
+\par W celu obsługi jednoczesnego wykonywania logiki biznesowej, Node.js opiera się na asynchronicznym modelu zdarzeń wejścia i wyjścia, w przeciwieństwie do większości innych współczesnych środowisk, które oparte są na wielowątkowości. Model zdarzeń jest obsługiwany na poziomie języka, a jest to możliwe ponieważ JavaScript obsługuje wywołania zwrotne zdarzeń oraz funkcjonalny charakter JavaScript sprawia, że niezwykle łatwo jest tworzyć anonimowe obiekty funkcji, które można zarejestrować jako programy obsługi zdarzeń. \footcite{Tilkov2010}
+
+\subsection{.NET Core}
+
+\par Jest to platforma programistyczna ogólnego zastosowania z otwartymi kodami źródłowymi. Pozwala na tworzenie aplikacji dla systemów Windows, macOS oraz Linux przy wykorzystaniu różnych języków programowania.\footcite{dotNetvsFramework}
+\par Architektura środowiska .NET składa się z takich komponentów jak:
+\begin{itemize}
+  \item CTS (Common Type System) - opisuje wszystkie wspierane przez platformę typy. Definiuje zasady korzystania z danych typów, dostarcza zorientowany obiektowo model dla różnych języków implementowanych w .NET oraz zapewnia bibliotekę zawierającą prymitywne typy danych (takich jak \texttt{Boolean}, \texttt{char} itp.).
+  \item CLS (Common Language Specyfication) - definiuje w jaki sposób mają być definiowane obiekty i funkcje, w języku przeznaczonym na platformę .NET. CLS jest podzbiorem CTS, co oznacza, że wszystkie opisane zasady CTS dotyczą również CLS.\footcite{dotNetCLS}
+  \item FCL (Framework Class Library) - jest to standardowa biblioteka zawierająca podstawę implementacji klas, interfejsów, typów wartości czy usług, które wykorzystywane są do tworzenia aplikacji.\footcite{dotNetFCL}
+  \item CLR (Common Language Runtime) - jest to środowisko uruchomieniowe, które uruchamia kod i zapewnia usługi ułatwiające proces programowania. Środowisko wykonawcze automatycznie obsługuje układ obiektów i zarządza referencjami no nich, zwalniając je w przypadku kiedy już nie są używane.\footcite{dotNetCLR}
+  
+\end{itemize}
+
+\subsection{IL Assembler}
+\par Każdy z kompilatorów przeznaczonych na platformę .NET, bez względu na wybrany język, kompiluje kod do postaci pośredniej, jakim jest kod IL.
+\par Wykonywalny kod IL jest w formacie binarnym i nie jest czytelny dla człowieka. Oczywiście jak inne wykonywalne kody binarne, mogą zostać przedstawione w postaci assemblera, tak i kod IL może zostać zaprezentowany w postaci IL Assemblera. Zestaw instrukcji jest taki jak w przypadku tradycyjnego assemblera. Przykładowo, aby dodać dwie liczby należy użyć instrukcji \texttt{add}, a w przypadku odejmowania, należy użyć instrukcji \texttt{sub}.
+\par Środowisko uruchomieniowe .NET nie potrafi jednak odczytywać bezpośrednio IL Assemblera. Aby kod napisany w IL Assemblerze można było uruchomić, trzeba skompilować go do postaci binarnej IL. \footcite{ILAsm1}
+
+\section{Technologie pokrewne}
+Aktualnie istnieje wiele rozwiązań przetwarzających język JavaScript jak i narzędzi, dzięki którymi można budować, jak i uruchamiać aplikacje dedykowane na platformę .NET. W tym rozdziale zostaną opisane niektóre z tych technologii.
+
+% Najpierw technologie konkurencyjne, następnie istniejące rozwiązania a na końcu rozwiązania podobne/nawiązujące w jakiś sposób do tematu.
+
+\subsection{ActionScript}
+Obiektowy język oparty na ECMAScript używany w Adobe Flash/
+
+\subsection{JScript}
+Jest to implementacja JavaScript przez Microsoft która jest uruchomiana w środowisku .NET.
+Istnieją pewne różnice w porównaniu do JavaScript.
+
+\subsection{TypeScript}
+Język programowania stworzony przez Microsoft. Uruchamiany na Node.js lub Deno. Może być przekompilowany do js es5 przez Babel.
+
+\subsection{?CoffeeScript}
+Język programowania kompilowany do JavaScript.
+Nie wiem czy warto wspominać.
+
+Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
+
+\subsection{Babel}
+Kompiluje przykładowo TypeScript do JavaScript lub JavaScript ES6 do ES5.
+
+% Maszyna inna niż Node.js
+\subsection{Deno}
+Maszyna wirtualna dla języka JavaScript oraz TypeScript.
+% Nie jestem pewien czy można na "żywca" uruchamiać na niej TypeScript. (Temat do sprawdzenia)
+
+\subsection{asm.js}
+Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
+Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
+
+\subsection{Emscripten}
+% https://pl.wikipedia.org/wiki/Emscripten
+Kompilator kodu LLVM do JavaScript.
+
+\subsection{WebAssembly}
+% https://devenv.pl/webassembly-nadciaga-rewolucja/
+Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
+(Pomija JavaScript).
+
+\subsection{C\#}
+Czy opisywać rodzinę .NET?
+
+Na maszynę .NET istnieją implementacje języków takich jak Python, Java, C++ i inne.
+
+\subsection{.NET Framework}
+Platforma programistyczna.
+
+\subsection{Mono}
+Implementacja open source platformy .NET Framework.
+
+\subsection{DotGNU}
+Alternatywa dla Mono.
+
+\subsection{?Roslyn}
+.NET Compiler Platform
+
+

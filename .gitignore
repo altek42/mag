@@ -9,3 +9,5 @@
 *.run.xml
 *.gz
 *.toc
+*.bcf
+/doc/*.out
