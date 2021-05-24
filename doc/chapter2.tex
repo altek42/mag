@@ -1,17 +1,13 @@
 \chapter{Projekt kompilatora}
 \label{rozdzial2}
-Opis 
 \section{Środowisko i narzędzia}
-Opis sprzętu na którym będzie wszystko uruchomiane.
-Do implementacji będą wykorzystane:
-
+\par Kod kompilatora zostanie zrealizowany w języku \textit{C\#} na platformie \textit{.NET Core 3.1}. W projekcie zostanie również wykorzystana platforma \textit{.NET Framework} w celu dekompilacji skompilowanego kodu testów, ich kompilacji z kodu \textit{IL Assembler} oraz kompilacji kodu \textit{JScript}. W celu weryfikacji poprawności kodu \textit{JavaScript} zostanie wykorzystana platforma \textit{Node.js} w wersji 10.15. Zostanie również wykorzystany skrypt pomocniczy w \textit{PowerShell} służący do łatwego przeprowadzenia testów oraz do zebrania informacji o wielkości plików wykonywalnych i pomiaru czasu wykonania programów testowych. Drugim z dekompilatorów jaki zostanie wykorzystany w projekcie jest program \textit{JetBrains dotPeek 2020.2.1}. Ostatnim z programów, służący do pomiarów zużycia pamięci, jest \textit{JetBrains dotMemory 2020.2.1}.
+\par Wszystkie testy oraz pomiary zostaną przeprowadzone na komputerze o następujących parametrach:
 \begin{itemize}
-  \item C\#
-  \item Visual Studio Code
-  \item WSL (Ubuntu 20.04 LTS)
-  \item JavaScript
-  \item Node.js
-  \item mono-devel (ilasm, ildasm)
+  \item System operacyjny: Windows 10 Home
+  \item Typ systemu: 64-bitowy
+  \item Procesor: Intel(R) Core(TM) i7-4700MQ CPU @ 2.40Hz
+  \item Pamięć RAM: 16 GB
 \end{itemize}
 
 \section{Analiza języka JavaScript i określenie zakresu implementacji}
@@ -25,18 +21,18 @@ Do implementacji będą wykorzystane:
 
 \subsection{Wyrażenia}
 
-\par Składnia języka JavaScript zapożycza wiele rozwiązań użytych w Javie, jednak na konstrukcję miły też wpływ takie języki jak: Awk, Perl i Python. W języku JavaScript instrukcję nazywane są wyrażeniami, które rozdzielane są znakiem średniaka. Znaki białe takie jak spacja, tabulator czy znak końca linii nie mają wpływu na sposób działania kolejnych elementów wyrażeń, stanowią jedynie sposób ich oddzielenia. W kodzie źródłowym JavaScript rozróżnialna jest wielkość liter oraz wspierany jest standard znaków Unicode. ECMAScript definiuje również zestaw słów kluczowych i literałów oraz zasady automatycznego umieszczania średników ASI (Automatic semicolon insertion).
+\par Składnia języka JavaScript zapożycza wiele rozwiązań użytych w Javie, jednak na konstrukcję miały też wpływ takie języki jak: Awk, Perl i Python. W języku JavaScript instrukcję nazywane są wyrażeniami, które rozdzielane są znakiem średniaka. Znaki białe takie jak spacja, tabulator czy znak końca linii nie mają wpływu na sposób działania kolejnych elementów wyrażeń, stanowią jedynie sposób ich oddzielenia. W kodzie źródłowym JavaScript rozróżnialna jest wielkość liter oraz wspierany jest standard znaków Unicode. ECMAScript definiuje również zestaw słów kluczowych i literałów oraz zasady automatycznego umieszczania średników ASI (Automatic semicolon insertion).
 
 \subsection{Komentarze}
 
 \par Rozróżniane są dwa typy komentarzy:
 \begin{enumerate}
   \item Jednoliniowy - definiowany jest przy pomocy znaku ``$//$'' oraz umieszczany jest na końcu linii.
-  \begin{lstlisting}[language=JavaScript, caption=Przykład komentarza jednoliniowego, label=alg:kod1]
+  \begin{lstlisting}[language=JavaScript, caption=Przykład komentarza jednoliniowego, label=alg:komentarze1]
     console.log(); // komentarz
   \end{lstlisting}
   \item Wieloliniowy - zawarty jest pomiędzy dwoma elementami ``/*'' oraz ``*/''
-  \begin{lstlisting}[language=JavaScript, caption=Przykład komentarza wieloliniowego, label=alg:kod2]
+  \begin{lstlisting}[language=JavaScript, caption=Przykład komentarza wieloliniowego, label=alg:komentarze2]
     console.log();
     /*
       komentarz na
@@ -47,14 +43,15 @@ Do implementacji będą wykorzystane:
 
 \subsection{Deklaracje zmiennych i stałych}
 \par Zmienne deklaruje się przy pomocy słów kluczowych \texttt{var}, \texttt{let} oraz \texttt{const}. Deklaracja przy pomocy \texttt{var} jest podstawowym sposobem tworzenia zmiennych w JavaScript. Zasięg takiej zmiennej nie może być ograniczony przez blok w którym jest zawarta, przez co może powodować błędy przy pisaniu kodu. W celu uściślenia zasięgu i przeznaczenia zmiennych powstały dwa inne sposoby deklaracji \texttt{let} oraz \texttt{const}. Oba te rodzaje deklaracji powodują, że zakres dostępności zmiennej jest ograniczony do bloku w którym została zadeklarowana. Różnicą między tymi dwoma deklaracjami jest taka, że przy pomocy \texttt{const} definiujemy stałą która musi być od razu zadeklarowana, a \texttt{let} działa podobnie jak \texttt{var}.
-\begin{lstlisting}
+\begin{lstlisting}[language=JavaScript, caption=Przykład deklaracji zmiennych, label=alg:deklaracjaZmiennej1]
   var zmienna1;
   let zmienna2;
   const stala = true;
 \end{lstlisting}
-\par Przy deklaracji zmiennych przy użyciu \texttt{var} lub \texttt{let}, których nie przypiszemy żadnej wartości to przyjmują one wartość \texttt{undefined}
+\par Przy deklaracji zmiennych przy użyciu \texttt{var} lub \texttt{let}, dla których nie przypiszemy żadnej wartości, przyjmują one wartość \texttt{undefined}
 
 \subsection{Typy danych}
+% https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Sk%C5%82adnia_i_typy
 \par W najnowszym standardzie ECMAScript zdefiniowanych jest siedem typów danych:
 \begin{enumerate}
   \item \texttt{Boolean} - może przybierać dwie wartości \texttt{true} lub \texttt{false}.
@@ -67,7 +64,138 @@ Do implementacji będą wykorzystane:
 \end{enumerate}
 
 \subsection{Operacje arytmetyczne}
-\subsection{Operacje warunkowe}
+% https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators
+Operatory arytmetyczne przyjmują jako operandy wartości liczbowe w postaci literałów lub zmiennych i jako wynik zwracają pojedynczą wartość liczbową. Standardowe operatory arytmetyczne to:
+\begin{itemize}
+  \item dodawanie ``\texttt{+}''
+  \item odejmowanie ``\texttt{-}''
+  \item mnożenie ``\texttt{*}''
+  \item dzielenie ``\texttt{/}''
+\end{itemize}
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia operatorów arytmetycznych, label=alg:operatoryArytmetyczne1]
+  var v1 = 10 + 15
+  var v2 = 100 + 100 / 2 * 3 + 10
+  var v3 = 100.7 + 10.40 / 1.67 * 3.1 + 10.23
+\end{lstlisting}
+
+
+\subsection{Operacje porównania}
+  \par Operatory porównania porównuje swoje operandy czego wynikiem jest wartość logiczna, określająca czy dane stwierdzenie jest prawdziwe. Operandy mogą być wartościami liczbowymi, łańcuchami znaków, logicznymi lub wartościami obiektu. W przypadku kiedy dwa operandy są różnego typu, JavaScript próbuje przekonwertować je na odpowiedni typ do porównania.
+  \par Operatory porównania w języku JavaScript to:
+  \begin{itemize}
+    \item równość ``==''
+    \item nierówność ``!=''
+    \item ścisła równość ``===''
+    \item ścisła nierówność ``!==''
+    \item większy ``>''
+    \item większy lub równy ``>=''
+    \item mniejszy ``<''
+    \item mniejszy lub równy ``<=''
+  \end{itemize}
+  Tutaj warto zauważyć, że JavaScript posiada dwa operatory równości i nierówności. Różnica pomiędzy ścisłym porównaniu a zwykłym polega na tym, że w przypadku kiedy operandy są różnego typu, to dla zwykłego porównywania, JavaScript próbuje przekonwertować wartości do jednego typu. Przy porównywaniu ścisłym nie zachodzi konwersja.
+
+  \begin{lstlisting}[language=JavaScript, caption=Przykład użycia operatorów porównania, label=alg:operatoryPorownania1]
+    var v1 = 2 == 2
+    var v2 = 1 + 1 != 2
+    var v3 = zmienna1 > zmienna2
+  \end{lstlisting}
+
+\subsection{Instrukcje warunkowe}
+% https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Control_flow_and_error_handling
+Instrukcje warunkowe to zbiór instrukcji, których wykonanie jest zależne od zdefiniowanego warunku którego wynikiem jest wartość logiczna ``true'' lub ``false''. JavaScript wspiera dwa rodzaje instrukcji warunkowych:
+\begin{itemize}
+  \item \texttt{if .. else}
+  \item \texttt{siwtch}
+\end{itemize}
+\par Instrukcja \texttt{if} wykonuje blok instrukcji w przypadku, kiedy podany warunek zwróci wartość ``true''. Jeśli trzeba obsłużyć przypadek kiedy warunek nie został spełniony, można posłużyć się instrukcją \texttt{else} lub instrukcją \texttt{else if} podając inny warunek.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{if .. else}, label=alg:instrukcjaIfElese1]
+  if (20 > number1) {
+    console.log("number1 is less than 20")
+  } else if (25 > number1) {
+    console.log("number1 is less than 25 and greater than 20")
+  } else {
+    console.log("number1 is greater than 25")
+  }
+\end{lstlisting}
+
+\par Instrukcja \texttt{switch} wykonuje blok instrukcji w przypadku, kiedy podane wyrażenie zgadza się z identyfikatorom danego bloku. Po dopasowaniu identyfikatora, wykonywane są wszystkie bloki instrukcji poniżej dopasowania, chyba że zostanie użyte słowo kluczowe \texttt{break}, które zakańcza wykonywanie instrukcji switch. Jeśli dane wyrażenie nie zostanie dopasowane do żadnego z identyfikatora, wykonywany jest kod z bloku o identyfikatorze \texttt{default}.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{switch}, label=alg:instrukcjaSwitch1]
+  switch (color) {
+  case "Red":
+    console.log("Chosen color: Red");
+    break;
+  case "Blue":
+    console.log("Chosen color: Blue");
+    break;
+  case "Green":
+    console.log("Chosen color: Green");
+    break;
+  default:
+   console.log("Chosen color: Default");
+}
+\end{lstlisting}
+
+
+\subsection{Pętle}
+% https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Loops_and_iteration
+Przy pomocy pętli można w łatwy sposób powtarzać wykonywanie bloków instrukcji. W języku JavaScript występują różne rodzaje pętli. Można rozróżnić następujące konstrukcje:
+\begin{itemize}
+  \item \texttt{for}
+  \item \texttt{for .. in}
+  \item \texttt{for .. of}
+  \item \texttt{do .. while}
+  \item \texttt{while}
+\end{itemize}
+
+\par Pętla \texttt{for} przyjmuje jako parametry trzy elementy: wyrażenie inicjalizacji, warunek zakończenia oraz wyrażenie inkrementacji. Wyrażenie inicjalizacji wykonywane jest tylko raz, na samym początku, jeszcze przed sprawdzeniem instrukcji warunkowej. Zazwyczaj wykorzystuje się je do zadeklarowania lub wyzerowania zmiennej iterującej. Wyrażenie warunkowe sprawdzane jest przed każdym wywołaniem bloku instrukcji. W przypadku kiedy wyrażenie warunkowe jest prawdziwe to zostanie wykonany blok instrukcji, a jeśli jest fałszywe to zakończy się działanie pętli. Wyrażenie inkrementacji wywoływane jest po zakończeniu wykonywania bloku instrukcji. Wykorzystuje się je do modyfikacji zmiennej iterującej.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{for}, label=alg:instrukcjaFor1]
+  for (var index = 0; index < 10; index = index + 1) {
+    var element = x + index; // blok instrukcji
+    console.log(element)
+  }
+\end{lstlisting}
+
+\par Pętla \texttt{for .. in} jest instrukcją pozwalającą na przeiterowanie się po elementach obiektu. Przyjmuje jako parametry deklarację zmiennej, do której wpisywana będzie wartość iteratora w danym przebiegu pętli oraz jako drugi argument, podaje się obiekt po którym chcemy się przeiterować. 
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{for .. in}, label=alg:instrukcjaFor2]
+  for (var key in obj){
+    console.log(obj[key])
+  }
+\end{lstlisting}
+
+\par Pętla \texttt{for .. of} pozwala na iterowanie się po obiektach iterowalnych. Podobnie jak pętla \texttt{for .. in} przyjmuje dwa parametry, z których pierwszy również jest deklaracją zmiennej, jednak przechowuje ona wartość elementu w danej iteracji, a drugi parametr jest obiekt iterowalny.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{for .. of}, label=alg:instrukcjaFor3]
+  for (var value of myArray){
+    console.log(value)
+  }
+\end{lstlisting}
+
+\par Pętla \texttt{do .. while} wykonuje blok instrukcji po którym sprawdzane jest wyrażenie warunkowe. Jeżeli wyrażenie jest prawdziwe wykonuje ponownie blok instrukcji, w przeciwnym wypadku wykonywanie pętli zostanie zakończone. Warto zwrócić uwagę, że blok instrukcji wykona się zawsze co najmniej raz.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{do .. while}, label=alg:instrukcjaWhile1]
+  do {
+    console.log(zmienna)
+  } while (zmienna > 10)
+\end{lstlisting}
+
+\par Pętla \texttt{while} działa w taki sam sposób jak pętla \texttt{do .. while} z tą różnicą, że warunek jest sprawdzany przed wykonaniem bloku instrukcji. oznacza to, że jeśli w pierwszej iteracji warunek będzie fałszywy, to blok instrukcji nie wykona się ani razu.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład użycia instrukcji \texttt{while}, label=alg:instrukcjaWhile2]
+  while (zmienna > 10) {
+    console.log(zmienna)
+  }
+\end{lstlisting}
+
+
+\subsection{Tablice i obiekty}
+
+\subsection{Funkcje}
+
 \subsection{Zakres implementacji projektu}
 W niniejszym projekcie zostaną zaimplementowane następujące elementy: 
 \begin{itemize}
@@ -83,7 +211,6 @@ W niniejszym projekcie zostaną zaimplementowane następujące elementy:
   \item Deklaracja oraz wywoływanie funkcji: bez parametrów oraz zwracanej wartości, bez parametrów oraz z zwracaną wartością, z parametrami bez zwracanej wartości oraz z parametrami z zwracaną wartością.
 \end{itemize}
 
-% https://developer.mozilla.org/pl/docs/Web/JavaScript/Guide/Sk%C5%82adnia_i_typy
 
 \section{Parser}
 Używamy ANTLR z własną gramatyką ale posiłkując się gotowcem. Wykorzystanie gotowej gramatyki powoduje wygenerowanie tak dużych plików, że próba zrozumienia co jest do czego wymaga poświęcenia dużego wysiłku. Większość tych rzeczy i tak by nie została wykorzystana.
