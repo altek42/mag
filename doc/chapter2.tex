@@ -196,6 +196,7 @@ Przy pomocy pętli można w łatwy sposób powtarzać wykonywanie bloków instru
 \par W języku JavaScript prawie wszystko jest obiektem. Każdy obiekt posiada swoje właściwości (atrybuty) oraz może posiadać swoje metody. Takimi obiektami mogą być między innymi takie konstrukcje jak tablice, obiekty słownikowe, funkcje czy też instancje klas.
 
 \par Tablice (\texttt{Array}) pozwalają na przechowywanie grup danych i utrzymywaniu porządku w danych. Aby utworzyć obiekt tablicy można posłużyć się konstrukcją \texttt{new} lub też użyć nawiasów kwadratowych \texttt{[]}. 
+% \footcite[39-40]{BeginningJavaScript}
 
 \begin{lstlisting}[language=JavaScript, caption=Przykład utworzenia tablicy, label=alg:array]
   // Wykorzystanie operatora 'new'
@@ -248,37 +249,60 @@ Przy pomocy pętli można w łatwy sposób powtarzać wykonywanie bloków instru
 
 \subsection{Funkcje}
 
+\par Funkcja jest zbiorem instrukcji, które wykonują określone zadanie. Przed użyciem funkcji trzeba najpierw ją zdefiniować. Aby to zrobić należy użyć instrukcji \texttt{function}. Instrukcja ta wymaga podania: nazwy funkcji, listy argumentów oraz blok instrukcji, które mają być wykonywane w ramach tejże funkcji.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład deklaracji funkcji, label=alg:function1]
+  function square(number) {
+    return number * number;
+  }
+\end{lstlisting}
+
+\par Aby wywołać funkcję podać jej nazwę oraz listę argumentów. Argumenty mogą być dowolnego typu, jednak trzeba pamiętać, że przekazywanie typów prostych takich jak liczby lub ciągi znaków, przekazywane są przez wartości. Natomiast przekazywanie obiektów, takich jak tablice, odbywa się poprzez referencje do danego obiektu. Oznacza to, że zmiana w obiekcie spowoduje zmianę obiektu poza funkcją.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład uzycia funkcji, label=alg:function2]
+  var result = square(5)
+\end{lstlisting}
+
 \subsection{Zakres implementacji projektu}
 W niniejszym projekcie zostaną zaimplementowane następujące elementy: 
 \begin{itemize}
-  \item Komentarze jednoliniowe oraz wieloliniowe.
-  \item Proste typy danych: \texttt{Boolean}, \texttt{Number}, \texttt{String}.
-  \item Tworzenie zmiennych typu \texttt{var}.
-  \item Uproszczona implementacja funkcji \texttt{console.log()}.
-  \item Konwersja typów danych.
-  \item Operacje matematyczne takie jak dodawanie, odejmowanie, mnożenie oraz dzielenie.
-  \item Wyrażenia warunkowe takie jak sprawdzenie: równości, nierówności, większości lub mniejszości.
-  \item Instrukcja \texttt{if} oraz pętle \texttt{while} oraz \texttt{for}
-  \item Typ \texttt{Object} pod postacią tablicy elementów oraz słownika danych.
-  \item Deklaracja oraz wywoływanie funkcji: bez parametrów oraz zwracanej wartości, bez parametrów oraz z zwracaną wartością, z parametrami bez zwracanej wartości oraz z parametrami z zwracaną wartością.
+  \item Komentarze jednoliniowe oraz wieloliniowe
+  \item Proste typy danych: 
+  \begin{itemize}
+    \item \texttt{Boolean} - wartości \textit{true} oraz \textit{false}
+    \item \texttt{Number} - wartości całkowite oraz rzeczywiste
+    \item \texttt{String} - łańcuchy znaków
+  \end{itemize}
+  \item Tworzenie zmiennych typu \texttt{var}, z opcją deklaracji kolejnych zmiennych po przecinku
+  \item Uproszczona implementacja funkcji \texttt{console.log()}
+  \item Konwersja typów danych
+  \item Operacje matematyczne takie jak dodawanie, odejmowanie, mnożenie oraz dzielenie
+  \item Konkatenacja łańcuchów znaków
+  \item Operacje porównania
+  \item Negacja wartości \texttt{Boolean}
+  \item Instrukcja warunkowa \texttt{if}
+  \item Pętle \texttt{while} oraz \texttt{for}
+  \item Uproszczona tablica elementów - przechowywanie tylko wartości liczbowych całkowitych
+  \item Deklaracja oraz wywoływanie funkcji
 \end{itemize}
 
 
 \section{Parser}
-Używamy ANTLR z własną gramatyką ale posiłkując się gotowcem. Wykorzystanie gotowej gramatyki powoduje wygenerowanie tak dużych plików, że próba zrozumienia co jest do czego wymaga poświęcenia dużego wysiłku. Większość tych rzeczy i tak by nie została wykorzystana.
+\par Do celów analizy składni języka JavaScript zostanie wykorzystane narzędzie ANTLR, które dostępne jest na wielu platformach oraz dla wielu języków. Wraz z narzędziem dostępna jest gotowa gramatyka dla języka JavaScript. Jednak, mimo dostępności pełnej gramatyki, zostanie na jej podstawie na nowo, tylko w obrębie planowanego zakresu. Dzięki temu zostaną uniknięte błędy, związane z brakiem pełnej implementacji funkcjonalności, oraz pozwoli to na stworzenie uproszczeń implementacyjnych.
 
-Rozważane możliwości i wykonano przegląd narzędzi:
-
-po 2 zdania: \\
-Gotowe narzędzia:
+\par Przy wyborze parsera, były również rozważane następujące narzędzia:
 \begin{itemize}
-  \item LEX \& YYAC
-  \item ANTLR
-  \item Coco/R
-  \item gppg \& gplex
-  \item Owl (https://github.com/ianh/owl)
+  \item LEX \& YACC - standardowe narzędzia w systemach UNIX pozwalające na analizę plików tekstowych oraz generowanie na ich podstawie kodu w języku C.
+  \item Coco / R - generator kompilatorów, który dla podanej gramatyki kodu źródłowego generuje parser dla tego języka. Implementacja dostępna w językach C\#, Java, C++ i innych.
+  \item gppg \& gplex - implementacja LEX \& YACC w języku C\#.
+  \item Owl - generator parserów, generujący do użycia plik nagłówkowy w języku C.
 \end{itemize}
-i więcej... https://en.wikipedia.org/wiki/Comparison\_of\_parser\_generators
+% i więcej... https://en.wikipedia.org/wiki/Comparison\_of\_parser\_generators
+
+% LEX \& YACC https://tldp.org/HOWTO/Lex-YACC-HOWTO.html
+% Coco / R https://ssw.jku.at/Research/Projects/Coco/Doc/UserManual.pdf
+% gppg https://github.com/k-john-gough/gppg
+% Owl https://github.com/ianh/owl
 
 
 \section{Struktura projektu}
