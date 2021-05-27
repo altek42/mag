@@ -192,7 +192,59 @@ Przy pomocy pętli można w łatwy sposób powtarzać wykonywanie bloków instru
 \end{lstlisting}
 
 
-\subsection{Tablice i obiekty}
+\subsection{Tablice}
+\par W języku JavaScript prawie wszystko jest obiektem. Każdy obiekt posiada swoje właściwości (atrybuty) oraz może posiadać swoje metody. Takimi obiektami mogą być między innymi takie konstrukcje jak tablice, obiekty słownikowe, funkcje czy też instancje klas.
+
+\par Tablice (\texttt{Array}) pozwalają na przechowywanie grup danych i utrzymywaniu porządku w danych. Aby utworzyć obiekt tablicy można posłużyć się konstrukcją \texttt{new} lub też użyć nawiasów kwadratowych \texttt{[]}. 
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład utworzenia tablicy, label=alg:array]
+  // Wykorzystanie operatora 'new'
+  var tablica1 = new Array();
+  // Wykorzystanie nawiasów
+  var tablica2 = [];
+\end{lstlisting}
+
+\par Tablice posiadają metody pozwalające na zarządzanie nimi. Przykładowo aby przypisać wartości można użyć metody \texttt{push}, wtedy dodawany element zapisywany jest na ostatnie miejsce w tablicy, a żeby pobrać ostatni element można użyć metody \texttt{pop}.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład zarządania elementami tablicy przy pomocy `push' i `pop', label=alg:array2]
+  var tablica = []
+  // Dodanie elementu przy pomocy 'push'
+  tablica.push('element')
+  // Pobranie elementu przy pomocy 'pop'
+  var element = tablica.pop()
+\end{lstlisting}
+
+\par Przypisywanie oraz pobieranie elementów można również wykonywać za pomocą indeksów. Elementy tablic numerowane są od zera.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład zarządania elementami tablicy przy pomocy nawiasów, label=alg:array3]
+  var tablica = []
+  // Dodanie elementu
+  tablica[0] = 'element'
+  // Pobranie elementu
+  var element = tablica[0]
+\end{lstlisting}
+
+\par Tablice są obiektami dynamicznymi i w każdej chwili można zmienić ilość znajdujących się w nich elementów. W związku z tym tablica posiada atrybut \texttt{length} przechowujący ilość elementów znajdujący się w danej tej tablicy. 
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład pobrania ilości elementów tablicy , label=alg:array4]
+  var tablica = []
+  tablica[0] = 'element1'
+  tablica[1] = 'element2'
+  // Pobranie ilości elementów
+  var len = tablica.length
+\end{lstlisting}
+
+\par Warto również wspomnieć, że tablice pozwalają na przechowywanie elementów o różnych typach, jak i mogą posiadać elementy puste.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład przypisania elementów o różnych typach , label=alg:array5]
+  var tablica = []
+  tablica[0] = 'element1'
+  tablica[1] = 2
+  tablica[3] = true
+  var len = tablica.length 
+  // tablica zawiera 4 elementy
+  // element o indeksie 2 jest pusty
+\end{lstlisting}
 
 \subsection{Funkcje}
 
