@@ -306,6 +306,22 @@ W niniejszym projekcie zostaną zaimplementowane następujące elementy:
 
 
 \section{Struktura projektu}
-Diagramy i opisy.
-Jak będzie wyglądał ten rozdział zależy jak wyjdzie implementacja.
-% Tak, tak, wiem, najpierw implementacja a później dokumentacja...
+
+\par Projekt kompilatora został podzielony na następujące warstwy:
+\begin{itemize}
+  \item Definicja gramatyki - zostanie tutaj zdefiniowana gramatyka dla języka JavaScript oraz zostanie wykorzystane narzędzie ANTLR do wygenerowania interfejsów dla tej gramatyki.
+  \item Moduły - będą to klasy odpowiedzialne za obsługę grupy funkcjonalności takie jak:
+  \begin{itemize}
+    \item Obsługa standardowego wyjścia
+    \item Obsługa zmiennych
+    \item Obsługa działań arytmetycznych
+    \item Obsługa wyrażeń warunkowych
+    \item Obsługa pętli
+    \item Obsługa tablic
+    \item Obsługa funkcji
+  \end{itemize}
+  \item Zarządzanie stosem i definicjami
+  \item Generator kodu assemblera
+\end{itemize}
+
+\par Zostanie również stworzona sekcja testów w której zawarte będą programy testowe w języku JavaScript oraz odpowiadające im implementacje w języku C\#. Testy będą obejmować cały planowany zakres implementacji kompilatora. Dla testów zostanie wykorzystany skrypt pomocniczy napisany PowerShell, pozwalający na szybkie przeprowadzenie pełnych testów.
