@@ -2,14 +2,178 @@
 \label{rozdzial3}
 
 \section{Parser}
-Sposób implementacji lub przygotowania i użycia gotowych narzędzi.
+\par W projekcie zostanie wykorzystane narzędzie ANTLR, które można z następującego linku \url{https://www.antlr.org/download.html} (dostępne: 28.05.2021). Należy wydzielić osobny folder w którym będą znajdować się pliki z definicjami leksemów oraz gramatyki. Do danego folderu należy przenieść plik wykonywalny (\textit{antlr.jar}) narzędzia ANTLR. Aby uruchomić narzędzie wymagane jest posiadanie środowiska wykonawczego Java.
+\par W celu wygenerowania plików parsera dla środowiska .NET należy wywołać komendę przedstawioną w algorytmie \ref{alg:antlr}. W folderze w którym zostanie wykonana komenda znajdują się aktualnie dwa pliki: 
+\begin{itemize}
+  \item \textit{JavaScriptLexer.g4} - plik zawierający definicję leksemów
+  \item \textit{JavaScriptParser.g4} - plik zawierający definicję gramatyki
+\end{itemize}
+Po wykonaniu komendy generowania, powstaną cztery pliki wynikowe: 
+\begin{itemize}
+  \item \textit{JavaScriptLexer.cs}
+  \item \textit{JavaScriptParser.cs}
+  \item \textit{JavaScriptParserBaseListener.cs}
+  \item \textit{JavaScriptParserListener.cs}
+\end{itemize}
+Są to pliki kodu źródłowego parsera dla zdefiniowanych wcześniej leksemów oraz gramatyki. W celu użycia parsera, należy utworzyć własną klasę, która będzie dziedziczyć po klasie \textit{JavaScriptParserBaseListener} zawierająca definicje nagłówków funkcji.
+
+\begin{lstlisting}[caption=Komenda uruchamiająca narzędzie ANTLR, label=alg:antlr]
+  java -jar antlr.jar -Dlanguage=CSharp *.g4
+\end{lstlisting}
 
 \subsection{Analiza leksykalna}
-Tekst
+\par W celu przeanalizowania pliku wejściowego kodu JavaScript pod kątem leksykalnym i utworzeniu tokenów, należy zdefiniować odpowiednie reguły w pliku \textit{JavaScriptLexer.g4}. 
+\par Na samym początku pliku musi się znajdować deklaracja, że ten plik zawiera reguły do analizy leksykalnej. 
+
+\begin{lstlisting}[caption=Deklaracja pliku do analizy leksykalnej, label=alg:antlrLex1]
+  lexer grammar JavaScriptLexer;
+\end{lstlisting}
+
+Następnie w pliku powinny się znajdować reguły tokenów. Definiuje się je, nadając nazwę tokenu, a po dwukropku wpisuje się jedno lub wiele wyrażeń dopasowania oddzielonymi znakami `|'. Nazwy tokenu muszą zaczynać się wielką literą.
+
+
+\begin{lstlisting}[caption=Przykład definicji tokenów dla znaków operacji porównania, label=alg:antlrLex2]
+  LESS_THAN:           '<';
+  MORE_THAN:           '>';
+  LESS_THAN_EQUALS:    '<=';
+  GREATER_THAN_EQUALS: '>=';
+  EQUALS:              '==';
+  NOT_EQUALS:          '!=';
+  IDENTITY_EQUALS:     '===';
+  IDENTITY_NOT_EQUALS: '!==';
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Przykład definicji tokenów dla znaków słów kluczowych, label=alg:antlrLex3]
+  CONSOLE_LOG: 'console.log';
+  VAR:         'var';
+  CONTINUE:    'continue';
+  FOR:         'for';
+  WHILE:       'while';
+  FUNCTION:    'function';
+  LENGTH:      'length';
+  RETURN:      'return';
+\end{lstlisting}
+
+\par Można również zdefiniować regułę pomocniczą, która nie będzie interpretowana jako token, ale jej dopasowanie będzie uwzględniane, przy wykorzystaniu jej w innej regule. Aby stworzyć taką regułę pomocniczą, należy użyć instrukcji \texttt{fragment} przed nazwą tokenu.
+
+\begin{lstlisting}[caption=Przykład definicji tokenu dla wielu dopasowań, label=alg:antlrLex4]
+  NUMBER
+  : INTEGER_NUMBER '.' [0-9] [0-9_]*
+  | '.' [0-9] [0-9_]*
+  | INTEGER_NUMBER
+  ;
+
+fragment INTEGER_NUMBER
+  : '0'
+  | '-'?[1-9] [0-9_]*
+  ;
+\end{lstlisting}
+
+% https://sodocumentation.net/antlr/topic/3271/lexer-rules-in-v4
+\par Można również zdefiniować regułę, która zamiast tworzyć token, będzie dane dopasowanie pomijać. Aby tego dokonać, trzeba dołączyć do danej reguły, wywołanie komendy leksera \texttt{skip}. Istnieją również inne komendy takie jak: \texttt{channel(n)} - służący do zmiany kanału emitowanych tokenów; \texttt{type(n)} - zmieniający typ tokenu; \texttt{mode(n)}, \texttt{pushMode(n)}, \texttt{popMode}, \texttt{more} - kontrolujące tryb działania leksera. \footcite{AntlrLexRules}
+
+\begin{lstlisting}[caption=Przykład użycia komendy \texttt{skip}, label=alg:antlrLex5]
+  MULTI_LINE_COMMENT:  '/*' .*? '*/'   -> skip;
+\end{lstlisting}
+
 \subsection{Gramatyka}
-Tekst
-\section{Funkcjonalności}
-Opis sposobu przetwarzania instrukcji
-\section{Generowanie assemblera}
-Opisać jak wygenerować kod .NET
+Po zdefiniowaniu tokenów, można rozpocząć definicję gramatyki. Tak jak było w przypadku pliku z leksemami, należy w pliku \textit{JavaScriptParser.g4} zadeklarować, że plik zawiera reguły gramatyki oraz również wskazać plik zawierający tokeny.
+
+\begin{lstlisting}[caption=Deklaracja pliku do analizy gramatyki, label=alg:antlrGr1]
+  parser grammar JavaScriptParser;
+
+  options {
+    tokenVocab=JavaScriptLexer;
+  }
+\end{lstlisting}
+
+Definicje gramatyk deklaruje się w identyczny sposób jak tworzyło tokeny. Najpierw należy podać nazwę reguły a pod dwukropku, podajemy jedna lub wiele definicji oddzielonymi znakiem `|'. Zdefiniowana gramatyka może być wykorzystana w innych definicjach. 
+
+\begin{lstlisting}[caption=Przykład definicji reguły gramatyki, label=alg:antlrGr1]
+  booleanValue
+  : BOOLEAN
+  ;
+
+  constantValue
+  : booleanValue
+  | stringValue
+  | numberValue
+  ;
+\end{lstlisting}
+
+\par Dla każdej zdefiniowanej reguły, przy pomocy narzędzia ANTLR, zostaną utworzone dwie funkcję w wygenerowanym pliku parsera. Pierwsza będzie się wykonywać przed, a druga po analizie reguł. Nazwy wygenerowanych funkcji będą identyczne jak nazwa reguły z dopisanym przedrostkiem \textit{Enter} dla funkcji wywoływanej przed analizą reguły oraz \textit{Exit} dla funkcji po analizie. Jako argument funkcji jest przekazywany kontekst parsera, dzięki któremu można pobrać wartość leksemu, lub też sprawdzić która definicja jest analizowana.
+
+\begin{lstlisting}[language=CSharp, caption=Przykład wygenerowanych funkcji gramatyki parsera, label=alg:antlrGr2]
+  /// <summary>
+  /// Enter a parse tree produced by <see cref="JavaScriptParser.constantValue"/>.
+  /// <para>The default implementation does nothing.</para>
+  /// </summary>
+  /// <param name="context">The parse tree.</param>
+  public virtual void EnterConstantValue([NotNull] JavaScriptParser.ConstantValueContext context) { }
+  /// <summary>
+  /// Exit a parse tree produced by <see cref="JavaScriptParser.constantValue"/>.
+  /// <para>The default implementation does nothing.</para>
+  /// </summary>
+  /// <param name="context">The parse tree.</param>
+  public virtual void ExitConstantValue([NotNull] JavaScriptParser.ConstantValueContext context) { }
+\end{lstlisting}
+
+\par Domyślna implementacja wygenerowanych metod, nie posiadają żadnych instrukcji, dlatego też nie trzeba pisać własnych implementacji dla każdej z reguł. W przypadku kiedy chcemy napisać implementacje tych metod, jak było wcześniej wspominane, trzeba stworzyć własną klasę dziedziczącą po wygenerowanej klasie i podać jej instancję, jako klasa nasłuchująca (\textit{listner}) dla parsera.
+
+\section{Kompilator}
+
+\par Program kompilatora wymaga podania jednego argumentu, który jest ścieżką do pliku źródłowego, zawierającego kod JavaScript. Jego wynikiem jest plik o tej samej nazwie z rozszerzeniem ``\textit{.il}'' zawierający kod assemblera platformy .NET. Zawartość pliku źródłowego jest analizowana przez parser, który wywołuje odpowiednie metody przy dopasowaniu reguł gramatyki.
+\par W funkcji głównej \textit{Main} kompilatora znajduje się: otwarcie pliku źródłowego, utworzenie instancji modułu do generowania pliku wyjściowego, konfiguracja wcześniej wygenerowanego parsera oraz jego uruchomienie. Po zakończeniu analizy pliku źródłowego, plik jest zamykany, a następnie tworzony jest plik wyjściowy.
+
+\begin{lstlisting}[language=CSharp, caption=Funkcja \textit{Main} kompilatora, label=alg:komMain]
+  static void Main(string[] args) {
+    if (args.Length < 1) {
+      throw new ArgumentException("Needs file name as argument");
+    }
+
+    using (AsmGenerator.Create(args[0])) {
+      using (FileStream fs = File.OpenRead(args[0])) {
+        AntlrInputStream imputStream = new AntlrInputStream(fs);
+        JavaScriptLexer lexer = new JavaScriptLexer(imputStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+        JavaScriptParser parser = new JavaScriptParser(commonTokenStream);
+        parser.BuildParseTree = true;
+        JavaScriptParser.ParseContext context = parser.parse();
+
+        JavaScriptListner listner = new JavaScriptListner();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.Walk(listner, context);
+      }
+    }
+    Console.WriteLine("Done.");
+  }
+\end{lstlisting}
+
+\subsection{Wywołania parsera}
+
+Do przechwytywania reguł gramatyki została utworzona klasa o nazwie \textit{JavaScriptListner} dziedzicząca po wygenerowanej klasie \textit{JavaScriptParserBaseListener}. Zawiera ona nadpisane metody parsera w których wywoływane są odpowiednie funkcje z modułów obsługujących funkcjonalności. Funkcjonalności zostały podzielone na moduły i przeniesione do osobnych klas, ze względu na czytelność kodu.
+\par Niektóre z funkcji wywołują jedynie funkcjonalność modułu, a inne sprawdzają dodatkowe warunki na podstawie dostarczonego kontekstu. Są przypadki gdzie, trzeba sprawdzić która z definicji reguł jest analizowana i w zależności od tego wywołać odpowiednią metodę z konkretnego moduł.
+
+\begin{lstlisting}[language=CSharp, caption=Przykład prostej funkcji listnera=alg:komListner1]
+  public override void ExitIfStatement(JavaScriptParser.IfStatementContext context)
+  {
+    conditionModule.EndIfStatement();
+  }
+\end{lstlisting}
+
+\par Klasa \textit{JavaScriptListner} ma również za zadanie przy pomocy kontekstu, pobierać nazwy oraz wartości znajdujące się w pliku źródłowym dla konkretnych reguł. Przykładowo musi pobrać nazwę deklarowanej zmiennej lub też przypisywanej do niej wartości.
+
+\begin{lstlisting}[language=CSharp, caption=Przykład funkcji listnera z sprawdzeniem kontekstu=alg:komListner2]
+  public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context) {
+    string value = context.GetChild(0).GetText();
+    if(context.ChildCount > 1) {
+      arrayModule.CreateTableVariable(value);
+    } else {
+      variableModule.CreateVariable(value);
+    }
+  }
+\end{lstlisting}
+
+\subsection{Moduły}
+
 
