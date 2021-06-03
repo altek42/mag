@@ -64,3 +64,6 @@ console.log(zmienna3)
 var x = 1;
 x++;
 console.log(x);
+
+var b = 5 + 4.5
+console.log(b)

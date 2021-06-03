@@ -119,54 +119,6 @@ public partial class JavaScriptParserBaseListener : IJavaScriptParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWriteStdOutput([NotNull] JavaScriptParser.WriteStdOutputContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputConstant"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWriteStdOutputConstant([NotNull] JavaScriptParser.WriteStdOutputConstantContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputConstant"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWriteStdOutputConstant([NotNull] JavaScriptParser.WriteStdOutputConstantContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputIdentifier"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWriteStdOutputIdentifier([NotNull] JavaScriptParser.WriteStdOutputIdentifierContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputIdentifier"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWriteStdOutputIdentifier([NotNull] JavaScriptParser.WriteStdOutputIdentifierContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputArithmeticOperation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWriteStdOutputArithmeticOperation([NotNull] JavaScriptParser.WriteStdOutputArithmeticOperationContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputArithmeticOperation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWriteStdOutputArithmeticOperation([NotNull] JavaScriptParser.WriteStdOutputArithmeticOperationContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arithmeticOperation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

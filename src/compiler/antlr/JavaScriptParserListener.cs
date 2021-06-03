@@ -101,46 +101,6 @@ public interface IJavaScriptParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitWriteStdOutput([NotNull] JavaScriptParser.WriteStdOutputContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputConstant"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWriteStdOutputConstant([NotNull] JavaScriptParser.WriteStdOutputConstantContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputConstant"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWriteStdOutputConstant([NotNull] JavaScriptParser.WriteStdOutputConstantContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWriteStdOutputIdentifier([NotNull] JavaScriptParser.WriteStdOutputIdentifierContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputIdentifier"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWriteStdOutputIdentifier([NotNull] JavaScriptParser.WriteStdOutputIdentifierContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputArithmeticOperation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWriteStdOutputArithmeticOperation([NotNull] JavaScriptParser.WriteStdOutputArithmeticOperationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputArithmeticOperation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWriteStdOutputArithmeticOperation([NotNull] JavaScriptParser.WriteStdOutputArithmeticOperationContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="JavaScriptParser.writeStdOutputFunctionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWriteStdOutputFunctionCall([NotNull] JavaScriptParser.WriteStdOutputFunctionCallContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="JavaScriptParser.arithmeticOperation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

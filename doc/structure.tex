@@ -393,7 +393,7 @@ literate=%
 
 \lstdefinestyle{mystyle}{
  %   backgroundcolor=\color{grayZUT!10},   
-    basicstyle= \small\fontfamily{lmss}\selectfont,%\footnotesize\fontfamily{cmss}\selectfont,
+    basicstyle= \scriptsize\fontfamily{lmss}\selectfont,%\footnotesize\fontfamily{cmss}\selectfont,
     commentstyle=\color{codegray},
     keywordstyle=\color{violet},
     numberstyle=\tiny\color{codegray},%numeracja linijek
@@ -483,3 +483,17 @@ literate=%
    else,  long,  static,   
    enum,  namespace,  string}
 }
+
+\lstdefinelanguage{IL}{%
+  % so listings can detect directives and register names
+  alsoletter={.\$},
+  % strings, characters, and comments
+  morestring=[b]",
+  morestring=[b]',
+  morecomment = [l]{//}, 
+  % instructions
+  morekeywords={[1]ldstr, ldstr, call, callvirt, instance, ldloc, ldc.i4,
+   stloc, conv.r4},
+  % assembler directives
+  morekeywords={[2]string, void, int32, float32, bool},
+}[strings,comments,keywords]

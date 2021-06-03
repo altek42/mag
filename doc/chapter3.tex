@@ -154,7 +154,7 @@ Definicje gramatyk deklaruje się w identyczny sposób jak tworzyło tokeny. Naj
 Do przechwytywania reguł gramatyki została utworzona klasa o nazwie \textit{JavaScriptListner} dziedzicząca po wygenerowanej klasie \textit{JavaScriptParserBaseListener}. Zawiera ona nadpisane metody parsera w których wywoływane są odpowiednie funkcje z modułów obsługujących funkcjonalności. Funkcjonalności zostały podzielone na moduły i przeniesione do osobnych klas, ze względu na czytelność kodu.
 \par Niektóre z funkcji wywołują jedynie funkcjonalność modułu, a inne sprawdzają dodatkowe warunki na podstawie dostarczonego kontekstu. Są przypadki gdzie, trzeba sprawdzić która z definicji reguł jest analizowana i w zależności od tego wywołać odpowiednią metodę z konkretnego moduł.
 
-\begin{lstlisting}[language=CSharp, caption=Przykład prostej funkcji listnera=alg:komListner1]
+\begin{lstlisting}[language=CSharp, caption=Przykład prostej funkcji listnera, label=alg:komListner1]
   public override void ExitIfStatement(JavaScriptParser.IfStatementContext context)
   {
     conditionModule.EndIfStatement();
@@ -163,7 +163,7 @@ Do przechwytywania reguł gramatyki została utworzona klasa o nazwie \textit{Ja
 
 \par Klasa \textit{JavaScriptListner} ma również za zadanie przy pomocy kontekstu, pobierać nazwy oraz wartości znajdujące się w pliku źródłowym dla konkretnych reguł. Przykładowo musi pobrać nazwę deklarowanej zmiennej lub też przypisywanej do niej wartości.
 
-\begin{lstlisting}[language=CSharp, caption=Przykład funkcji listnera z sprawdzeniem kontekstu=alg:komListner2]
+\begin{lstlisting}[language=CSharp, caption=Przykład funkcji listnera z sprawdzeniem kontekstu, label=alg:komListner2]
   public override void ExitIdentifierValue(JavaScriptParser.IdentifierValueContext context) {
     string value = context.GetChild(0).GetText();
     if(context.ChildCount > 1) {
@@ -174,6 +174,270 @@ Do przechwytywania reguł gramatyki została utworzona klasa o nazwie \textit{Ja
   }
 \end{lstlisting}
 
+\subsection{Zarządzanie stosem zmiennych}
+
+\par W celu zarządzania oraz przechowywania informacji o wartościach kodu źródłowego, została utworzona statyczna klasa \texttt{Store}. Zawiera ona następujące elementy:
+\begin{itemize}
+  \item \texttt{Stack} - stos główny kompilatora
+  \item \texttt{LabelStack} - stos indexów dla nazw instrukcji warunkowych oraz pętli
+  \item \texttt{FunctionCallArgCounterStack} - stos służący do zliczania argumentów funkcji
+  \item \texttt{\_labelStackCounter} - licznik indexów etykiet
+  \item \texttt{Variables} - słownik zdefiniowanych zmiennych
+  \item \texttt{Functions} - słownik informacji definiowanych funkcji
+  \item \texttt{ProcessingFunction} - nazwa aktualnie przetwarzanej funkcji.
+\end{itemize}
+\par Elementem który przechowuje główny stos oraz słownik zmiennych jest klasa \texttt{StoreItem}. Zawiera on niezbędne informacje o przetwarzanym elemencie. Dzięki tej klasie można przechować następujące informacje:
+\begin{itemize}
+  \item \texttt{ItemType} - definiuje czy dany element jest zmienną o danym typie, zmienną tablicową, elementem tablicy, argumentem funkcji czy znakiem arytmetycznym lub porównania.
+  \item \texttt{IsVariable} - definiuje czy element jest zmienną
+  \item \texttt{IsTemporary} - definiuje czy element jest zmienną tymczasową
+  \item \texttt{IsInitialized} - definiuje czy zmienna jest dopisana do listy do zainicjalizowania
+  \item \texttt{IsFunctionParam} - definiuje czy zmienna jest parametrem funkcji
+  \item \texttt{ParamPosition} - definiuje pozycję w liście argumentów funkcji
+  \item \texttt{Parent} - element z którego powstał dany element
+  \item \texttt{TableIndex} - index zmiennej tablicowej
+\end{itemize}
+
+\par Dla słownika informacji dla zdefiniowanych funkcji została stworzona klasa \texttt{FunctionStore}. Przechowuje ona:
+\begin{itemize}
+  \item \texttt{Variables} - słownik zmiennych lokalnych funkcji
+  \item \texttt{Params} - słownik parametrów funkcji
+  \item \texttt{Name} - nazwę funkcji
+  \item \texttt{IsUsed} - informacje, czy dana funkcja została wywołana co najmniej raz
+  \item \texttt{ReturnValue} - wartość zwracana przez funkcję
+\end{itemize}
+
 \subsection{Moduły}
 
+Każdy z modułów wykorzystuje \texttt{Store} do przetwarzania instrukcji kodu źródłowego i wywołuje odpowiednie funkcje klasy generującej kod assemblera. Moduły zostały podzielone ze względu na grupy implementowanych funkcjonalności.
 
+\subsubsection{Obsługa standardowego wyjścia}
+
+W JavaScript funkcją wyświetlającą tekst na standardowym wyjściu (konsoli) służy funkcja \texttt{log()} z standardowej klasy \texttt{console}. Jako że założony zakres implementacji kompilatora nie uwzględnia implementacji klas, wywołanie tej funkcji zostało zdefiniowane jako słowo kluczowe. Dzięki temu zabiegowi można zasymulować wywołanie tej metody, jakby rzeczywiście została wywoływana ze standardowej klasy.
+
+\begin{lstlisting}[caption=Definicja gramatyki dla funkcji standardowego wyjścia, label=alg:consolelogGram]
+  writeStdOutput
+  : CONSOLE_LOG OPEN_PAREN constantValue CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN identifierValue CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN arithmeticOperation CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN functionCall CLOSE_PAREN
+  ;
+\end{lstlisting}
+
+\par Zostały zdefiniowane cztery gramatyki dla różnych rodzajów parametrów: wartości stałej (takich jak liczby, czy ciągi znaków), zmiennej, operacji arytmetycznej oraz wywołania funkcji.
+
+\par Po realizacji definicji gramatyki parametru, zostanie zawsze odłożona na główny stos wartość którą chcemy wyświetlić na konsoli. W tym celu używana jest funkcja o nazwie \texttt{WriteStdOutput} z modułu \texttt{ConsoleModule}. Ściąga ona ze stosu wartość, a następnie w zależności od tego, czy jest to zmienna tablicowa wywołuje odpowiednią funkcję generatora assemblera.
+
+\begin{lstlisting}[language=CSharp, caption=Definicja gramatyki dla funkcji standardowego wyjścia, label=alg:consolelogMdoule]
+  public void WriteStdOutput(){
+    StoreItem item = Store.PopStack();
+    if(item.IsType(StoreItemType.ARRAY)){
+      asmGenerator.WriteArrayToStdOutput(item);
+    }else {
+      asmGenerator.WriteToStdOutput(item);
+    }
+    asmGenerator.EmptyLine();
+  }
+\end{lstlisting}
+
+\par Wyświetlenie pojedynczej wartości wymaga jedynie wygenerowania kodu ładującego daną wartość na stos oraz wywołanie odpowiedniej funkcji do wyświetlenia. W przypadku tablic został zastosowany zabieg, polegający na połączenie wszystkich elementów w ciąg znaków i wyświetlenie otrzymanej wartości na ekranie.
+
+\begin{lstlisting}[language=IL, caption=Przykład wygenerowanego kodu assemblera dla funkcji wyjścia standardowego, label=alg:consolelogAsm]
+  // Wyświetlenie pojedynczej wartości
+  ldstr "tekst 123"
+  call void [mscorlib]System.Console::WriteLine(string)
+
+  // Wyświetlenie tablicy
+  ldstr   "["
+  ldstr   ", "
+  ldloc v_tab
+  call string [mscorlib]System.String::Join<int32>(string, class [mscorlib]System.Collections.Generic.IEnumerable`1 <!!0/*int32*/>)
+  ldstr   "]"
+  call string [mscorlib]System.String::Concat(string, string, string)
+  call void [mscorlib]System.Console::WriteLine(string)
+\end{lstlisting}
+
+\subsubsection{Obsługa zmiennych}
+
+\par Moduł obsługi zmiennych obejmuje funkcjonalności związanych z definicją elementów stałych, zmiennych, obsługi deklaracji zmiennych oraz obsługi rzutowania typów zmiennych. \par Przy analizowaniu reguły gramatyki identyfikującej liczbę, ciąg znaków, wartość liczbową, czy nazwę identyfikatora, wywoływane są dla nich odpowiednie metody które utworzą element opisujący dane wartości i dopiszą je na szczyt głównego stosu. Deklaracja zmiennych przebiega w ten sam sposób, ponieważ przypisanie do listy zmiennych następuje przy pierwszym wystąpieniu przypisania wartości do danej zmiennej. Przy tych operacjach nie jest tworzony kod asemblerowy.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji tworzącej element opisujący stałą liczbową, label=alg:variable1]
+  public void CreateNumber(string value) {
+    StoreItem item;
+    if (value.Contains(".")) {
+      item = StoreItem.CreateDouble(value);
+    } else {
+      item = StoreItem.CreateInteger(value);
+    }
+    Store.PushStack(item);
+  }
+\end{lstlisting}
+
+\par W tym module znajduje się jeszcze funkcjonalność rzutowania typów zmiennych. Jest ona potrzebna, ponieważ język JavaScript jest językiem z dynamicznym typowaniem zmiennych i pozwala na operacje na różnych typach zmiennych. Funkcjonalność jest wykorzystywana przykładowo przy operacjach arytmetycznych, kiedy chcemy dodać do siebie wartość całkowitą do wartości rzeczywistej. W takim przypadku następuje rzutowanie zmiennej całkowitej na zmienną rzeczywistą.
+\par Funkcja rzutowania przyjmuje jako argument element opisujący zmienną oraz typ docelowy. Na podstawie dostarczonego elementu tworzona jest jego kopia, następnie nowa zmienna jest inicjalizowana poprzez dopisanie jej do listy zadeklarowanych zmiennych. Na końcu wywoływana jest funkcja generująca kod assemblera, służąca do rzutowania wartości.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji rzutującej zmienne, label=alg:variable2]
+  public StoreItem CastVariable(StoreItem item, StoreItemType itemType){
+    if(item.ItemType == itemType){
+      return item;
+    }
+
+    StoreItem vessel = item.CreateCastVariable(itemType);
+    asmGenerator.InitializeVariable(vessel);
+    asmGenerator.CastVariable(item, vessel);
+
+    asmGenerator.Comment($"{item.Print} -> {vessel.Print}\n");
+    return vessel;
+  }
+\end{lstlisting}
+
+\par Funkcja generująca asemblera do rzutowania zmiennych, początkowo sprawdza, czy dany element jest stałą czy zmienną. W przypadku kiedy podany zostanie element opisujący wartość stałą, generator najpierw utworzy zmienną, a następnie przypisze do niej wartość stałej. Jest to konieczne, ponieważ rzutowanie typów zmiennych nie może odbywać się na wartościach stałych. Następnie w zależności od tego czy będzie odbywać się rzutowanie na wartość rzeczywistą czy łańcuch znaków, zostanie wygenerowany odpowiedni kod.
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera rzutowania wrtości całkowitej na wartość rzeczywistą, label=alg:variable3]
+  // załadowanie stałej wartości całkowitej "5"
+  ldc.i4 5
+  // przypisanie wartości "5" do zmiennej "v_tmp_36"
+  stloc v_tmp_36
+
+  // załadowanie wrtości "v_tmp_36"
+  ldloc v_tmp_36
+  // konwersja wartości do typu rzeczywistego
+  conv.r4
+  // zapisanie wyniku konwersji do zmiennej "v_tmp_35"
+  stloc v_tmp_35
+\end{lstlisting}
+
+\par W przypadku rzutowania zmiennych na łańcuch znaków, należy wywołać procedurę konwertującą wartość \texttt{ToString()}. Przy wywołaniu trzeba podać typ źródłowy wartości jaką chcemy rzutować. Są to odpowiednio:
+\begin{itemize}
+  \item \texttt{Int32} dla typu całkowitego
+  \item \texttt{Single} dla typu rzeczywistego
+  \item \texttt{Boolean} dla typu logicznego
+\end{itemize}
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera rzutowania wrtości rzeczywistej na wartość łańcucha znaków, label=alg:variable4]
+  // załadowanie stałej wartości całkowitej "4.7"
+  ldc.r4 4.7
+  // przypisanie wartości "5" do zmiennej "v_tmp_34"
+  stloc v_tmp_34
+  // załadowanie adresu "v_tmp_34"
+  ldloca.s v_tmp_34
+  // wywołanie procedury konwersji typu rzeczywistego na wartość łańcucha znaków
+  call instance string [mscorlib]System.Single::ToString()
+  // zapisanie wyniku konwersji do zmiennej "v_tmp_33"
+  stloc v_tmp_33
+\end{lstlisting}
+
+\par Przy generowaniu kodu assemblera dla tej konwersji, w przypadku kiedy znajduje się ona w ciele funkcji, są wstawiane znaczniki. Będą one zamieniane na instrukcje asemblerowe dopiero po przeanalizowaniu całego kodu pliku wejściowego. Taki zabieg wynika z konieczności, podania typu wartości źródłowej przy wywołaniu funkcji \texttt{ToString()}, a przy analizowaniu funkcji dany typ może być nie znany.
+
+\begin{lstlisting}[language=IL, caption={Przykład kodu assemblera rzutowania wrtości w funkcji, przed podmianą znacznika i po podmianie}, label=alg:variable4]
+  // Znacznik opisuje, że w funkcji o nazwie "convert" należy obsłużyć rzutowanie zmiennej o nazwie "a"
+  ldarga v_a
+  #CAST_VARIABLE#a@convert
+  stloc v_tmp_3
+
+  // Kod asemblera po zamianie znacznika
+  ldarga v_a
+  call instance string [mscorlib]System.Single::ToString()
+  stloc v_tmp_3
+\end{lstlisting}
+
+\subsubsection{Obsługa działań arytmetycznych}
+
+\par Moduł obsługi działań arytmetycznych zawiera definicje elementu znaku działań matematycznych, obsługę funkcjonalności działań matematycznych, operacji przypisania oraz inkrementacji zmiennej.
+\par Definiowanie elementu znaku działań matematycznych odbywa się w identyczny sposób jak przy definicji wartości stałych i zmiennych. Na główny stos aplikacji zostaje wrzucony element opisujący działanie, a raczej znak działania matematycznego.
+\par Przy definiowaniu gramatyki dla działań matematycznych należy zdefiniować osobne reguły dla działań dodawania i odejmowania oraz mnożenia i dzielenia, w celu zachowania zasady kolejności wykonywania działań.
+
+\begin{lstlisting}[caption=Definicja gramatyki dla funkcji działań matematycznych, label=alg:arytm1]
+  arithmeticOperation
+  : arithmeticOperation arithmeticAdditiveSign arithmeticOperationHigher
+  | arithmeticOperationHigher
+  ;
+
+  arithmeticOperationHigher
+  : arithmeticOperationHigher arithmeticMultiplpicativeSign value
+  | value
+  ;
+
+  arithmeticAdditiveSign
+  : PLUS
+  | MINUS
+  ;
+
+  arithmeticMultiplpicativeSign
+  : MULTIPLY
+  | DIVIDE
+  ;
+\end{lstlisting}
+
+
+\par Przy wywołaniu funkcji przetworzenia działania matematycznego, na stosie głównym znajdować się będą trzy elementy uczestniczące w działaniu. Będzie to kolejno dwa elementy opisujące wartości oraz element opisujący znak operacji. Następnie weryfikowane jest jakiego typu są elementy. W przypadku różnych typów danych wykonywane są funkcje rzutowania wartości na wspólne typy danych.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji obsługującej działania matematyczne cz.1, label=alg:arytm2]
+  public void ProcessArithmeticOperation() {
+    StoreItem arg2 = Store.PopStack();
+    StoreItem sign = Store.PopStack();
+    StoreItem arg1 = Store.PopStack();
+
+    bool stringOperation = false;
+
+    if (StoreItem.IsAnyType(StoreItemType.STRING, arg1, arg2)) {
+      if (sign.Value != "+") {
+        throw new InvalidOperationException($"Operation is not allowed for strings.");
+      }
+      stringOperation = true;
+
+      arg1 = variableModule.CastVariable(arg1, StoreItemType.STRING);
+      arg2 = variableModule.CastVariable(arg2, StoreItemType.STRING);
+    }
+    if(sign.Value == "/" || StoreItem.IsAnyType(StoreItemType.DOUBLE, arg1, arg2)){
+      arg1 = variableModule.CastVariable(arg1, StoreItemType.DOUBLE);
+      arg2 = variableModule.CastVariable(arg2, StoreItemType.DOUBLE);
+    }
+
+    ...
+\end{lstlisting}
+
+\par Następnie wywoływane są funkcje generujące kod asemblera. W pierwszym kroku obie wartości są ładowane na stos, a następnie w zależności od tego, czy operacja jest wykonywana na typach łańcuchów znaków, czy na wartościach liczbowych, wykonywane są funkcje do łączenia wartości typu łańcuchowego lub też do wykonania operacji na liczbach.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji obsługującej działania matematyczne cz.2, label=alg:arytm3]
+  ...
+
+  asmGenerator.Load(arg1);
+  asmGenerator.Load(arg2);
+  if (stringOperation) {
+    asmGenerator.ConcatStrings();
+  } else {
+    asmGenerator.ExecuteArithmeticOperation(sign);
+  }
+
+  ...
+\end{lstlisting}
+
+\par Na końcu tworzona jest nowa zmienna do której przypisywana będzie wartość wyniku powyższej operacji oraz wynik zostanie wrzucony na główny stos kompilatora. W przypadku kiedy jedna z wartości była już elementem tymczasowym, zamiast tworzenia nowego elementu tymczasowego, wynik zostanie przypisany już do istniejącego.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji obsługującej działania matematyczne cz.3, label=alg:arytm4]
+  ...
+
+  StoreItem resultItem;
+  if (arg1.IsTemporary) {
+    resultItem = arg1;
+  } else if (arg2.IsTemporary) {
+    resultItem = arg2;
+  } else {
+    resultItem = StoreItem.CreateTemporaryVariable(arg1.ItemType);
+    resultItem.Parent = arg1;
+    asmGenerator.InitializeVariable(resultItem);
+  }
+
+  Store.PushStack(resultItem);
+  asmGenerator.StoreVariable(resultItem);
+\end{lstlisting}
+
+\par ... Opisać asemblera do powyższego oraz resztę metod
+
+\subsubsection{Obsługa wyrażeń warunkowych}
+\subsubsection{Obsługa pętli}
+\subsubsection{Obsługa tablic}
+\subsubsection{Obsługa funkcji}
+
+\subsection{Generator asemblera}

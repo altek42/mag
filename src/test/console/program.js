@@ -20,3 +20,6 @@ console.log(10 + 1)   // 11
 console.log(v3 + 13)  // 33
 
 console.log(v1 + " " + v2)
+
+var tab = [1,2,3]
+console.log(tab)

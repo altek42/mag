@@ -38,23 +38,10 @@ returnStatement
   ;
 
 writeStdOutput
-  : writeStdOutputConstant
-  | writeStdOutputIdentifier
-  | writeStdOutputArithmeticOperation
-  | writeStdOutputFunctionCall
-  ;
-
-writeStdOutputConstant
   : CONSOLE_LOG OPEN_PAREN constantValue CLOSE_PAREN
-  ;
-writeStdOutputIdentifier
-  : CONSOLE_LOG OPEN_PAREN identifierValue CLOSE_PAREN
-  ;
-writeStdOutputArithmeticOperation
-  : CONSOLE_LOG OPEN_PAREN arithmeticOperation CLOSE_PAREN
-  ;
-writeStdOutputFunctionCall
-  : CONSOLE_LOG OPEN_PAREN functionCall CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN identifierValue CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN arithmeticOperation CLOSE_PAREN
+  | CONSOLE_LOG OPEN_PAREN functionCall CLOSE_PAREN
   ;
 
 arithmeticOperation
