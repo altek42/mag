@@ -20,7 +20,6 @@ if (test5){
 }
 
 var number1 = 10;
-var number2 = 30;
 
 if (20 > number1) {
   console.log("number1 is less than 20")
@@ -28,8 +27,16 @@ if (20 > number1) {
   console.log("number1 is greater than 20")
 }
 
+var number2 = 30;
+
 if (20 > number2) {
   console.log("number2 is less than 20")
 }else {
   console.log("number2 is greater than 20")
 }
+
+var v1 = 100;
+var t1 = 5 <= v1;
+var t2 = !t1;
+console.log("t1: " + t1 );
+console.log("t2: " + t2 );

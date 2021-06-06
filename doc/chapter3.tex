@@ -433,9 +433,345 @@ W JavaScript funkcją wyświetlającą tekst na standardowym wyjściu (konsoli) 
   asmGenerator.StoreVariable(resultItem);
 \end{lstlisting}
 
-\par ... Opisać asemblera do powyższego oraz resztę metod
+\par Aby wykonać działanie matematyczne w kodzie asemblerowym, należy jak już wcześniej było opisywane, załadować dwie wartości na stos i wywołać jedną z następujących instrukcji:
+\begin{itemize}
+  \item \texttt{add} - dodawanie
+  \item \texttt{sub} - odejmowanie
+  \item \texttt{mul} - mnożenie
+  \item \texttt{div} - dzielenie
+\end{itemize}
+Wynik operacji zostanie zapisany na stosie, który następnie można przypisać do zmiennej.
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera przedstawiający mnożenie dwóch liczb, label=alg:arytm5]
+  // załadowanie liczby stałej o wartości 10
+  ldc.i4 10
+  // załadowanie liczby stałej o wartości 15
+  ldc.i4 15
+  // wywołanie operacji mnożenia
+  mul
+  // zapisanie wyniku do zmiennej "v_tmp_1"
+  stloc v_tmp_1
+\end{lstlisting}
+Natomiast dodawanie do siebie dwóch łańcuchów polega na wywołaniu procedury. Tak jak w przypadku operacji matematycznych liczb, należy załadować na stos dwie wartości łańcuchowe a następnie wywołać procedurę \texttt{Concat}.
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera przedstawiający łączenie dwóch tekstów, label=alg:arytm6]
+  // Załadowanie ciągu "Hello "
+  ldstr "Hello "
+  // Załadowanie ciągu "World!"
+  ldstr "World!"
+  // Wywołanie procedury łączenia ciągów
+  call string [mscorlib]System.String::Concat(string,string)
+  // Zapisanie wyniku do zmiennej "v_tmp_1"
+  stloc v_tmp_1
+\end{lstlisting}
+
+\par Kolejną z funkcjonalności w module obsługi działań arytmetycznych jest instrukcja przypisania wartości do zmiennej. W tej operacji bierze udział element źródłowy, z którego pobrana będzie wartość oraz element docelowy, do którego zostanie przypisana wartość.
+\par Funkcja realizująca przypisanie wartości, na początku pobiera ze stosu głównego kompilatora element źródłowy i docelowy. Następnie jest sprawdzany element docelowy, czy jest to element opisujący zmienną należącą do tablicy, jeśli tak wywoływana jest funkcja generująca kod asemblerowy dla tego przypadku.
+
+\begin{lstlisting}[language=CSharp, caption=Implementacja funkcji obsługującej przypisanie wartości cz.1, label=alg:assign1]
+  public void Assign(){
+    StoreItem source = Store.PopStack();
+    StoreItem dist = Store.PopStack();
+    if(dist.IsType(StoreItemType.ARRAY_ELEMENT)){
+      assignArrayElement(source, dist);
+      return;
+    }
+    asmGenerator.Load(source);
+    asmGenerator.RemoveLastDuplicate();
+
+    ...
+\end{lstlisting}
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji pomocniczej, obsługującej przypisanie wartości do elementu tablicowego}, label=alg:assign2]
+  private void assignArrayElement(StoreItem source, StoreItem dist) {
+    asmGenerator.LoadVariableWithoutCheck(dist);
+    asmGenerator.Load(dist.TableIndex);
+    asmGenerator.Load(source);
+    asmGenerator.SetElementForList();
+    asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
+  }
+\end{lstlisting}
+
+\par Spowodowane jest to tym, że przypisywanie wartości dla tablic, wymaga podania zmiennej przechowującej adres tablicy, następnie indeksu elementu, a na końcu wartości przypisywanej. Następnie można wykonać procedurę przypisania wartości \texttt{set\_Item}.
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera przedstawiający przypisanie wartości do elementu tablicowego, label=alg:assign3]
+  // Załadowanie zmiennej przechowującej tablicę
+  ldloc v_myArray
+  // Załadowanie zmiennej przechowującej indeks elementu tablicy
+  ldloc v_tmp_2
+  // Załadowanie wartości 100
+  ldc.i4 100
+  // Wywołanie procedury przypisania
+  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::set_Item(int32, !0)
+\end{lstlisting}
+
+\par W przypadku przypisania wartości dla zwykłej zmiennej, wystarczy załadować na stos element źródłowy, a następnie załadować ze stosu wartość do elementu docelowego. W funkcji obsługującej przypisanie wartości, sprawdzane są dodatkowo informacje odnośnie typów wartości, jak i dopisanie elementów do listy wykorzystywanych zmiennych.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej przypisanie wartości cz.2}, label=alg:assign4]
+  ...
+
+  if (!dist.IsInitialized) {
+      StoreItemType distOrginalType = dist.ItemType;
+      if(source.IsType(StoreItemType.ARRAY_ELEMENT)){
+        dist.ItemType = StoreItemType.INTEGER;
+      } else {
+        dist.ItemType = source.ItemType;
+      }
+      if(distOrginalType == StoreItemType.UNDEFINED){
+        asmGenerator.InitializeVariableFromUndefined(dist);
+      } else {
+        asmGenerator.InitializeVariable(dist);
+      }
+    }
+    dist.Parent = source.Parent;
+    asmGenerator.StoreVariable(dist);
+    asmGenerator.Comment($"{dist.Print} = {source.Print}\n");
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera przedstawiający przypisanie wartości, label=alg:assign5]
+  // Załadowanie na stos wartości zmiennej "v_tmp_1"
+  ldloc v_tmp_1
+  // Przypisanie wartości ze stosu zmiennej "v_tmp_2"
+  stloc v_tmp_2
+\end{lstlisting}
+
+\par Ostatnim z funkcjonalności implementowanych przez moduł obsługi działań arytmetycznych jest inkrementacja wartości zmiennej. Można to zrealizować poprzez dodanie stałej wartości ``1'' dla podanego elementu.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej inkrementację wartości}, label=alg:assign6]
+  public void IncrementVariable() {
+    StoreItem item = Store.PopStack();
+    StoreItem one = StoreItem.CreateInteger("1");
+    asmGenerator.Load(item);
+    asmGenerator.Load(one);
+    StoreItem addSign = StoreItem.CreateArithmeticSign("+");
+    asmGenerator.ExecuteArithmeticOperation(addSign);
+    asmGenerator.StoreVariable(item);
+    asmGenerator.Comment($"{item.Print}++");
+  }
+\end{lstlisting}
+Generowany kod asemblera jest identyczny jak przy zwykłej operacji wykonywania działania matematycznego.
+
+\begin{lstlisting}[language=IL, caption=Kod assemblera przedstawiający inkrementacje wartości, label=alg:assign7]
+  // Załadowanie na stos wartości zmiennej "v_i"
+  ldloc v_i
+  // Załadowanie na stos stałej wartości "1"
+  ldc.i4 1
+  // wywołanie operacji dodawania
+  add
+  // Zapisanie wyniku do zmiennej "v_i"
+  stloc v_i
+\end{lstlisting}
+
 
 \subsubsection{Obsługa wyrażeń warunkowych}
+
+Moduł obsługi wyrażeń warunkowych odpowiedzialny jest za przetworzenie instrukcji porównania, instrukcję negacji oraz obsługi instrukcji warunkowej. Instrukcja porównania jest bardzo podobna instrukcji działania matematycznego. Uczestniczą w niej dwa elementy reprezentujące wartości oraz jeden element odpowiedzialny za operację porównania.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wyrażenia warunkowe cz.1}, label=alg:condition1]
+  public void ProcessCondition() {
+    StoreItem arg2 = Store.PopStack();
+    StoreItem sign = Store.PopStack();
+    StoreItem arg1 = Store.PopStack();
+
+    bool stringOperation = false;
+    if (StoreItem.IsAnyType(StoreItemType.STRING, arg1, arg2)) {
+      if (!Array.Exists(new[] {"==", "===", "!=", "!=="}, x => x == sign.Value) ) {
+        throw new InvalidOperationException($"Operation is not allowed for strings.");
+      }
+      stringOperation = true;
+
+      arg1 = variableModule.CastVariable(arg1, StoreItemType.STRING);
+      arg2 = variableModule.CastVariable(arg2, StoreItemType.STRING);
+    }
+
+    ...
+\end{lstlisting}
+
+\par Wynik operacji, tak ja to było przy działaniach matematycznych, zapisywany jest do zmiennej tymczasowej i jeśli jeden z elementów już był zmienną tymczasową, zamiast tworzyć nowy element, zostanie ponownie wykorzystany już istniejący.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wyrażenia warunkowe cz.2}, label=alg:condition4]
+    ...
+
+    asmGenerator.Load(arg1);
+    asmGenerator.Load(arg2);
+
+    if (stringOperation) {
+      asmGenerator.CompareStrings(sign);
+    } else {
+      asmGenerator.ExecuteConditionOperation(sign);
+    }
+
+    StoreItem resultItem;
+    if (arg1.IsTemporary && arg1.IsType(StoreItemType.BOOLEAN)) {
+      resultItem = arg1;
+    } else if (arg2.IsTemporary && arg2.IsType(StoreItemType.BOOLEAN)) {
+      resultItem = arg2;
+    } else {
+      resultItem = StoreItem.CreateTemporaryVariable(StoreItemType.BOOLEAN);
+      asmGenerator.InitializeVariable(resultItem);
+    }
+    Store.PushStack(resultItem);
+    asmGenerator.StoreVariable(resultItem);
+
+    ...
+  }
+\end{lstlisting}
+
+\par Przy operacjach na łańcuchach znaków jest również wykonywane rzutowanie zmiennych na ciąg łańcuchowy, ponieważ dla tego typu danych należy wywołać procedury \texttt{op\_Equality} lub \texttt{op\_Inequality}, które pozwalają na sprawdzenie równości lub nierówności dwóch ciągów.
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający porównanie dwóch łańcuchów zanków}, label=alg:condition2]
+  // Załadowanie na stos wartości zmiennej "v_tmp_1"
+  ldloc v_tmp_1
+  // Załadowanie na stos stałej wartości wartości "text"
+  ldstr "text"
+  // Wywołanie procedury "op_Equality" sprawdzającą równośc
+  call bool [mscorlib]System.String::op_Equality(string,string)
+  // Zapisanie wyniku do zmiennej "v_tmp_2"
+  stloc v_tmp_2
+\end{lstlisting}
+
+\par Dla porównania wartości liczbowych wykorzystywane są proste instrukcje asemblerowe:
+\begin{itemize}
+  \item \texttt{cgt} - większy od
+  \item \texttt{clt} - mniejszy od
+  \item \texttt{ceq} - równy
+\end{itemize}
+Dla operacji takich jak: większy równy, mniejszy równy lub nierówny, nie ma odpowiednich dla nich instrukcji w asemblerze. Aby móc je wykonać, należy w kodzie assemblera porównać wynik wywołania powyżej wypisanych instytucji z wartością zerową. Przykładowo, jeśli chcemy wykonać porównanie ``większy lub równy'', należy wykonać operację ``mniejszy'' (\texttt{clt}) a następnie wynik porównać z wartością zerową.
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający porównanie ``mnieszy lub równy''}, label=alg:condition3]
+  // Załadowanie na stos stałej wartości "5"
+  ldc.i4 5
+  // Załadowanie na stos wartości zmiennej "v_v1"
+  ldloc v_v1
+  // Wywołanie operacji porwónania "większy od"
+  cgt
+  // Załadowanie na stos stałej wartości "0"
+  ldc.i4.0
+  // Wywołanie operacji porwónania "równy"
+  ceq
+  // Zapisanie wyniku do zmiennej "v_tmp_1"
+  stloc v_tmp_1
+\end{lstlisting}
+
+\par Następnym z elementów modułu jest implementacja funkcji dla instrukcji negacji. Funkcja pobiera ze stosu element, generuje dla niego kod asemblerowy i wynik zapisuje w zmiennej tymczasowej, która z powrotem jest wrzucana na stos.
+
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej negację wartości}, label=alg:condition5]
+  public void NotStatement() {
+    StoreItem item = Store.PopStack();
+    asmGenerator.Load(item);
+    asmGenerator.Negation();
+    StoreItem resultItem = StoreItem.CreateTemporaryVariable(StoreItemType.BOOLEAN);
+    asmGenerator.InitializeVariable(resultItem);
+    asmGenerator.StoreVariable(resultItem);
+    Store.PushStack(resultItem);
+    asmGenerator.Comment($"{resultItem.Print} = !{item.Print}");
+  }
+}
+\end{lstlisting}
+
+\par W kodzie asemblerowym, negacja wartości polega na jej przyrównaniu do stałej wartości zerowej. Dzięki takiemu zabiegowi, w przypadku kiedy mamy wartość ``true'' i porównamy ją do wartości zerowej ``false'' to otrzymamy jako wynik wartość ``false''. W przypadku kiedy jest to wartość ``false'' to wynikiem będzie wartość ``true''.
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający porównanie ``mnieszy lub równy''}, label=alg:condition6]
+  // Załadowanie na stos wartości zmiennej "v_t1"
+  ldloc v_t1
+  // Załadowanie na stos stałej wartości "0"
+  ldc.i4.0
+  // Porównanie wartości
+  ceq
+  // Zapisanie wyniku do zmiennej "v_t2"
+  stloc v_t2
+\end{lstlisting}
+
+\par W module obsługi wyrażeń warunkowych, nie może zabraknąć funkcji obsługujących wyrażenie warunkowe \texttt{if}. Dla tej instrukcji zostały zdefiniowane trzy reguły: dla konstrukcji wyrażenia, operacji porównania oraz instrukcji \texttt{else}.
+
+\begin{lstlisting}[language=IL, caption={Gramatyka dla instrukcji \texttt{if}}, label=alg:if1]
+  ifStatement
+    : IF '(' ifStatementConditionOperation ')' instructionBlock elseStatement?
+    ;
+
+  ifStatementConditionOperation
+    : conditionOperation
+    ;
+
+  elseStatement
+    : ELSE instructionBlock
+    ;
+\end{lstlisting}
+
+\par Instrukcje warunkowe opierają się głównie o etykiety oraz skoki warunkowe. W tym celu w klasie \texttt{Store} stworzony jest oddzielny stos oraz licznik indexów dla operacji wykorzystujące etykiety. 
+
+\par Pierwszą z funkcji wywoływanych przy przetwarzaniu instrukcji \texttt{if}, jest funkcja wywoływana na rozpoczęcie przetwarzania reguły \texttt{ifStatement}. Ma ona za zadanie utworzyć index instrukcji i umieścić go na stosie indeksów. Funkcja nie generuje kodu asemblera.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji wywoływanej przy rozpoczęciu analizy instrukcji \texttt{if}}, label=alg:if2]
+  public void BeginIfStatement(){
+    int ifIndex = Store.NextLabelIndex();
+    Store.PushLabelStack(ifIndex);
+  }
+}
+\end{lstlisting}
+
+\par Drugą z kolei jest wywoływana funkcja, która ma za zadanie wygenerować kod asemblera sprawdzający warunek instrukcji \texttt{if}. Pobierany jest element z głównego stosu, a następnie wywoływana jest instrukcja skoku warunkowego. Skok ten wykonywany jest do wskazanej etykiety, tylko w przypadku kiedy wartość elementu jest fałszywa. Etykieta generowana jest na podstawie wartości znajdującej się na stosie indeksów.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca warunek instrukcji \texttt{if}}, label=alg:if3]
+  public void IfStatementCondition() {
+    StoreItem item = Store.PopStack();
+    asmGenerator.Load(item);
+
+    int ifIndex = Store.TopLabelStack();
+    asmGenerator.JumpIfFalse($"IF_{ifIndex}");
+
+    asmGenerator.Comment($"if ({item.Print} == false) JUMP IF_{ifIndex}");
+  }
+}
+\end{lstlisting}
+
+\par Następną z funkcji jest obsługa instrukcji \texttt{else}. Jej celem jest utworzenie etykiety w kodzie asemblera dla wcześniej utworzonego skoku, oraz utworzenie kolejnej instrukcji skoku dla sekcji instrukcji \texttt{else} przy pomocy nowego indeksu. 
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca sekcje \texttt{else} instrukcji \texttt{if}}, label=alg:if4]
+  public void ElseStatement() {
+    int elseIndex = Store.NextLabelIndex();
+    int ifIndex = Store.PopLabelStack();
+    asmGenerator.Jump($"IF_{elseIndex}");
+    asmGenerator.CreateLabel($"IF_{ifIndex}");
+    Store.PushLabelStack(elseIndex);
+
+    asmGenerator.Comment($"ELSE");
+  }
+\end{lstlisting}
+
+\par Ostatnią z funkcji jest obsługa zakończenia przetwarzania instrukcji \texttt{if}. Służy jedynie do utworzenia etykiety kończącej konstrukcję.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji wywoływanej przy zakończeniu analizy instrukcji \texttt{if}}, label=alg:if5]
+  public void EndIfStatement() {
+    int ifIndex = Store.PopLabelStack();
+    asmGenerator.CreateLabel($"IF_{ifIndex}");
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający konstrukcję \texttt{if ... else}}, label=alg:if6]
+  // Załadowanie na stos wartości zmiennej "v_tmp_0"
+  ldloc v_tmp_0
+  // Instrukcja skoku. Jeśli "v_tmp_0" jest wartością "false" zostatnie wykonany skok do etykeyty "IF_0"
+  brfalse IF_0
+
+  // Instrukcje bloku warunkowego "if"
+  ...
+
+  // Skok bezwarunkowy do etytkiety "IF_1"
+  br IF_1
+  // Deklaracja etytkiety "IF_0"
+  IF_0: 
+
+  // Instrukcje bloku warunkowego "else"
+  ...
+
+  // Deklaracja etytkiety "IF_1"
+  IF_1: 
+\end{lstlisting}
+
+
 \subsubsection{Obsługa pętli}
 \subsubsection{Obsługa tablic}
 \subsubsection{Obsługa funkcji}

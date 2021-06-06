@@ -47,3 +47,8 @@ type
 tokeny
 console
 Boolean
+sub
+add
+op
+if
+else
