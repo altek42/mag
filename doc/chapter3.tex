@@ -773,7 +773,179 @@ Dla operacji takich jak: większy równy, mniejszy równy lub nierówny, nie ma 
 
 
 \subsubsection{Obsługa pętli}
+
+Moduł obsługi pętli zawiera szereg funkcji obsługujących instrukcje \texttt{for} oraz \texttt{while}. Definicja reguł gramatyki dla instrukcji \texttt{while} zawarta jest jedynie w dwóch regułach. Pierwsza jest ogólną konstrukcją instrukcji, a druga służy do obsłużenia warunku pętli.
+
+\begin{lstlisting}[language=IL, caption={Gramatyka dla instrukcji \texttt{while}}, label=alg:while1]
+whileLoop
+  : WHILE '(' whileStatementConditionOperation ')' instructionBlock
+  ;
+
+whileStatementConditionOperation
+  : conditionOperation
+  ;
+\end{lstlisting}
+
+\par Dla powyższej gramatyki wykorzystywane są trzy funkcji parsera. Pierwszą z nich jest funkcja wywoływana przed analizą reguły. Jej zadaniem jest utworzenie etykiety początku pętli.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca rozpoczęcie analizy instrukcji \texttt{while}}, label=alg:while2]
+  public void BeginWhile() {
+    int labelIndex = Store.NextLabelIndex();
+    Store.PushLabelStack(labelIndex);
+    asmGenerator.CreateLabel($"WL_{labelIndex}");
+  }
+\end{lstlisting}
+
+\par Kolejną z wywoływanych funkcji jest obsługa wyrażenia warunkowego. Pobierana jest ze stosu kompilatora element wyniku wyrażenia warunkowego, a następnie generowany jest dla niego skok warunkowy do etykiety kończącej instrukcję \texttt{while}.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca wyrażenie warunkowe instrukcji \texttt{while}}, label=alg:while3]
+  public void CheckWhileCondition() {
+    StoreItem item = Store.PopStack();
+    asmGenerator.Load(item);
+    int labelIndex = Store.TopLabelStack();
+    asmGenerator.JumpIfFalse($"WL_EXIT_{labelIndex}");
+  }
+\end{lstlisting}
+
+\par Ostatnią z funkcji przeznaczonych dla instrukcji \texttt{while} w tym module, jest funkcja wywoływana na zakończenie analizy reguły. Generuje ona skok bezwarunkowy do etykiety na początku pętli, oraz tworzy etykietę kończącą pętlę \texttt{while}.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca kończącej analize instrukcji \texttt{while}}, label=alg:while4]
+  public void EndWhile() {
+    int labelIndex = Store.PopLabelStack();
+    asmGenerator.Jump($"WL_{labelIndex}");
+    asmGenerator.CreateLabel($"WL_EXIT_{labelIndex}");
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający konstrukcję \texttt{while}}, label=alg:while5]
+  // Utworzenie etykiety początku pętli 
+  WL_0: 
+  
+  // Instrukcja warunkowa "x < 10"
+  ldloc v_x
+  ldc.i4 10
+  clt
+  stloc v_tmp_0
+  
+  // Sprawdzenie warunku i wykonanie skoku do etykiety końca pętli
+  ldloc v_tmp_0
+  brfalse WL_EXIT_0
+  
+  // Blok instukcji
+  ...
+
+  // Skok bezwarunkowy do etykiety początku pętli 
+  br WL_0
+  // Utworzenie etykiety końca pętli 
+  WL_EXIT_0: 
+\end{lstlisting}
+
+\par Definicja reguł gramatyki dla instrukcji \texttt{for} jest bardziej złożona. Dla tej instrukcji, poza sprawdzeniem wyrażenia warunkowego, występuje również inicjalizacja wartości zmiennych oraz wyrażenie inkrementacji wartości.
+
+\begin{lstlisting}[language=IL, caption={Gramatyka dla instrukcji \texttt{while}}, label=alg:for1]
+forLoop
+  : FOR '(' forAssignSection? ';' forStatementConditionOperation ';' forExpression? ')' instructionBlock
+  ;
+
+forAssignSection
+  : assignOperation (COMMA+ assignOperation)*
+  ;
+
+forStatementConditionOperation
+  : conditionOperation
+  ;
+
+forExpression
+  : forExpressionAssign
+  | incrementVariable
+  ;
+
+forExpressionAssign
+  : identifierValue ASSIGN assignValue
+  ;
+\end{lstlisting}
+
+\par Funkcje rozpoczynająca oraz zakańczająca analizę instrukcji \texttt{for} jest taka sama. Różnią się jedynie nazwą generowanych etykiet. Funkcja sprawdzająca warunek, też jest bardzo podobna. Posiada jedynie dodatkowo skok bezwarunkowy pomijający kod wyrażenia inkrementacji.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca wyrażenie inkrementacji}, label=alg:for2]
+  public void BeginForExpression() {
+    int labelIndex = Store.TopLabelStack();
+    asmGenerator.CreateLabel($"FL_EX_{labelIndex}");
+  }
+
+  public void EndForExpression () {
+    int labelIndex = Store.TopLabelStack();
+    asmGenerator.Jump($"FL_{labelIndex}");
+    asmGenerator.CreateLabel($"FL_BODY_{labelIndex}");
+  }
+\end{lstlisting}
+
+\par Funkcje obsługujące wyrażenie inkrementacji tworzą jedynie etykiety oraz skok bezwarunkowy do początku pętli. Wyrażenie inicjalizacji jest przetwarzane przed rozpoczęciem generowania kodu dla pętli.
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający konstrukcję \texttt{while}}, label=alg:while5]
+  // Inicjalizacja wartości zmiennej "index"
+  ldc.i4 0
+  stloc v_index
+
+  // Utworzenie etykiety początku pętli 
+  FL_0: 
+  
+  // Instrukcja warunkowa "index < 10"
+  ldloc v_index
+  ldc.i4 10
+  clt
+  stloc v_tmp_0
+
+  // Sprawdzenie warunku i wykonanie skoku do etykiety końca pętli
+  ldloc v_tmp_0
+  brfalse FL_EXIT_0
+  br FL_BODY_0
+  
+  // Utworzenie etykiety początku wyrażenia inkrementacji
+  FL_EX_0: 
+
+  // Instrukcje inkrementacji
+  ...
+  
+  // Skok bezwarunkowy do poczatku pętli
+  br FL_0
+  // Utworzenie etykiety początku ciała pętli
+  FL_BODY_0: 
+
+  // Blok instukcji
+  ...
+  
+  // Skok bezwarunkowy do wyrażenia inkrementacji
+  br FL_EX_0
+  // Utworzenie etykiety końca pętli
+  FL_EXIT_0: 
+\end{lstlisting}
+
 \subsubsection{Obsługa tablic}
+Moduł obsługi tablic zawiera implementacje funkcji obsługujących deklarowanie tablic, tworzenie elementów tablicowych, dodawanie elementów do tablicy oraz obsługa funkcji pobierającą ilość elementów znajdujących się w podanej tablicy.
+\par Funkcjonalność tablic została uproszczona do przechowywania jedynie elementów liczb całkowitych. Realizowane jest to przy wykorzystaniu generycznej klasy \texttt{List} typu \texttt{int} wbudowanej biblioteki środowiska .NET.
+\par Dla deklaracji tablicy elementów zostały wykorzystane trzy reguły pozwalające na zdeklarowanie tablicy o dowolnej ilości elementów przy pomocy nawiasów kwadratowych.
+
+\begin{lstlisting}[caption=Definicja gramatyki dla deklaracji tablicy z wartościami, label=alg:array1]
+arrayLiteral
+  : (OPEN_BRACKET elementList CLOSE_BRACKET)
+  ;
+
+elementList
+  : COMMA* arrayElement? (COMMA+ arrayElement)* COMMA*
+  ;
+
+arrayElement
+  : singleExpression
+  ;
+\end{lstlisting}
+
+\par Funkcja obsługująca deklaracje tablic tworzy zmienną tymczasową dla której tworzona jest instancja listy elementów. Następnie element opisujący zmienną jest wrzucany na główny stos.
+
+
+
+
 \subsubsection{Obsługa funkcji}
+
 
 \subsection{Generator asemblera}
