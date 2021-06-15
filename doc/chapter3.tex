@@ -940,12 +940,263 @@ arrayElement
   ;
 \end{lstlisting}
 
-\par Funkcja obsługująca deklaracje tablic tworzy zmienną tymczasową dla której tworzona jest instancja listy elementów. Następnie element opisujący zmienną jest wrzucany na główny stos.
+\par Funkcja obsługująca deklaracje tablic tworzy zmienną tymczasową dla której tworzona jest instancja listy elementów. Następnie element opisujący zmienną jest wrzucany na główny stos. Kolejnym krokiem przy deklaracji tablic jest dodanie elementów do tablicy. Dla każdej z liczb podanych w nawiasach kwadratowych w kodzie źródłowym, generowany jest kod wywołujący funkcję \texttt{Add}.
 
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługujących deklaracje tablicy}, label=alg:array2]
+  public void CreateTempArray() {
+    StoreItem array = StoreItem.CreateTemporaryVariable(StoreItemType.ARRAY);
+    asmGenerator.CtorVariable(array);
+    asmGenerator.Comment($"CREATE ARRAY {array.Value}");
+    Store.PushStack(array);
+  }
+  
+  public void AddElementToArray() {
+    StoreItem item = Store.PopStack();
+    StoreItem array = Store.TopStack();
+    asmGenerator.Load(item);
+    asmGenerator.AddElementToList(array);
+  }
+\end{lstlisting}
 
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający deklarację tablicy}, label=alg:array3]
+  // Utworzenie nowej istancji klasy "List" typu "int32"
+  newobj instance void class [mscorlib]System.Collections.Generic.List`1<int32>::.ctor()
+  stloc v_tmp_0
+  ldloc v_tmp_0
 
+  // Załadowanie na stos liczby "10"
+  ldc.i4 10
+  // Dodanie liczby do listy
+  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<int32>::Add(!0)
+  ldloc v_tmp_0
+\end{lstlisting}
+
+\par Kolejną z funkcji w module obsługującym tablice, jest funkcja obsługująca tworzenie zmiennych będących elementami tablicy. Funkcja ta nie generuje kodu asemblerowego, a jedynie tworzy element, który będzie obsługiwany w innych modułach.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca wystąpienie elementu tablicowego}, label=alg:array4]
+  public void CreateTableVariable(string value) {
+    StoreItem index = Store.PopStack();
+    variableModule.CreateVariable(value);
+    StoreItem array = Store.PopStack().Clone();
+    array.TableIndex= index;
+    array.ItemType = StoreItemType.ARRAY_ELEMENT;
+    asmGenerator.Comment($"{array.Value}[{index.Value}]");
+    Store.PushStack(array);
+  }
+\end{lstlisting}
+
+\par Ostania z funkcji w tym module jest obsługa instrukcji pobrania ilości elementów tablicy. Początkowo jest tworzona zmienna tymczasowa która ma przechować wynik operacji. Następnie generowany jest kod asemblera, który pobiera długość listy przy pomocy funkcji \texttt{get\_Count}, a następnie zapisuje wartość we wcześniej utworzonej zmiennej. Wynik jest wrzucany na stos główny aplikacji.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługująca pobieranie ilości elementów tablicy}, label=alg:array5]
+  public void GetArrayLength(string arrayName) {
+    StoreItem array = Store.GetVariableIfExist(arrayName);
+    if(!array.IsInitialized){
+      throw new InvalidOperationException($"Variable {array.Print} is undfined");
+    }
+    if(array.IsNotType(StoreItemType.ARRAY, StoreItemType.FUNCTION_ARG)){
+      throw new InvalidOperationException($"Variable {array.Print} must be an array");
+    }
+    StoreItem arrLen = StoreItem.CreateTemporaryVariable(StoreItemType.INTEGER);
+    asmGenerator.InitializeVariable(arrLen);
+    asmGenerator.Load(array);
+    asmGenerator.GetListSize();
+    asmGenerator.StoreVariable(arrLen);
+    asmGenerator.Comment($"{arrLen.Print} = {array.Print}:LENGTH");
+    Store.PushStack(arrLen);
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający pobieranie ilości elementów tablicy}, label=alg:array6]
+  // Załadowanie zmiennej tablicowej
+  ldloc v_myArray
+  // Pobranie ilości elementów tablicy
+  callvirt   instance int32 class [mscorlib]System.Collections.Generic.List`1<int32>::get_Count()
+  // Zapisanie wyniku do zmiennej tymczasowej
+  stloc v_tmp_1
+\end{lstlisting}
 
 \subsubsection{Obsługa funkcji}
 
+\par Ostatnim z modułów odpowiedzialny jest za obsługę funkcji. Zawiera obsługę deklaracji funkcji, interpretowanie parametrów funkcji, wywoływanie oraz obsługę wartości zwracanej z funkcji. Deklaracja funkcji jest polega na utworzeniu osobnej listy instrukcji w generatorze asemblera. Dodatkowo klasa \texttt{Store} jest przestawiany na kontekst obsługi instrukcji wewnątrz funkcji. Kontekst jest przywracany po zakończeniu obsługi instrukcji wewnątrz funkcji.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji do deklaracji funkcji}, label=alg:f1]
+  public void BeginFunctionDeclaration(string functionName){
+    asmGenerator.Comment($"FUNCTION {functionName}");
+    asmGenerator.EmptyLine();
+    asmGenerator.CreateFunction(functionName);
+  }
+  
+  public void EndFunctionDeclaration(string functionName) {
+    asmGenerator.EndFunction();
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji w klasie \texttt{Store} do deklaracji funkcji}, label=alg:f1]
+  public void CreateFunction(string name) {
+    FunctionAsmLines functionAsmLines = new FunctionAsmLines(name);
+    if(asmFunctionsLines.ContainsKey(name)){
+      throw new ArgumentException($"Function `{name}` already exist.");
+    }
+    asmFunctionsLines.Add(name, functionAsmLines);
+    Store.SetFunction(name);
+  }
+\end{lstlisting}
+
+\par Po deklaracji funkcji następuje interpretacja parametrów tej funkcji. Dla każdego z parametrów tworzony jest element opisujący dany parametr. Parametry mają przydzielany specjalny typ \texttt{StoreItemType.FUNCTION\_ARG}, dzięki któremu podczas generowania kodu asemblera bloku instrukcji funkcji, będzie można zostawić znaczniki które zostaną podmienione w postprocesingu. Jest to konieczne, ponieważ typy parametrów, podczas analizy bloku instrukcji funkcji nie są znane do momentu wywołania danej funkcji.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej parametry deklarowanej funkcji}, label=alg:f1]
+  public void AddParameter(string name){
+    StoreItem param = StoreItem.CreateVariable(name);
+    param.IsFunctionParam = true;
+    param.IsInitialized = true;
+    param.ItemType = StoreItemType.FUNCTION_ARG;
+    Store.AddVariable(param);
+  }
+\end{lstlisting}
+
+\par Kolejną z funkcji w tym module jest funkcja odpowiedzialna za obsługę wywołania instrukcji \texttt{return}. Funkcja pobiera element ze stosu głównego, a następnie zapisuje informacje dla danej funkcji, że ten element jest wartością zwracaną funkcji. Generowany kod to jedynie instrukcja załadowania zmiennej na stos oraz instrukcja powrotu.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wywołanie \texttt{return}}, label=alg:f1]
+  public void ProcessReturn() {
+    StoreItem item = Store.PopStack();
+    Store.SetFunctionReturnValue(item);
+    asmGenerator.Load(item);
+    asmGenerator.Return();
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający zwracanie elementu}, label=alg:f1]
+  // Załadowanie zmiennej "v_returnValue"
+  ldloc v_returnValue
+  // Wywołanie instrukcji powrotu
+  ret
+\end{lstlisting}
+
+\par Ostatnią z obsługiwanych funkcjonalności w module jest obsługa wywoływania wcześniej deklarowanych funkcji. Gramatyka zawiera jedynie trzy reguły, które kolejno definiują wywołanie funkcji, listę argumentów funkcji oraz pojedynczy argument. Przy analizie argumentów funkcji, wywoływane są metody do wyzerowania licznika argumentów, a następnie zliczana jest ilość podanych argumentów. Dzięki temu można określić ile należy pobrać elementów ze stosu aplikacji.
+
+
+\begin{lstlisting}[caption=Definicja gramatyki dla wywołania funkcji z arguemntami, label=alg:gramar]
+functionCall
+  : IDENTIFIER arguments
+  ;
+
+arguments
+  : '('(argument (',' argument)* ','?)?')'
+  ;
+
+argument
+  : assignValue
+  ;
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji w klasie \texttt{Store} do zliczania argumentów funkcji}, label=alg:cs]
+  public static void FunctionCallInitialize() {
+    FunctionCallArgCounterStack.Push(0);
+  }
+  
+  public static void FunctionCallArgumentIncrement(){
+    int value = FunctionCallArgCounterStack.Pop();
+    FunctionCallArgCounterStack.Push(value+1);
+  }
+\end{lstlisting}
+
+\par Po zakończeniu analizy argumentów wywoływana jest metoda do analizy i wygenerowania kodu asemblerowego dla wywołania podanej funkcji. Na początku są pobierane ze stosu głównego wszystkie argumenty podane przy wywołaniu funkcji i zapisywane do stosu tymczasowego, w celu odwrócenia kolejności argumentów. 
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wywołanie funkcji cz.1}, label=alg:cs]
+  public void CallFunction(string name){
+    int argCount = Store.FunctionCallArgumentPop();
+    Stack<StoreItem> tmpStack = new Stack<StoreItem>();
+    List<StoreItem> args = new List<StoreItem>();
+    for(int i = 0; i< argCount; i++){
+      tmpStack.Push(Store.PopStack());
+    }
+
+    ...
+\end{lstlisting}
+
+\par Następnie dla każdego z argumentów jest generowany kod asemblera ładujący je do stosu aplikacji. Dodatkowo zapisywana jest informacja w klasie \texttt{Store} o pozycji danego argumentu. Następnie generowany jest kod wywołania danej funkcji z wykorzystaniem listy argumentów. Przy wywoływaniu funkcji wymagane jest podanie typów podanych argumentów.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wywołanie funkcji cz.2}, label=alg:cs]
+  ...
+
+  for(int i = 0; i< argCount; i++){
+    StoreItem elem = tmpStack.Pop();
+    args.Add(elem);
+    Store.SetFunctionParamType(name, elem, i);
+    asmGenerator.Load(elem);
+  }
+  asmGenerator.Comment($"FUNC CALL {name}");
+  asmGenerator.CallFunction(name, args);
+
+  ...
+\end{lstlisting}
+
+\par Ostatnią z części funkcji obsługującej wywołanie funkcji, jest obsługa wartości zwracanej z tej funkcji. W przypadku kiedy funkcja zwraca jakąś wartość, to tworzona jest zmienna tymczasowa, która przechowa wynik wywołania funkcji. Zmienna jest inicjalizowana oraz wrzucana na główny stos aplikacji.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji obsługującej wywołanie funkcji cz.3}, label=alg:cs]
+  ...
+
+  FunctionStore functionStore = Store.Functions[name];
+  functionStore.IsUsed = true;
+  if(!functionStore.IsReturnVoid) {
+    StoreItem rootItem = functionStore.ReturnValue.RootItem;
+    if(null == rootItem){
+      rootItem = functionStore.ReturnValue;
+    }
+    StoreItem retItem = StoreItem.CreateTemporaryVariable(rootItem.ItemType);
+    retItem.Parent = functionStore.ReturnValue;
+    asmGenerator.InitializeVariable(retItem);
+    asmGenerator.StoreVariable(retItem);
+    Store.PushStack(retItem);
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Kod assemblera przedstawiający wywołanie funkcji}, label=alg:f1]
+  // Załadowanie stałej "4.7"
+  ldc.r4 4.7
+  // Wywołanie funkcji "f_convert" z jednym argumentem typu "float32"
+  call string Program.Program::f_convert(float32)
+  // Zapisanie wartości zwracanej do zmiennej "v_tmp_1"
+  stloc v_tmp_1
+\end{lstlisting}
 
 \subsection{Generator asemblera}
+
+\par Klasą odpowiedzialną za generowanie assemblera jest klasa \texttt{AsmGenerator}, która wykorzystywana jest w każdym z modułów przetwarzających kod źródłowy. Instancja generatora jest tworzona przy starcie aplikacji kompilatora, następnie przez całe działanie kompilatora zbiera generowane linie kodu asemblera, a po zakończeniu przetwarzania pliku źródłowego, tworzony jest plik wynikowy. Generator posiada następujące elementy:
+\begin{itemize}
+  \item \texttt{fileName} - nazwę pliku źródłowego
+  \item \texttt{tabSize} - wielkość wcięcia kodu
+  \item \texttt{asmLines} - lista instrukcji funkcji głównej
+  \item \texttt{asmFunctionsLines} - słownik z listą instrukcji deklarowanych funkcji
+\end{itemize}
+
+\par Generowany kod asemblerowy dla instrukcji wywoływanych bez deklaracji funkcji zapisywany jest do listy \texttt{asmLines}. Dla instrukcji wywoływanych wewnątrz deklarowanych funkcji, zapisywany jest razem z nazwą funkcji w słowniku \texttt{asmFunctionsLines}. Dzięki temu będzie można w prostszy sposób wygenerować osobny kod dla każdej z funkcji.
+\par Generowanie pliku wynikowego zaczyna się od jego utworzenia pod tą samą nazwą co plik źródłowy. Następnie generowany jest nagłówek pliku oraz deklaracja funkcji głównej aplikacji. Dla funkcji głównej tworzone są wszystkie zmienne wykorzystywane w instrukcjach, a następnie przepisywana jest zawartość listy \texttt{asmLines}. Po przepisaniu wszystkich instrukcji funkcja główna jest zamykana. Na końcu tworzone są zdeklarowane funkcje.
+
+\begin{lstlisting}[language=CSharp, caption={Implementacja funkcji generująca plik wynikowy}, label=alg:cs]
+private void createAsmFile() {
+  StreamWriter outFile = new StreamWriter(Path.Combine(DIST_DIR, $"{this.fileName}.il"));
+  this.writeFileHeader(outFile);
+  this.initializeAllVariables(outFile, Store.Variables);
+  foreach(string line in this.asmLines){
+    outFile.WriteLine(line);
+  }
+  this.writeMainFunctionFooter(outFile);
+  this.createAsmFunctions(outFile);
+  this.writeFileFooter(outFile);
+  outFile.Dispose();
+}
+\end{lstlisting}
+
+% https://www.codeproject.com/Articles/3778/Introduction-to-IL-Assembly-Language
+\par W nagłówku przy pomocy instrukcji \texttt{.assembly} importowana jest standardowa biblioteka \texttt{mscorlib} zawierająca wszystkie podstawowe funkcjonalności platformy .NET. Tą samą instrukcją definiowana jest nazwa asemblerowa pliku oraz w klamrach podawane są dodatkowe informacje o pliku wynikowym. Kolejną z instrukcji nagłówka jest \texttt{.module} która mówi jak nazywać się będzie moduł wynikowy.
+
+\begin{lstlisting}[language=IL, caption={Kod nagłówka pliku wygenerowanego pliku asemblera}, label=alg:asm]
+  .assembly extern mscorlib {}
+  .assembly Program {}
+  .module Program.exe
+\end{lstlisting}
+
+cdn...

@@ -1,8 +1,10 @@
-var myArray = [10, 22 + 1, 13, 45]
+var myArray = [10, 2, 13, 45]
 
-myArray[1+1] = 100;
+var x = myArray.length
 
-for(var i = 0; i < myArray.length; i = i + 1){
-  console.log(myArray[i])
-}
+// myArray[1+1] = 100;
+
+// for(var i = 0; i < myArray.length; i = i + 1){
+//   console.log(myArray[i])
+// }
 
