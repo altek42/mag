@@ -1199,4 +1199,43 @@ private void createAsmFile() {
   .module Program.exe
 \end{lstlisting}
 
-cdn...
+\par Następnie generowana jest klasa główna programu przy pomocy instrukcji \texttt{.class} oraz zawarta w niej funkcja główna \texttt{Main}. Funkcja główna deklarowana jest instrukcją \texttt{.method} jako funkcja statyczna nie zwracająca żadnych wartości. Funkcja przyjmuje jako parametr listę elementów typu \texttt{string}, która jest argumentami przyjmowanymi przy uruchomieniu aplikacji. Na końcu deklaracji znajduje się jeszcze słowa kluczowe \texttt{cil managed}, które oznaczają, że dana funkcja zawiera kod zarządzalny. Wewnątrz funkcji głównej znajduje się również instrukcja \texttt{.entrypoint}, która wskazuje miejsce z którego ma rozpocząć się wykonywanie kodu po uruchomieniu aplikacji.
+
+\begin{lstlisting}[language=IL, caption={Kod deklaracji funkcji głównej}, label=alg:asm]
+  .class Program.Program
+  extends [mscorlib]System.Object
+  {
+   .method static void Main(string[] args)
+   cil managed
+   {
+    .entrypoint
+
+    ...
+\end{lstlisting}
+
+\par Po wygenerowaniu nagłówka oraz deklaracji głównej funkcji, generowany jest kod inicjalizujący wszystkie używane zmienne w funkcji \texttt{Main}. Inicjalizacja realizowana jest przy pomocy instrukcji \texttt{.locals init()}, dla której jako argument podaje się typy oraz nazwy zmiennych.
+
+\begin{lstlisting}[language=IL, caption={Kod deklaracji zmiennych lokalnych funkcji głównej}, label=alg:asm]
+  ...
+  .locals init(
+      int32 v_a,
+      int32 v_b,
+      int32 v_c,
+      int32 v_tmp_1,
+      string v_tmp_2)
+  ...
+\end{lstlisting}
+
+\par Po zakończeniu generowania funkcji głównej, w podobny sposób generowane są funkcje tworzone przez użytkownika. Do tego również używana jest instrukcja \texttt{.method} dla funkcji statycznej. W przypadku kiedy użytkownik nadał wartość zwracaną oraz argumenty funkcji, to używane są odpowiednie typy dla tych elementów. Tak jak w przypadku funkcji głównej, na samym początku również są inicjalizowane zmienne lokalne funkcji przy pomocy instrukcji \texttt{.locals init()}, a następnie przepisywane są wcześniej wygenerowane instrukcje. Podczas przepisywania instrukcji jest wykonywany postprocesing.
+
+\begin{lstlisting}[language=IL, caption={Kod deklaracji przykładowej funkcji}, label=alg:asm]
+  .method static int32 f_mul(
+    int32 v_a, 
+    int32 v_b) cil managed
+  {
+  .locals init(
+        int32 v_sum,
+        int32 v_tmp_0)
+  ...
+\end{lstlisting}
+
