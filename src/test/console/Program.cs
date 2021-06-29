@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace dotnet
 {
@@ -28,6 +29,12 @@ namespace dotnet
             Console.WriteLine(v3 + 13); // 33
 
             Console.WriteLine(v1 + " " + v2); // 33
+
+            List<int> tab = new List<int>();
+            tab.Add(1);
+            tab.Add(2);
+            tab.Add(3);
+            Console.WriteLine("[ "+string.Join(", ", tab)+" ]");
         }
     }
 }

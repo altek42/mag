@@ -1,34 +1,48 @@
 \chapter{Testy}
 \label{rozdzial4}
-Opis zakresu testów i jak będą przebiegać.
-Każdy z poniższych testów będzie sprawdzany pod kątem poprawności wykonywania działań, czasu wykonywania w porównaniu do wykonania kodu na Node.js (dla bardziej złożonych testów z czasem będzie więcej), zajętość pamięci (również tylko przy tych których to ma sens) oraz porównaniu kodu z asemblerowego wygenerowanego za pośrednictwem języka C\#.
 
-\section{Proste operacje matematyczne}
-Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.
-\section{Kolejność wykonywania działań}
-Test na bardziej złożonych wyrażeniach. Sprawdzenie poprawności działania nawiasów oraz kolejności wykonywania działań.
-\section{Wyrażenia warunkowe}
-Test wyrażeń warunkowych. Kolejność wykonywania operacji and i or.
-\section{Tablice}
-Test obsługi tablic jedno i wielowymiarowych.
-\section{Obiekty}
-Test obsługi obiektów.
-\section{Klasy}
-Jeśli będzie implementacja.
-Test działania obiektów klas.
-\section{Funkcje}
-Test działania funkcji.
-1. Funkcja "void" bez parametrów.
-2. Funkcja "void" z parametrami.
-3. Funkcja zwracająca różne typy (proste, tablice, obiekty) bez parametrów.
-4. Funkcje zwracająca różne typy z parametrami.
-5. inne
+\par Podczas procesu tworzenia kompilatora, były również tworzone programy testujące dla poszczególnych funkcjonalności, w celu zweryfikowania prawidłowego działania programu. Dla każdego z modułów został utworzony program testujący w języku JavaScript, który obejmuje zakres funkcjonalności modułu. Zostały również utworzone tożsame programy w języku C\# w celu porównania do kodu języka JavaScript.
+\par Zostały również wykorzystane dwa gotowe programy napisane w JavaScript odnalezione w Internecie. Również dla tych programów zostały utworzone odpowiedniki w języku C\# oraz zostały stworzone programy w języku JScript. Dla programów zostały przeprowadzone dodatkowe testy: został zmierzony czas wykonywania programu, zużycie pamięci oraz wielkości pliku wynikowego.
 
-\section{Algorytm 1}
-\subsection{Opracowanie pseudokodu algorytmu 1}
-\subsection{Implementacja algorytmu 1}
-\subsection{Testy algorytmu 1}
-\section{Algorytm 2}
-\subsection{Opracowanie pseudokodu algorytmu 2}
-\subsection{Implementacja algorytmu 2}
-\subsection{Testy algorytmu 2}
+\section{Porównanie wyniku wykonania programów}
+
+\par A
+
+% 1. Obsługa standardowego wyjścia
+% 2. Obsługa zmiennych
+% 3. Obsługa działań arytmetycznych
+% 4. Obsługa wyrażeń warunkowych
+% 5. Obsługa pętli
+% 6. Obsługa tablic
+% 7. Obsługa funkcji
+
+
+% \section{Proste operacje matematyczne}
+% Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.
+% \section{Kolejność wykonywania działań}
+% Test na bardziej złożonych wyrażeniach. Sprawdzenie poprawności działania nawiasów oraz kolejności wykonywania działań.
+% \section{Wyrażenia warunkowe}
+% Test wyrażeń warunkowych. Kolejność wykonywania operacji and i or.
+% \section{Tablice}
+% Test obsługi tablic jedno i wielowymiarowych.
+% \section{Obiekty}
+% Test obsługi obiektów.
+% \section{Klasy}
+% Jeśli będzie implementacja.
+% Test działania obiektów klas.
+% \section{Funkcje}
+% Test działania funkcji.
+% 1. Funkcja "void" bez parametrów.
+% 2. Funkcja "void" z parametrami.
+% 3. Funkcja zwracająca różne typy (proste, tablice, obiekty) bez parametrów.
+% 4. Funkcje zwracająca różne typy z parametrami.
+% 5. inne
+
+% \section{Algorytm 1}
+% \subsection{Opracowanie pseudokodu algorytmu 1}
+% \subsection{Implementacja algorytmu 1}
+% \subsection{Testy algorytmu 1}
+% \section{Algorytm 2}
+% \subsection{Opracowanie pseudokodu algorytmu 2}
+% \subsection{Implementacja algorytmu 2}
+% \subsection{Testy algorytmu 2}

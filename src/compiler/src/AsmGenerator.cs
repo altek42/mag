@@ -253,11 +253,11 @@ public class AsmGenerator : IDisposable {
   }
 
   public void WriteArrayToStdOutput(StoreItem item) {
-    writeLine("ldstr   \"[\"");
+    writeLine("ldstr   \"[ \"");
     writeLine("ldstr   \", \"");
     Load(item);
     writeLine($"call string [mscorlib]System.String::Join<int32>(string, class [mscorlib]System.Collections.Generic.IEnumerable`1<!!0/*int32*/>)");
-    writeLine("ldstr   \"]\"");
+    writeLine("ldstr   \" ]\"");
     writeLine($"call string [mscorlib]System.String::Concat(string, string, string)");
     writeLine($"call void [mscorlib]System.Console::WriteLine(string)");
   }

@@ -62,6 +62,7 @@ function CreatePaths {
     resJsmFile = "$destFolder\jsm.res"
     jsIlFile = "$destFolder\js.il"
     jsExeFile = "$destFolder\js.exe"
+    jsIlDeFile = "$destFolder\js_d.il"
     jsmIlFile = "$destFolder\jsm.il"
     jsmExeFile = "$destFolder\jsm.exe"
 
@@ -105,6 +106,14 @@ function ProcessTest {
     Remove-Item -Path $paths['resJsmFile'] -ErrorAction Ignore;
   }else {
     Write-Warning "$($paths['jsmFile']) not exist".
+  }
+
+  # Deasm compiled js
+  if(Test-Path -Path $paths['jsExeFile']){
+    Start-Process $ildasm -ArgumentList $paths['jsExeFile'], /out=$($paths['jsIlDeFile']) -NoNewWindow -Wait -RedirectStandardOutput $logFile;
+    Remove-Item -Path $paths['resFile'] -ErrorAction Ignore;
+  } else {
+    Write-Warning "$($paths['jsExeFile']) not exist".
   }
 }
 
@@ -277,7 +286,7 @@ function GetTestNameParam {
 function RunExe {
   $testName = GetTestNameParam;
   $exeName = GetParam $ExeName, $e -errorText "Exe file name not provided";
-  $elements = @("js", "cs");
+  $elements = @("js", "cs", "jsm");
   if(-not ($elements -contains $exeName)){
    Exit-WithError "Exe file name not allowed. Required one of [$elements]";
   }
