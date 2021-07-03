@@ -4,9 +4,37 @@
 \par Podczas procesu tworzenia kompilatora, były również tworzone programy testujące dla poszczególnych funkcjonalności, w celu zweryfikowania prawidłowego działania programu. Dla każdego z modułów został utworzony program testujący w języku JavaScript, który obejmuje zakres funkcjonalności modułu. Zostały również utworzone tożsame programy w języku C\# w celu porównania do kodu języka JavaScript.
 \par Zostały również wykorzystane dwa gotowe programy napisane w JavaScript odnalezione w Internecie. Również dla tych programów zostały utworzone odpowiedniki w języku C\# oraz zostały stworzone programy w języku JScript. Dla programów zostały przeprowadzone dodatkowe testy: został zmierzony czas wykonywania programu, zużycie pamięci oraz wielkości pliku wynikowego.
 
-\section{Porównanie wyniku wykonania programów}
+\section{Testy modułów}
 
 \par A
+
+\subsection{Porównanie wyniku wykonania programów}
+
+\par Pierwszym z testów został wykonany program testujący wyświetlanie elementów na ekranie. Program wyświetla różne wartości różnych typów, takie jak wartości tekstowe w cudzysłowu podwójnym jak i pojedynczym, wartości liczbowe całkowite i rzeczywiste, wartości logiczne oraz tablice wartości. Na załączonym rysunku \ref{fig:result1} przedstawione są zrzuty ekranu wyniku działania programów w różnych wariantach.
+
+\begin{figure}[!h]
+	\centering
+  \includegraphics[width=0.7\linewidth]{t1.png}
+	\caption{Wyniki wykonania programu testowego dla modułu obsługi standardowego wyjścia. Źródło: własne}
+	\label{fig:result1}
+\end{figure}
+
+\par Jak można zauważyć, wynik programu w języku C\# oraz JavaScript kompilowanych na wspólną platformę .NET są identyczne. Tutaj należy również wspomnieć, że standardowa biblioteka C\# nie posiada, żadnej z funkcji pozwalającej na wyświetlenie listy elementów tablicy przy pomocy jednej instrukcji. Tak jak podczas implementacji kompilatora JavaScript została zastosowana tutaj funkcja łącząca elementy tablicy w jeden ciąg znaków oraz zostały doklejone nawiasy otwierające oraz zamykające. 
+\par Porównując wynik programu uruchomionego na platformie .NET z programem uruchomionym na platformie Node.js, można zauważyć nie wielkie różnice w wyświetlanych wynikach. Pierwszą z nich rzucającą się w oczy, jest zmiana koloru wyświetlanego tekstu dla liczb oraz wartości liczbowych. Jednak ten efekt zależny jest od formatowania kolorów w danej konsoli. Konsola wykryła wywołanie platformy Node.js, dzięki czemu zmieniła kolorystykę.
+\par Drugim z różniącym się elementem jest sposób wyświetlania liczb rzeczywistych. Różnią się tym, że dla platformy .NET wyświetlany jest przecinek, kiedy na platformie Node.js wyświetlana jest kropka. Ostatnią różnicą w prezentowanych wynikach jest wyświetlanie wartości logicznych. Dla platformy .NET wartości są wyświetlane z wielką literą, a w przypadku Node.js wartości wyświetlane są małymi literami.
+
+\par Kolejnym z testów dla którego wynik wykonania programu był różny, został przeprowadzony dla modułu działań arytmetycznych. Zrzuty wyników zostały przedstawione na rysunku \ref{fig:result2}. Głównie różnice występują przy wyświetlaniu wyniku operacji dzielenia.
+
+\begin{figure}[!h]
+	\centering
+  \includegraphics[width=0.7\linewidth]{t2.png}
+	\caption{Wyniki wykonania programu testowego dla modułu obsługi działania arytmetyczne. Źródło: własne}
+	\label{fig:result2}
+\end{figure}
+
+\par Pierwszą z różnic między programem napisanym w języku C\# a JavaScript na platformie .NET jest wynik dzielenia dwóch liczb całkowitych. Wykonywane działanie ma postać $y = 10 / 15$, więc wynikiem jest liczna rzeczywista. W programie w języku C\# jest językiem silnie typowanym, co oznacza, że jeżeli przynajmniej jedna z liczb nie zostanie przekonwertowana na typ liczb rzeczywistych, to wynik będzie typu liczby całkowitej. W tworzonym kompilatorze została zaimplementowana automatyczna konwersja typów, w momencie kiedy zostanie wykryta operacja dzielenia dwóch liczb.
+\par Drugą z widocznych różnic jest precyzja wartości zmiennych. W tworzonym kompilatorze JavaScript został wykorzystany typ pojedynczej precyzji, a w przypadku kompilatora C\# została zastosowana typ podwójnej precyzji. Porównując wyniki platformy .NET do platformy Node.js można zauważyć, że wartości na platformie .NET są zaokrąglane.
+
 
 % 1. Obsługa standardowego wyjścia
 % 2. Obsługa zmiennych
@@ -16,6 +44,7 @@
 % 6. Obsługa tablic
 % 7. Obsługa funkcji
 
+\section{Testy algorytmów}
 
 % \section{Proste operacje matematyczne}
 % Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.

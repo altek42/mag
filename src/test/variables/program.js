@@ -3,7 +3,7 @@ var a = arr.length, b, c=0,
     d, e = 5
 
 b = 2;
-d = 4;
+d = "" + 4;
 
 console.log(a)
 console.log(b)

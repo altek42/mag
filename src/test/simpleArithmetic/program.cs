@@ -60,6 +60,22 @@ namespace dotnet
 
             Console.WriteLine(constStr4);
             Console.WriteLine(constStr5);
+
+            int zmienna1 = 1;
+            string zmienna2, zmienna3 = "z3";
+
+            zmienna2 = "z2";
+
+            Console.WriteLine(zmienna1);
+            Console.WriteLine(zmienna2);
+            Console.WriteLine(zmienna3);
+
+            int x = 1;
+            x++;
+            Console.WriteLine(x);
+
+            double b = 5 + 4.5;
+            Console.WriteLine(b);
         }
     }
 }
