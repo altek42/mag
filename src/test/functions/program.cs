@@ -7,19 +7,31 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            int a = 2;
-            int b = 3;
-            test(a,b);
-            show(a,b);
+            int a = 3;
+            int b = 5;
+            int c = nameFunc(a,b);
+            Console.WriteLine("c");
+            Console.WriteLine(c);
+            string d = convert(4.7);
+            Console.WriteLine(d);
         }
 
-        static int test(int i1, int i2) {
-           int x = i1 + i2;
-           return x;
+        static int mul(int a, int b) {
+            int sum = a * b;
+            return sum;
+        }
+        
+        static int nameFunc(int a, int b) {
+           int zm = mul(a,b);
+           Console.WriteLine(zm);
+           int returnValue = zm * 2;
+           return returnValue;
         }
 
-        static void show(int s1, int s2) {
-           Console.WriteLine("s1 " + s1 + " s2 "+ s2);
+        static string convert(double a) {
+            string tekst = "Zmienna: ";
+            string result = tekst + a;
+            return result;
         }
     }
 }

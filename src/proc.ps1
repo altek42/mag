@@ -216,6 +216,7 @@ function CleanTestFolder {
   Remove-Item -Path $paths['jsExeFile'] -ErrorAction Ignore;
   Remove-Item -Path $paths['jsmIlFile'] -ErrorAction Ignore;
   Remove-Item -Path $paths['jsmExeFile'] -ErrorAction Ignore;
+  Remove-Item -Path $paths['jsIlDeFile'] -ErrorAction Ignore;
 }
 
 function ProcessAllTests {

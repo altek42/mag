@@ -41,6 +41,12 @@ namespace dotnet
           }else {
             Console.WriteLine("number2 is greater than 20");
           }
+
+          int v1 = 100;
+          bool t1 = 5 <= v1;
+          bool t2 = !t1;
+          Console.WriteLine("t1: " + t1 );
+          Console.WriteLine("t2: " + t2 );
         }
     }
 }

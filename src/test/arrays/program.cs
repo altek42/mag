@@ -7,31 +7,14 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            // Console.WriteLine("Arrays");
-            // List<int> myArray = new List<int>();
-            // myArray.Add(10);
-            // myArray.Add(22);
-            // myArray.Add(13);
-            // myArray.Add(45);
+            List<int> myArray = new List<int>{10, 2, 13, 45};
+            int x = myArray.Count;
 
-            // int i = 1;
-            
-            // Console.WriteLine(myArray[i]);
+            myArray[1+1] = 100;
 
-            List<int> myArray = new List<int>()
-            {
-            10,
-            23,
-            13,
-            45
-            };
-
-
-            int i = 1;
-
-            myArray[i] = 4;
-
-            Console.WriteLine("["+string.Join(", ", myArray)+"]");
+            for(var i = 0; i < x; i = i + 1){
+                Console.WriteLine(myArray[i]);
+            }
         }
     }
 }

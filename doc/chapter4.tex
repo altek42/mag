@@ -32,8 +32,30 @@
 	\label{fig:result2}
 \end{figure}
 
-\par Pierwszą z różnic między programem napisanym w języku C\# a JavaScript na platformie .NET jest wynik dzielenia dwóch liczb całkowitych. Wykonywane działanie ma postać $y = 10 / 15$, więc wynikiem jest liczna rzeczywista. W programie w języku C\# jest językiem silnie typowanym, co oznacza, że jeżeli przynajmniej jedna z liczb nie zostanie przekonwertowana na typ liczb rzeczywistych, to wynik będzie typu liczby całkowitej. W tworzonym kompilatorze została zaimplementowana automatyczna konwersja typów, w momencie kiedy zostanie wykryta operacja dzielenia dwóch liczb.
+\par Pierwszą z różnic między programem napisanym w języku C\# a JavaScript na platformie .NET jest wynik dzielenia dwóch liczb całkowitych. Wykonywane działanie ma postać $y = 10 / 15$, więc wynikiem jest liczba rzeczywista. W programie w języku C\# jest językiem silnie typowanym, co oznacza, że jeżeli przynajmniej jedna z liczb nie zostanie przekonwertowana na typ liczb rzeczywistych, to wynik będzie typu liczby całkowitej. W tworzonym kompilatorze została zaimplementowana automatyczna konwersja typów, w momencie kiedy zostanie wykryta operacja dzielenia dwóch liczb.
 \par Drugą z widocznych różnic jest precyzja wartości zmiennych. W tworzonym kompilatorze JavaScript został wykorzystany typ pojedynczej precyzji, a w przypadku kompilatora C\# została zastosowana typ podwójnej precyzji. Porównując wyniki platformy .NET do platformy Node.js można zauważyć, że wartości na platformie .NET są zaokrąglane.
+
+\par Przy uruchomieniu programu JScript jednego z algorytmów testujących, ukazała się jeszcze jedna różnica w prezentowanych na konsoli wynikach. Różnicą jest sposób wyświetlania tablicy elementów. W tworzonym kompilatorze, jak i na platformie .NET, elementy są otoczone nawiasem kwadratowym, oraz oddzielone są poza przecinkiem dodatkową spacją. W przypadku wyniku programu JScript, prezentowana tablica nie posiada nawiasów kwadratowych oraz liczby są oddzielone przecinkami bez spacji. Wynik programów zaprezentowany jest na rysunki \ref{fig:result3}
+
+\begin{figure}[!h]
+	\centering
+  \includegraphics[width=0.7\linewidth]{t3.png}
+	\caption{Wyniki wykonania programu dla algorytmu testowego nr 1. Źródło: własne}
+	\label{fig:result3}
+\end{figure}
+
+\par Skrypty testowe dla pozostałych modułów nie wykazują różnic w prezentowanych wynikach na konsoli.
+
+\subsection{Porównanie generowanego kodu assemblera}
+
+\par Generowany kod assemblera z języka JavaScript będzie porównany z kodem dezasemblowanym kodem programu napisanego w języku C\#. Dezasemblacja jest wykonywana przy pomocy programu \textit{ildasm.exe} znajdujący się w pakiecie \textbf{.NET Framework}.
+\par Pierwszą z widocznych różnic jest ilość deklaracji metadanych w nagłówku pliku. Kolejną z różnic jest ilość modyfikatorów przy deklaracji klasy jak i metody \texttt{Main}. Dla deklaracji klasy programu C\# zostały użyte następujące słowa kluczowe:
+\begin{itemize}
+	\item \texttt{private}
+	\item \texttt{auto}
+	\item \texttt{ansi}
+	\item \texttt{beforefieldinit}
+\end{itemize}
 
 
 % 1. Obsługa standardowego wyjścia
@@ -44,7 +66,7 @@
 % 6. Obsługa tablic
 % 7. Obsługa funkcji
 
-\section{Testy algorytmów}
+% \section{Testy algorytmów}
 
 % \section{Proste operacje matematyczne}
 % Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.

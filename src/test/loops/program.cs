@@ -6,18 +6,27 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            int num1 = 1;
-            int num2 = 1;
-            for (; num1 < 10; ++num1)
-            {
-                for (; num2 < 5; ++num2)
-                Console.WriteLine("i=" + (num1 + num2).ToString() + " [" + num1.ToString() + "][" + num2.ToString() + "]");
-                num2 = 1;
+            int x = 1;
+            int y = 1;
+            while( x< 10){
+                while(y < 5){
+                    var i = x + y;
+                    Console.WriteLine("i=" + i + " ["+ x+"]["+y+"]");
+                    y = y + 1;
+                }
+                y = 1;
+                x = x + 1;
             }
+            
             Console.WriteLine("While test end");
-            int num3 = 1;
-            for (int index = 0; index < 10; ++index)
-                Console.WriteLine(num3 + index);
+
+            x = 1;
+
+            for (int index = 0; index < 10; index = index + 1) {
+                int element = x + index;
+                Console.WriteLine(element);
+            }
+
             Console.WriteLine("For test end");
         }
     }

@@ -32,10 +32,7 @@ namespace dotnet
     {
       List<int> l = new List<int>() { 3, 6, 2, 5, -75, 4, 1 };
       List<int> r = bubbleSortAlgo(l);
-      for (int i = 0; i < r.Count; i++)
-      {
-        Console.Write(r[i] + ", ");
-      }
+      Console.WriteLine("[ "+string.Join(", ", r)+" ]");
     }
   }
 }
