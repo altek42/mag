@@ -49,14 +49,40 @@
 \subsection{Porównanie generowanego kodu assemblera}
 
 \par Generowany kod assemblera z języka JavaScript będzie porównany z kodem dezasemblowanym kodem programu napisanego w języku C\#. Dezasemblacja jest wykonywana przy pomocy programu \textit{ildasm.exe} znajdujący się w pakiecie \textbf{.NET Framework}.
-\par Pierwszą z widocznych różnic jest ilość deklaracji metadanych w nagłówku pliku. Kolejną z różnic jest ilość modyfikatorów przy deklaracji klasy jak i metody \texttt{Main}. Dla deklaracji klasy programu C\# zostały użyte następujące słowa kluczowe:
-\begin{itemize}
-	\item \texttt{private}
-	\item \texttt{auto}
-	\item \texttt{ansi}
-	\item \texttt{beforefieldinit}
-\end{itemize}
+\par Pierwszą z widocznych różnic jest ilość deklaracji metadanych w nagłówku pliku. Kolejną z różnic jest ilość modyfikatorów przy deklaracji klasy jak i metody \texttt{Main}. Dla deklaracji klasy programu C\# zostały użyte następujące słowa kluczowe \texttt{private}, \texttt{auto}, \texttt{ansi}, \texttt{beforefieldinit}, a dla funkcji \texttt{Main} zostały użyte: \texttt{private} oraz \texttt{hidebysig}. 
 
+\begin{figure}[!h]
+	\centering
+  \includegraphics[width=0.9\linewidth]{t4.png}
+	\caption{Porównanie kodu asemblera dla deklaracji klasy oraz funkcji \texttt{Main}. Źródło: własne}
+	\label{fig:result4}
+\end{figure}
+
+\par Kolejnym z różnic jest ilość deklarowanych zmiennych, która spowodowana jest słabą optymalizacją w tworzonym kompilatorze. Następną rzeczą jest nadawanie etykiet dla każdej z instrukcji w obrębie deklarowanych funkcji. 
+
+\par Analizując generowane instrukcje kodu asemblera z dezasemblowanym kodem programu C\# można zauważyć różnicę przy zapisywaniu oraz odczytywaniu wartości zmiennych na stosie. W utworzonym kompilatorze odbywa się to zawsze poprzez nazwę zmiennej, a w .NET Framework wykorzystywane są instrukcje wykorzystujące indeksowanie zmiennych od wartości 0 do 3. Dodatkowo odwołanie się do kolejnych zmiennych wykorzystywana jest instrukcja w formie skróconej.
+
+
+\begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający ładowanie wartości zmiennych na stos}, label=alg:asm]
+  ...
+  IL_0047:  ldloc.0
+  IL_0048:  call       void [mscorlib]System.Console::WriteLine(string)
+  IL_004d:  ldloc.1
+  IL_004e:  call       void [mscorlib]System.Console::WriteLine(string)
+  IL_0053:  ldloc.2
+  IL_0054:  call       void [mscorlib]System.Console::WriteLine(int32)
+  IL_0059:  ldloc.3
+  IL_005a:  call       void [mscorlib]System.Console::WriteLine(float32)
+  IL_005f:  ldloc.s    V_4
+  IL_0061:  call       void [mscorlib]System.Console::WriteLine(bool)
+  ...
+\end{lstlisting}
+
+\par 
+
+% dodawanie stałych jest od razu wykonywane bez instrukcji dodawania
+% dodawanie wielu stringów
+% dodanie liczby do string
 
 % 1. Obsługa standardowego wyjścia
 % 2. Obsługa zmiennych
