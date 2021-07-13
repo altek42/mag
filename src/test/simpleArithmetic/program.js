@@ -16,6 +16,7 @@ var constStr1 = "Test " + "concat"
 var constStr2 = 1 + " concat"
 var constStr3 = "Test " + 8
 var constConcat = constStr1 + constStr2 + constStr3
+var constConcat2 = constStr1 + 2 + "Tekst"
 
 var constRealAdd = 10.1 + 12.3 // 22.4
 var constRealSub = 10.1 - 5.6  // 4.5
@@ -42,6 +43,7 @@ console.log(constStr1)
 console.log(constStr2)
 console.log(constStr3)
 console.log(constConcat)
+console.log(constConcat2)
 
 console.log(constRealAdd)
 console.log(constRealSub)

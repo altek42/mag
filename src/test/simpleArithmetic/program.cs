@@ -24,6 +24,7 @@ namespace dotnet
             string constStr2 = 1 + " concat";
             string constStr3 = "Test " + 8;
             string constConcat = constStr1 + constStr2 + constStr3;
+            string constConcat2 = constStr1 + 2 + "Tekst";
 
             double constRealAdd = 10.1 + 12.3; // 22.4
             double constRealSub = 10.1 - 5.6;  // 4.5
@@ -50,6 +51,7 @@ namespace dotnet
             Console.WriteLine(constStr2);
             Console.WriteLine(constStr3);
             Console.WriteLine(constConcat);
+            Console.WriteLine(constConcat2);
 
             Console.WriteLine(constRealAdd);
             Console.WriteLine(constRealSub);

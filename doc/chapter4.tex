@@ -78,11 +78,25 @@
   ...
 \end{lstlisting}
 
-\par 
+\par Następne różnice generowanego kodu widoczne są przy operacjach arytmetycznych, wykonywanych na liczbach stałych. W przypadku wykorzystania \textit{.NET Framework}, obliczenia wykonywane są przy generowaniu kodu, a nie podczas uruchomienia skompilowanego programu. Przykładowo wykonanie działania $x = 1 + 2$, wygeneruje instrukcje jedynie do przypisania wartości $3$ do zmiennej $x$. W tworzonym kompilatorze, wygenerowanie zostanie instrukcji do załadowania liczby $1$ oraz $2$ na stos, następnie wykonanie operacji dodawania i na końcu przypisanie wyniku do zmiennej $x$.
+\par Przy dodawaniu do siebie wielu łańcuchów znaków, w kodzie assemblera, programu napisanego w języku C\#, można zauważyć, że wszystkie łańcuchy są łączone przy pomocy jednej instrukcji \texttt{Concat}, gdzie w tworzonym kompilatorze, zawsze łączone są jedynie dwa łańcuchy na raz. Co więcej, można zauważyć też różnicę przy konwersji wartości zmiennych na łańcuchy znaków przy dodawaniu ich do elementów typu łańcuchowego. W tworzonym kompilatorze konwersja przebiega przy pomocy instrukcji \texttt{ToString()}, jednak w kompilatorze środowiska \textit{.NET Framework} przeprowadzana jest przy pomocy instrukcji \texttt{box}, która sprowadza zmienną do typu \texttt{object}. Instrukcja \texttt{Concat} przyjmuje wtedy elementy typu \texttt{object}.
 
-% dodawanie stałych jest od razu wykonywane bez instrukcji dodawania
-% dodawanie wielu stringów
-% dodanie liczby do string
+\begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający łączenie łańcuchów znaków}, label=alg:asm]
+  ...
+  IL_006a:  ldloc.s    V_1
+  IL_006c:  ldc.i4.2
+  IL_006d:  box        [mscorlib]System.Int32
+  IL_0072:  ldstr      "Tekst"
+  IL_0077:  call       string [mscorlib]System.String::Concat(object,
+                                                              object,
+                                                              object)
+  ...
+\end{lstlisting}
+
+%  instrukcje warunkowe wykorzystują różne rodzaje skoków, gdzie u mnie jest zawsze sprowadzane do boolean
+
+% Do sprawdzenia: pętle, tablice, funkcje
+
 
 % 1. Obsługa standardowego wyjścia
 % 2. Obsługa zmiennych
