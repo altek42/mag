@@ -93,9 +93,106 @@
   ...
 \end{lstlisting}
 
-%  instrukcje warunkowe wykorzystują różne rodzaje skoków, gdzie u mnie jest zawsze sprowadzane do boolean
+\par Dalej analizując poszczególne moduły, można zauważyć, że w generowanym kodzie assemblera dla programów kompilowanych przy pomocy narzędzi środowiska \textit{.NET Framework}, naturalnie wykorzystywane są wszystkie dostępne instrukcje. Szczególnie widoczne jest to przy instrukcjach warunkowych. W tworzonym kompilatorze warunki zawsze są sprowadzane do pojedynczej wartości logicznej, a następnie na jej podstawie wykonywany jest skok. W przypadku kompilatora \textit{.NET}, przykładowo wykorzystywane są instrukcje które od razu porównują dwie wartości na jej podstawie wykonują skok.
 
-% Do sprawdzenia: pętle, tablice, funkcje
+\begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający instrukcje \texttt{if ... else}}, label=alg:asm]
+  ...
+  IL_0060:  ldc.i4.s   20
+  IL_0062:  ldloc.s    number1
+  IL_0064:  ble.s      IL_0072
+
+  IL_0066:  ldstr      "number1 is less than 20"
+  IL_006b:  call       void [mscorlib]System.Console::WriteLine(string)
+  IL_0070:  br.s       IL_007c
+
+  IL_0072:  ldstr      "number1 is greater than 20"
+  IL_0077:  call       void [mscorlib]System.Console::WriteLine(string)
+  IL_007c:  
+  ...
+\end{lstlisting}
+
+\begin{lstlisting}[language=IL, caption={Fragment wygenerowanego kodu asemblerowanego z języka JavaScript, przedstawiający instrukcje \texttt{if ... else}}, label=alg:asm]
+  ...
+  ldc.i4 20
+  ldloc v_number1
+  cgt
+  stloc v_tmp_11
+  // BOOLEAN:tmp_11 = INTEGER:20 > INTEGER:number1
+  
+  ldloc v_tmp_11
+  brfalse IF_2
+  // if (BOOLEAN:tmp_11 == false) JUMP IF_2
+  ldstr "number1 is less than 20"
+  call void [mscorlib]System.Console::WriteLine(string)
+  
+  br IF_3
+  IF_2: 
+  // ELSE
+  ldstr "number1 is greater than 20"
+  call void [mscorlib]System.Console::WriteLine(string)
+  ...
+\end{lstlisting}
+
+% w pętlach jest inna kolejność instrukcji
+% \subsection{Porównanie zdekompilowanego kodu programu w postaci języka C\#}
+
+\section{Testy algorytmów}
+
+\par W celu przetestowania działania tworzonego kompilatora, zostały wykorzystane algorytmy odnalezione w Internecie. Zostaną dla nich utworzone odpowiednie kody w języku C\# w celu porównania szybkości działania, zużycia pamięci czy wykorzystania przestrzeni dyskowej. Dla kodu programu w JavaScript zostaną również utworzone wersje przystosowane do kompilatora JScript, którego wyniki również zostaną porównane.
+
+\subsection{Algorytm sortowania}
+\par Pierwszym z odnalezionych kodów jest algorytm sortowania bąbelkowego zamieszczony w artykule zamieszczonego pod adresem \url{https://www.educba.com/sorting-algorithms-in-javascript/}, którego autorem jest Priya Pedamkar. Kod przedstawia się następująco:
+
+\begin{lstlisting}[language=JavaScript, caption={Algorytm sortowania bąbelkowego. Źródło: \url{https://www.educba.com/sorting-algorithms-in-javascript/}}, label=alg:alg1]
+function swap(arr, firstIndex, secondIndex){
+  var temp = arr[firstIndex];
+  arr[firstIndex] = arr[secondIndex];
+  arr[secondIndex] = temp;
+}
+function bubbleSortAlgo(arraaytest){
+  var len = arraaytest.length,
+  i, j, stop;
+  for (i=0; i < len; i++){
+    for (j=0, stop=len-i; j < stop; j++){
+      if (arraaytest[j] > arraaytest[j+1]){
+        swap(arraaytest, j, j+1);
+      }
+    }
+  }
+  return arraaytest;
+}
+console.log(bubbleSortAlgo([3, 6, 2, 5, -75, 4, 1]));
+\end{lstlisting}
+
+\par Niestety funkcjonalność obsługi tablic nie została w pełni zaimplementowana, co powoduje, że powyższy kod dla stworzonego kompilatora nie jest poprawny. Problem występuje w dwóch miejscach. Pierwszy z nich znajduje się w wewnętrznej instrukcji \texttt{for} a dokładniej w warunku kończącym iterowanie pętli. W języku JavaScript przy odwołaniu się do elementu poza zakresem tablicy, nie zostanie wywołany błąd a jedynie zostanie zwrócona wartość typu \texttt{undefined}. W środowisku \textit{.NET Framework} wyjście poza zakres powoduje błąd i zatrzymanie działania programu. W celu uniknięcia tego, zmienna \texttt{stop} została zmniejszona o $1$. 
+\par Drugim miejscem jest wywołanie funkcji, podając dla niej bezpośrednio tablicę wartości. Problem polega na braku obsłużenia przedstawionej sytuacji, w której przekazywane jest bezpośrednio nowo utworzona tablica elementów, co skutkuje wygenerowaniem błędnego kodu asemblera, którego po skompilowaniu do postaci binarnej, uruchomienie powoduje błąd środowiska maszyny wirtualnej. Aby uniknąć tego błędu, nowo tworzona tablica będzie najpierw przypisana do zmiennej, a dopiero następnie przekazana do funkcji.
+
+\begin{lstlisting}[language=JavaScript, caption={Zmodyfikowany kod programu sortowania bąbelkowego.}, label=alg:alg1]
+  function swap(arr, firstIndex, secondIndex){
+    var temp = arr[firstIndex];
+    arr[firstIndex] = arr[secondIndex];
+    arr[secondIndex] = temp;
+  }
+  function bubbleSortAlgo(arraaytest){
+    var len = arraaytest.length,
+    i, j, stop;
+    for (i=0; i < len; i++){
+      for (j=0, stop=len - i - 1; j < stop; j++){
+        if (arraaytest[j] > arraaytest[j+1]){
+          swap(arraaytest, j, j+1);
+        }
+      }
+    }
+    return arraaytest;
+  }
+  var l = [3, 6, 2, 5, -75, 4, 1];
+  console.log(bubbleSortAlgo(l));
+\end{lstlisting}
+
+
+
+% \subsection{Algorytm wyszukiwania}
+
 
 
 % 1. Obsługa standardowego wyjścia
@@ -105,35 +202,3 @@
 % 5. Obsługa pętli
 % 6. Obsługa tablic
 % 7. Obsługa funkcji
-
-% \section{Testy algorytmów}
-
-% \section{Proste operacje matematyczne}
-% Test dodawania, odejmowania, mnożenia, dzielenia, przypisywania.
-% \section{Kolejność wykonywania działań}
-% Test na bardziej złożonych wyrażeniach. Sprawdzenie poprawności działania nawiasów oraz kolejności wykonywania działań.
-% \section{Wyrażenia warunkowe}
-% Test wyrażeń warunkowych. Kolejność wykonywania operacji and i or.
-% \section{Tablice}
-% Test obsługi tablic jedno i wielowymiarowych.
-% \section{Obiekty}
-% Test obsługi obiektów.
-% \section{Klasy}
-% Jeśli będzie implementacja.
-% Test działania obiektów klas.
-% \section{Funkcje}
-% Test działania funkcji.
-% 1. Funkcja "void" bez parametrów.
-% 2. Funkcja "void" z parametrami.
-% 3. Funkcja zwracająca różne typy (proste, tablice, obiekty) bez parametrów.
-% 4. Funkcje zwracająca różne typy z parametrami.
-% 5. inne
-
-% \section{Algorytm 1}
-% \subsection{Opracowanie pseudokodu algorytmu 1}
-% \subsection{Implementacja algorytmu 1}
-% \subsection{Testy algorytmu 1}
-% \section{Algorytm 2}
-% \subsection{Opracowanie pseudokodu algorytmu 2}
-% \subsection{Implementacja algorytmu 2}
-% \subsection{Testy algorytmu 2}
