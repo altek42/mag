@@ -31,8 +31,7 @@ namespace dotnet
     static void Main(string[] args)
     {
       List<int> l = new List<int>() { 3, 6, 2, 5, -75, 4, 1 };
-      List<int> r = bubbleSortAlgo(l);
-      Console.WriteLine("[ "+string.Join(", ", r)+" ]");
+      Console.WriteLine("[ "+string.Join(", ", bubbleSortAlgo(l))+" ]");
     }
   }
 }

@@ -189,6 +189,117 @@ console.log(bubbleSortAlgo([3, 6, 2, 5, -75, 4, 1]));
   console.log(bubbleSortAlgo(l));
 \end{lstlisting}
 
+\par W celu skompilowania powyższego kodu algorytmu przy pomocy kompilatora JScript z pakietu \textit{.NET Framework}, wystarczy jedynie dodać instrukcje importujące biblioteki standardowe \texttt{System} oraz \texttt{Microsoft.Win32}. Instrukcje należy umieścić na początku pliku. Kolejną konieczną rzeczą do skompilowania kodu, jest zmiana instrukcji standardowego wyjścia. Instrukcja \texttt{console.log(...)} powinna być zastąpiona instrukcją \texttt{Console.WriteLine(...)}. Tak przygotowany kod źródłowy można teraz skompilować kompilatorem JScript.
+
+\par Kod JavaScript został odwzorowany również w kodzie C\# i prezentuje się następująco:
+
+\begin{lstlisting}[language=CSharp, caption={Odwzorowany kod JavaScript w języku C\# algorytmu sortowania bąbelkowego.}, label=alg:alg1]
+using System;
+using System.Collections.Generic;
+
+namespace dotnet
+{
+  class Program
+  {
+    static void swap(List<int> arr, int firstIndex, int secondIndex)
+    {
+      int temp = arr[firstIndex];
+      arr[firstIndex] = arr[secondIndex];
+      arr[secondIndex] = temp;
+    }
+
+    static List<int> bubbleSortAlgo(List<int> arraaytest)
+    {
+      int len = arraaytest.Count, i, j, stop;
+      for (i = 0; i < len; i++)
+      {
+        for (j = 0, stop = len - i - 1; j < stop; j++)
+        {
+          if (arraaytest[j] > arraaytest[j + 1])
+          {
+            swap(arraaytest, j, j + 1);
+          }
+        }
+      }
+      return arraaytest;
+    }
+
+    static void Main(string[] args)
+    {
+      List<int> l = new List<int>() { 3, 6, 2, 5, -75, 4, 1 };
+      Console.WriteLine("[ "+string.Join(", ", bubbleSortAlgo(l))+" ]");
+    }
+  }
+}
+\end{lstlisting}
+
+\par Testy zostaną wykonane dla oryginalnego wektora wejściowego do przesortowania jak i dla losowo wygenerowanego wektora o wielkościach 1000, 5000 i 10000 składającego się z liczb całkowitych z przedziału od -10000 do 10000.
+
+\par Pierwszym z kryteriów jest zmierzenie czasu wykonywania programu. Czas zmierzony będzie w w konsoli \textit{PowerShell 7.1.1} przy pomocy komendy \texttt{Measure-Command} uruchamiającego proces skompilowanego pliku programu. Otrzymane wyniki prezentują się następująco:
+
+\begin{table}[h!]
+  \begin{tabular}{|l|l|l|l|}
+  \hline
+  Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+  Oryginalne (7)  & 00:00:01.0280485 & 00:00:01.0211699 & 00:00:01.0249265 \\ \hline
+  1000            & 00:00:01.0267120 & 00:00:01.0209711 & 00:00:01.0281652 \\ \hline
+  5000            & 00:00:01.0231339 & 00:00:01.0286513 & 00:00:11.1320074 \\ \hline
+  10000           & 00:00:01.0331534 & 00:00:01.0466795 & 00:00:47.3928596 \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      ybar,
+      title={Czas wykonywania programu},
+      xlabel={Ilość elementów},
+      ylabel={Czas [ms]},
+      symbolic x coords={7,1000,5000,10000},
+      xtick=data,
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      % nodes near coords
+  ]
+  
+  \addplot[
+      color=blue,
+      fill=blue
+    ]
+    coordinates {
+      (7, 1028)
+      (1000,1026)
+      (5000,1023)
+      (10000,1033)
+    };
+    \addlegendentry{C\#}
+
+    
+  \addplot[
+    color=green,
+    fill=green
+    ]
+    coordinates {
+      (7,1021)
+      (1000,1020)
+      (5000,1028)
+      (10000,1046)
+    };
+    \addlegendentry{JavaScript}
+
+    
+  \addplot[
+      color=red,
+      fill=red,
+    ]
+    coordinates {
+      (7,1024)
+      (1000,1028)
+    };
+    \addlegendentry{JScript}
+      
+  \end{axis}
+\end{tikzpicture}
 
 
 % \subsection{Algorytm wyszukiwania}

@@ -19,5 +19,4 @@ function bubbleSortAlgo(arraaytest) {
 }
 
 var l = [3, 6, 2, 5, -75, 4, 1];
-var r = bubbleSortAlgo(l);
-Console.WriteLine(l);
+Console.WriteLine(bubbleSortAlgo(l));
