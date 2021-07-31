@@ -301,10 +301,118 @@ namespace dotnet
   \end{axis}
 \end{tikzpicture}
 
+\par Obserwując wyniki pomiarów czasu wykonywania programu, można stwierdzić, że utworzony kompilator jest porównywalny do kompilatora C\#. W przypadku kompilatora JScript różnicę można zauważyć przy większej ilości danych. W przypadku kiedy wektor testowy miał 5000 elementów, czas wykonywania programu zwiększył się średnio o 10 sekund, a w przypadku kiedy wektor testowy posiadał 10000 elementów, czas wykonania osiągną średnio 47 sekund.
+
+\par Kolejnym z kryteriów jest sprawdzenie wykorzystania pamięci dla programów testowych. Zostanie do tego wykorzystane narzędzie \textit{JetBrains dotMemory 2020.2.1}. Test zostanie wykonany dla programów z wektorem wejściowym posiadającym 10000.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|l|}
+  \hline
+  Kompilator & Zużycie pamięci \\ \hline
+  C\# & 11,26 MB \\ \hline
+  JavaScript & 11,25 MB \\ \hline
+  JScript & 28,72 MB \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{a1_cs_10000.png}
+  \caption{Pomiar zużycia pamięci dla algorytmu pierwszego dla kompilatora C\#. Źródło: własne}
+  \label{fig:a}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{a1_js_10000.png}
+  \caption{Pomiar zużycia pamięci dla algorytmu pierwszego dla kompilatora JavaScript. Źródło: własne}
+  \label{fig:a}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{a1_jsm_10000.png}
+  \caption{Pomiar zużycia pamięci dla algorytmu pierwszego dla kompilatora JScript. Źródło: własne}
+  \label{fig:a}
+\end{figure}
+
+\newpage
+\par Tak ja w poprzednim teście, wyniki pokazują, że pomiędzy programem C\# oraz programem JavaScript nie występuje znaczna różnica. Inaczej jest z programem JScript który zużywa w piku ponad dwukrotnie więcej pamięci.
+
+\par Ostatnim z kryteriów jest zmierzenie wielkości plików skompilowanych programów. Wyniki prezentują się następująco:
+
+\begin{table}[h!]
+  \begin{tabular}{|l|l|l|l|}
+  \hline
+  Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+  Oryginalne (7)  & 4,00 kB & 3,00 kB & 7,00 kB \\ \hline
+  1000            & 15,00 kB & 16,50 kB & 23,00 kB \\ \hline
+  5000            & 57,50 kB & 71,00 kB & 89,50 kB \\ \hline
+  10000           & 111,00 kB & 139,50 kB & 172,00 kB \\ \hline
+  \end{tabular}
+\end{table}
+
+
+\begin{tikzpicture}
+  \begin{axis}[
+      ybar,
+      title={Wielkość pliku skompilowanego programu},
+      xlabel={Ilość elementów},
+      ylabel={Wielkość [kB]},
+      symbolic x coords={7,1000,5000,10000},
+      xtick=data,
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      % nodes near coords
+  ]
+  
+  \addplot[
+      color=blue,
+      fill=blue
+    ]
+    coordinates {
+      (7, 4.00)
+      (1000,15.00)
+      (5000,57.50)
+      (10000,111.00)
+    };
+    \addlegendentry{C\#}
+
+    
+  \addplot[
+    color=green,
+    fill=green
+    ]
+    coordinates {
+      (7,3.00)
+      (1000,16.50)
+      (5000,71.00)
+      (10000,139.50)
+    };
+    \addlegendentry{JavaScript}
+
+    
+  \addplot[
+      color=red,
+      fill=red,
+    ]
+    coordinates {
+      (7,7.00)
+      (1000,23.00)
+      (5000,89.50)
+      (10000,172.00)
+    };
+    \addlegendentry{JScript}
+      
+  \end{axis}
+\end{tikzpicture}
+
+
+
 
 % \subsection{Algorytm wyszukiwania}
-
-
 
 % 1. Obsługa standardowego wyjścia
 % 2. Obsługa zmiennych
