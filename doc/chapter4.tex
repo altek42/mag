@@ -6,7 +6,7 @@
 
 \section{Testy modułów}
 
-\par A
+\par Programy testujące moduły, tworzone były równocześnie z kompilatorem, w celu sprawdzenia, poprawności działania poszczególnych funkcjonalności. Były one modyfikowane i przystosowywane w taki sposób, aby zweryfikować w jak największym stopniu poprawność generowanego kodu i wykluczenia pojawiających się błędów. Testy modułów obejmują planowany zakres implementacji kompilatora.
 
 \subsection{Porównanie wyniku wykonania programów}
 
@@ -64,6 +64,7 @@
 
 
 \begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający ładowanie wartości zmiennych na stos}, label=alg:asm]
+
   ...
   IL_0047:  ldloc.0
   IL_0048:  call       void [mscorlib]System.Console::WriteLine(string)
@@ -75,6 +76,7 @@
   IL_005a:  call       void [mscorlib]System.Console::WriteLine(float32)
   IL_005f:  ldloc.s    V_4
   IL_0061:  call       void [mscorlib]System.Console::WriteLine(bool)
+
   ...
 \end{lstlisting}
 
@@ -82,6 +84,7 @@
 \par Przy dodawaniu do siebie wielu łańcuchów znaków, w kodzie assemblera, programu napisanego w języku C\#, można zauważyć, że wszystkie łańcuchy są łączone przy pomocy jednej instrukcji \texttt{Concat}, gdzie w tworzonym kompilatorze, zawsze łączone są jedynie dwa łańcuchy na raz. Co więcej, można zauważyć też różnicę przy konwersji wartości zmiennych na łańcuchy znaków przy dodawaniu ich do elementów typu łańcuchowego. W tworzonym kompilatorze konwersja przebiega przy pomocy instrukcji \texttt{ToString()}, jednak w kompilatorze środowiska \textit{.NET Framework} przeprowadzana jest przy pomocy instrukcji \texttt{box}, która sprowadza zmienną do typu \texttt{object}. Instrukcja \texttt{Concat} przyjmuje wtedy elementy typu \texttt{object}.
 
 \begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający łączenie łańcuchów znaków}, label=alg:asm]
+
   ...
   IL_006a:  ldloc.s    V_1
   IL_006c:  ldc.i4.2
@@ -90,12 +93,14 @@
   IL_0077:  call       string [mscorlib]System.String::Concat(object,
                                                               object,
                                                               object)
+
   ...
 \end{lstlisting}
 
 \par Dalej analizując poszczególne moduły, można zauważyć, że w generowanym kodzie assemblera dla programów kompilowanych przy pomocy narzędzi środowiska \textit{.NET Framework}, naturalnie wykorzystywane są wszystkie dostępne instrukcje. Szczególnie widoczne jest to przy instrukcjach warunkowych. W tworzonym kompilatorze warunki zawsze są sprowadzane do pojedynczej wartości logicznej, a następnie na jej podstawie wykonywany jest skok. W przypadku kompilatora \textit{.NET}, przykładowo wykorzystywane są instrukcje które od razu porównują dwie wartości na jej podstawie wykonują skok.
 
 \begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający instrukcje \texttt{if ... else}}, label=alg:asm]
+
   ...
   IL_0060:  ldc.i4.s   20
   IL_0062:  ldloc.s    number1
@@ -108,10 +113,12 @@
   IL_0072:  ldstr      "number1 is greater than 20"
   IL_0077:  call       void [mscorlib]System.Console::WriteLine(string)
   IL_007c:  
+
   ...
 \end{lstlisting}
 
 \begin{lstlisting}[language=IL, caption={Fragment wygenerowanego kodu asemblerowanego z języka JavaScript, przedstawiający instrukcje \texttt{if ... else}}, label=alg:asm]
+
   ...
   ldc.i4 20
   ldloc v_number1
@@ -130,6 +137,7 @@
   // ELSE
   ldstr "number1 is greater than 20"
   call void [mscorlib]System.Console::WriteLine(string)
+
   ...
 \end{lstlisting}
 
@@ -238,6 +246,7 @@ namespace dotnet
 \par Pierwszym z kryteriów jest zmierzenie czasu wykonywania programu. Czas zmierzony będzie w w konsoli \textit{PowerShell 7.1.1} przy pomocy komendy \texttt{Measure-Command} uruchamiającego proces skompilowanego pliku programu. Otrzymane wyniki prezentują się następująco:
 
 \begin{table}[h!]
+  \centering
   \begin{tabular}{|l|l|l|l|}
   \hline
   Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
@@ -248,58 +257,62 @@ namespace dotnet
   \end{tabular}
 \end{table}
 
-\begin{tikzpicture}
-  \begin{axis}[
-      ybar,
-      title={Czas wykonywania programu},
-      xlabel={Ilość elementów},
-      ylabel={Czas [ms]},
-      symbolic x coords={7,1000,5000,10000},
-      xtick=data,
-      legend pos=north west,
-      ymajorgrids=true,
-      grid style=dashed,
-      % nodes near coords
-  ]
-  
-  \addplot[
-      color=blue,
-      fill=blue
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        ybar,
+        title={Czas wykonywania programu},
+        xlabel={Ilość elementów},
+        ylabel={Czas [ms]},
+        symbolic x coords={7,1000,5000,10000},
+        xtick=data,
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+        % nodes near coords
     ]
-    coordinates {
-      (7, 1028)
-      (1000,1026)
-      (5000,1023)
-      (10000,1033)
-    };
-    \addlegendentry{C\#}
-
     
-  \addplot[
-    color=green,
-    fill=green
-    ]
-    coordinates {
-      (7,1021)
-      (1000,1020)
-      (5000,1028)
-      (10000,1046)
-    };
-    \addlegendentry{JavaScript}
+    \addplot[
+        color=blue,
+        fill=blue
+      ]
+      coordinates {
+        (7, 1028)
+        (1000,1026)
+        (5000,1023)
+        (10000,1033)
+      };
+      \addlegendentry{C\#}
 
-    
-  \addplot[
-      color=red,
-      fill=red,
-    ]
-    coordinates {
-      (7,1024)
-      (1000,1028)
-    };
-    \addlegendentry{JScript}
       
-  \end{axis}
-\end{tikzpicture}
+    \addplot[
+      color=green,
+      fill=green
+      ]
+      coordinates {
+        (7,1021)
+        (1000,1020)
+        (5000,1028)
+        (10000,1046)
+      };
+      \addlegendentry{JavaScript}
+
+      
+    \addplot[
+        color=red,
+        fill=red,
+      ]
+      coordinates {
+        (7,1024)
+        (1000,1028)
+      };
+      \addlegendentry{JScript}
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Pomiar czasu wykonywania programów dla algorytmu pierwszego.}
+\end{figure}
 
 \par Obserwując wyniki pomiarów czasu wykonywania programu, można stwierdzić, że utworzony kompilator jest porównywalny do kompilatora C\#. W przypadku kompilatora JScript różnicę można zauważyć przy większej ilości danych. W przypadku kiedy wektor testowy miał 5000 elementów, czas wykonywania programu zwiększył się średnio o 10 sekund, a w przypadku kiedy wektor testowy posiadał 10000 elementów, czas wykonania osiągną średnio 47 sekund.
 
@@ -343,9 +356,10 @@ namespace dotnet
 \par Ostatnim z kryteriów jest zmierzenie wielkości plików skompilowanych programów. Wyniki prezentują się następująco:
 
 \begin{table}[h!]
-  \begin{tabular}{|l|l|l|l|}
+  \centering
+  \begin{tabular}{|l|r|r|r|}
   \hline
-  Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+  \multicolumn{1}{|c|}{Ilość elementów} & \multicolumn{1}{|c|}{C\#} & \multicolumn{1}{|c|}{JavaScript}& \multicolumn{1}{|c|}{JScript} \\ \hline
   Oryginalne (7)  & 4,00 kB & 3,00 kB & 7,00 kB \\ \hline
   1000            & 15,00 kB & 16,50 kB & 23,00 kB \\ \hline
   5000            & 57,50 kB & 71,00 kB & 89,50 kB \\ \hline
@@ -354,70 +368,69 @@ namespace dotnet
 \end{table}
 
 
-\begin{tikzpicture}
-  \begin{axis}[
-      ybar,
-      title={Wielkość pliku skompilowanego programu},
-      xlabel={Ilość elementów},
-      ylabel={Wielkość [kB]},
-      symbolic x coords={7,1000,5000,10000},
-      xtick=data,
-      legend pos=north west,
-      ymajorgrids=true,
-      grid style=dashed,
-      % nodes near coords
-  ]
-  
-  \addplot[
-      color=blue,
-      fill=blue
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        ybar,
+        title={Wielkość pliku skompilowanego programu},
+        xlabel={Ilość elementów},
+        ylabel={Wielkość [kB]},
+        symbolic x coords={7,1000,5000,10000},
+        xtick=data,
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+        % nodes near coords
     ]
-    coordinates {
-      (7, 4.00)
-      (1000,15.00)
-      (5000,57.50)
-      (10000,111.00)
-    };
-    \addlegendentry{C\#}
-
     
-  \addplot[
-    color=green,
-    fill=green
-    ]
-    coordinates {
-      (7,3.00)
-      (1000,16.50)
-      (5000,71.00)
-      (10000,139.50)
-    };
-    \addlegendentry{JavaScript}
+    \addplot[
+        color=blue,
+        fill=blue
+      ]
+      coordinates {
+        (7, 4.00)
+        (1000,15.00)
+        (5000,57.50)
+        (10000,111.00)
+      };
+      \addlegendentry{C\#}
 
-    
-  \addplot[
-      color=red,
-      fill=red,
-    ]
-    coordinates {
-      (7,7.00)
-      (1000,23.00)
-      (5000,89.50)
-      (10000,172.00)
-    };
-    \addlegendentry{JScript}
       
-  \end{axis}
-\end{tikzpicture}
+    \addplot[
+      color=green,
+      fill=green
+      ]
+      coordinates {
+        (7,3.00)
+        (1000,16.50)
+        (5000,71.00)
+        (10000,139.50)
+      };
+      \addlegendentry{JavaScript}
+
+      
+    \addplot[
+        color=red,
+        fill=red,
+      ]
+      coordinates {
+        (7,7.00)
+        (1000,23.00)
+        (5000,89.50)
+        (10000,172.00)
+      };
+      \addlegendentry{JScript}
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Pomiar wielkości plików programów dla algorytmu pierwszego.}
+\end{figure}
+
+\par Pomiar wielkości plików wskazuje, że stworzony kompilator generuje więcej instrukcji dla programu w porównaniu do kompilatora C\#. Spowodowane jest to słabą optymalizacją generowanego kodu asemblera dla instrukcji. Porównując wielkość programu tworzonego kompilatora do kompilatora JScript, można zauważyć, że wielkość tworzonego pliku wykonywalnego jest mniejsza.
 
 
+\newpage
+\subsection{Algorytm wyszukiwania}
 
-
-% \subsection{Algorytm wyszukiwania}
-
-% 1. Obsługa standardowego wyjścia
-% 2. Obsługa zmiennych
-% 3. Obsługa działań arytmetycznych
-% 4. Obsługa wyrażeń warunkowych
-% 5. Obsługa pętli
-% 6. Obsługa tablic
-% 7. Obsługa funkcji
+\par 
