@@ -431,6 +431,84 @@ namespace dotnet
 
 
 \newpage
-\subsection{Algorytm wyszukiwania}
+\subsection{Algorytm przeszukiwania}
 
+\par Drugim odnalezionym kodem jest algorytm liniowego przeszukiwania tablicy elementów zamieszczonego pod adresem \url{https://www.scriptonitejs.com/javascript-searching-algorithms/}. Kod przedstawia się następująco:
+
+\begin{lstlisting}[language=JavaScript, caption={Algorytm przeszukiwania. Źródło: \url{https://www.scriptonitejs.com/javascript-searching-algorithms/}}, label=alg:alg1]
+  var items = [2, 5, 3, 7, 8, 10, 15, 18, 24, 111, 12, 19, 87];
+  
+  function itemSearch(item) {
+      for(var i=0; i < items.length; i++) {
+          if(items[i] === item) {
+              console.log("Found item " + item + " at index " + i);
+              return true;
+          }
+      }
+      //item not found 
+      return false;
+  }
+  
+  var item = itemSearch(15);
+  if(!item) {
+      console.log('Item does not exist!');
+  }
+\end{lstlisting}
+
+\par Niestety i ten program musiał zostać lekko zmodyfikowany. Modyfikacja polega na przekazaniu wektora testowego \texttt{items} jako argument w funkcji \texttt{itemSearch}. Spowodowane jest to nienajlepsza implementacją zakresu widoczności zmiennych kompilatora. W języku \texttt{JavaScript} jest możliwe odwołanie się do zmiennej zadeklarowanej poza funkcją. Po modyfikacji program prezentuje się następująco:
+
+\begin{lstlisting}[language=JavaScript, caption={Zmodyfikowany kod programu przeszukiwania.}, label=alg:alg1]
+  var items = [2, 5, 3, 7, 8, 10, 15, 18, 24, 111, 12, 19, 87];
+  
+  function itemSearch(items, item) {
+      for(var i=0; i < items.length; i++) {
+          if(items[i] === item) {
+              console.log("Found item " + item + " at index " + i);
+              return true;
+          }
+      }
+      //item not found 
+      return false;
+  }
+  
+  var item = itemSearch(items, 15);
+  if(!item) {
+      console.log('Item does not exist!');
+  }
+\end{lstlisting}
+
+\par Dla powyższego kodu został stworzony odpowiednik dla kompilatora JScript oraz kod został odwzorowany w języku C\#, który prezentuje się następująco:
+
+\begin{lstlisting}[language=CSharp, caption={Odwzorowany kod JavaScript w języku C\# algorytmu przeszukiwania.}, label=alg:alg1]
+using System;
+using System.Collections.Generic;
+
+namespace dotnet
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<int> items = new List<int>() { 2, 5, 3, 7, 8, 10, 15, 18, 24, 111, 12, 19, 87 };
+            bool item = itemSearch(items, 15);
+            if(!item) {
+                Console.WriteLine("Item does not exist!");
+            }
+        }
+
+        static bool itemSearch(List<int> items, int item){
+            for (int i = 0; i < items.Count; i++)
+            {
+                if(items[i] == item){
+                    Console.WriteLine("Found item " + item + " at index " + i);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}
+\end{lstlisting}
+
+\par Tak jak dla algorytmu pierwszego, testy zostaną wykonane dla oryginalnego wektora wejściowego oraz dla losowo wygenerowanego wektora o wielkościach 1000, 5000 i 10000 składającego się z liczb całkowitych z przedziału od -10000 do 10000. Wyszukiwany element będzie znajdował się w połowie wektora testowego.
 \par 
