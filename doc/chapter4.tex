@@ -320,7 +320,7 @@ namespace dotnet
 
 \begin{table}[h!]
   \centering
-  \begin{tabular}{|l|l|}
+  \begin{tabular}{|l|r|}
   \hline
   Kompilator & Zużycie pamięci \\ \hline
   C\# & 11,26 MB \\ \hline
@@ -511,4 +511,193 @@ namespace dotnet
 \end{lstlisting}
 
 \par Tak jak dla algorytmu pierwszego, testy zostaną wykonane dla oryginalnego wektora wejściowego oraz dla losowo wygenerowanego wektora o wielkościach 1000, 5000 i 10000 składającego się z liczb całkowitych z przedziału od -10000 do 10000. Wyszukiwany element będzie znajdował się w połowie wektora testowego.
-\par 
+
+\par Algorytm został zbadany pod względem takich samych kryteriów jak algorytm pierwszy. Pierwszym z nich jest zmierzenie czasu wykonywania programu. Wyniki prezentują się następująco:
+
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+  \hline
+  Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+  Oryginalne(13)  & 00:00:01.0156735 & 00:00:01.0262087 & 00:00:01.0222548 \\ \hline
+  1000            & 00:00:01.0101172 & 00:00:01.0150919 & 00:00:01.0134737 \\ \hline
+  5000            & 00:00:01.0183013 & 00:00:01.0163112 & 00:00:01.0146355 \\ \hline
+  10000           & 00:00:01.0167586 & 00:00:01.0116767 & 00:00:01.0203511 \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        ybar,
+        title={Czas wykonywania programu},
+        xlabel={Ilość elementów},
+        ylabel={Czas [ms]},
+        symbolic x coords={13,1000,5000,10000},
+        xtick=data,
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+        % nodes near coords
+    ]
+    
+    \addplot[
+        color=blue,
+        fill=blue
+      ]
+      coordinates {
+        (13, 1015)
+        (1000,1010)
+        (5000,1018)
+        (10000,1016)
+      };
+      \addlegendentry{C\#}
+
+      
+    \addplot[
+      color=green,
+      fill=green
+      ]
+      coordinates {
+        (13,1026)
+        (1000,1015)
+        (5000,1016)
+        (10000,1011)
+      };
+      \addlegendentry{JavaScript}
+
+      
+    \addplot[
+        color=red,
+        fill=red,
+      ]
+      coordinates {
+        (13,1022)
+        (1000,1013)
+        (5000,1014)
+        (10000,1020)
+      };
+      \addlegendentry{JScript}
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Pomiar czasu wykonywania programów dla algorytmu drugiego.}
+\end{figure}
+
+\par Wyniki pomiarów czasu wykonywania programu, wskazują nie wielkie różnice czasu pomiędzy kompilatorami jak i pomiędzy różnymi ilościami danych wejściowych.
+
+\par Drugim z kryteriów jest zbadanie wykorzystania pamięci przez programy. Test zostanie wykonany dla programów z wektorem wejściowym posiadającym 10000, oraz element poszukiwany będzie znajdować się w połowie zakresu. 
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|r|}
+  \hline
+  Kompilator & Zużycie pamięci \\ \hline
+  C\# & 10,52 MB \\ \hline
+  JavaScript & 10,53 MB \\ \hline
+  JScript & 22,36 MB \\ \hline
+  \end{tabular}
+\end{table}
+
+
+\begin{figure}[!h]
+  \centering
+  \begin{minipage}{.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{a2_cs_10000.png}
+    \caption{Pomiar zużycia pamięci dla algorytmu drugiego dla kompilatora C\#. Źródło: własne}
+    \label{fig:a}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{a2_js_10000.png}
+    \caption{Pomiar zużycia pamięci dla algorytmu drugiego dla kompilatora JavaScript. Źródło: własne}
+   \label{fig:a}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{a2_jsm_10000.png}
+  \caption{Pomiar zużycia pamięci dla algorytmu drugiego dla kompilatora JScript. Źródło: własne}
+  \label{fig:a}
+\end{figure}
+
+\par Wyniki testu są podobne do wyników testu algorytmu pierwszego. Zużycie pamięci przez program C\# jak i JavaScript jest prawie identyczne. Różnica występuje dla programu JScript, którego zużycie jest ponad dwukrotnie większe.
+
+\newpage
+\par Ostatnim z testów jest porównanie zajmowanej przestrzeni dyskowej dla skompilowanych programów. Wyniki prezentują się w następujący sposób:
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{|l|r|r|r|}
+  \hline
+  Ilość elementów & \multicolumn{1}{l|}{C\#} & \multicolumn{1}{l|}{JavaScript} & \multicolumn{1}{l|}{JScript} \\ \hline
+  Oryginalne(13)  & 4,00 kB    & 2,50 kB       & 6,00 kB    \\ \hline
+  1000            & 14,50 kB   & 16,00 kB      & 22,00 kB   \\ \hline
+  5000            & 57,50 kB   & 71,00 kB      & 88,50 kB   \\ \hline
+  10000           & 111,00 kB  & 139,00 kB     & 171,50 kB  \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[scale=0.75]
+    \begin{axis}[
+        ybar,
+        title={Wielkość pliku skompilowanego programu},
+        xlabel={Ilość elementów},
+        ylabel={Wielkość [kB]},
+        symbolic x coords={7,1000,5000,10000},
+        xtick=data,
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+        % nodes near coords
+    ]
+    
+    \addplot[
+        color=blue,
+        fill=blue
+      ]
+      coordinates {
+        (7, 4.00)
+        (1000,14.50)
+        (5000,57.50)
+        (10000,111.00)
+      };
+      \addlegendentry{C\#}
+
+      
+    \addplot[
+      color=green,
+      fill=green
+      ]
+      coordinates {
+        (7,2.50)
+        (1000,16.00)
+        (5000,71.00)
+        (10000,139.00)
+      };
+      \addlegendentry{JavaScript}
+
+      
+    \addplot[
+        color=red,
+        fill=red,
+      ]
+      coordinates {
+        (7,6.00)
+        (1000,22.00)
+        (5000,88.50)
+        (10000,171.50)
+      };
+      \addlegendentry{JScript}
+        
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Pomiar wielkości plików programów dla algorytmu pierwszego.}
+\end{figure}
+
+\par Wyniki pomiarów są podobne jak w przypadku pomiarów algorytmu pierwszego. Wraz z zwiększeniem ilości elementów wektora wejściowego, pliki wykazują coraz większą różnicę zajmowanego miejsca na przestrzeni dyskowej.
