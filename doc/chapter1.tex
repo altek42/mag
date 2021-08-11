@@ -74,26 +74,24 @@ Aktualnie istnieje wiele rozwiązań przetwarzających język JavaScript jak i n
 % Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
 
 \subsection{Babel}
-Kompiluje przykładowo TypeScript do JavaScript lub JavaScript ES6 do ES5.
-% https://www.tutorialspoint.com/babeljs/babeljs_quick_guide.htm
+\par Jest to transkompilator języka JavaScript pozwalający na transpilacje nowych funkcjonalności do starego standardu. Dzięki temu narzędziu można między innymi na uruchomienie kodu zarówno w nowych, jak i starych przeglądarkach. Zawiera wiele opcji konfiguracji, które poza zmianą samych funkcjonalności \textit{JavaScript}, pozwala również zamienić kod \textit{TypeScript} czy kod \textit{React} do kodu \textit{JavaScript}. \footcite{babel}
 
-% Maszyna inna niż Node.js
 \subsection{Deno}
-Maszyna wirtualna dla języka JavaScript oraz TypeScript.
-% Nie jestem pewien czy można na "żywca" uruchamiać na niej TypeScript. (Temat do sprawdzenia)
+\par Jest to środowisko uruchomieniowe pozwalające uruchamiać kod dla JavaScript oraz TypeScript. Stworzone zostało w oparciu o silnik \textit{JavaScript V8} oraz języku programowania \textit{Rust}. Deno jest oprogramowaniem o otwartym kodzie, które ma być wydajnym i bezpiecznym środowiskiem skryptowym. \footcite{deno}
 
-\subsection{asm.js}
-Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
-Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
+% \subsection{asm.js}
+% Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
+% Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
 
 \subsection{Emscripten}
-% https://pl.wikipedia.org/wiki/Emscripten
-Kompilator kodu LLVM do JavaScript.
+Jest to kompilator o otwartych źródłach, pozwalający kompilować kod w języku \textit{C\\C++} do \textit{WebAssembly} oraz uruchamiać go w przeglądarkach internetowych, \textit{Node.js} lub innych środowiskach uruchomieniowych \textit{WebAssembly}. 
+\par Praktycznie każda przenośna baza kodu \textit{C} lub \textit{C++} może zostać skompilowana do WebAssembly przy użyciu \textit{Emscripten}, począwszy od gier o wysokiej wydajności, które muszą renderować grafikę, odtwarzać dźwięki oraz ładować i przetwarzać pliki, aż po frameworki aplikacji, takie jak \textit{Qt}. \footcite{emscripten}
 
-\subsection{WebAssembly}
-% https://devenv.pl/webassembly-nadciaga-rewolucja/
-Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
-(Pomija JavaScript).
+
+% \subsection{WebAssembly}
+% % https://devenv.pl/webassembly-nadciaga-rewolucja/
+% Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
+% (Pomija JavaScript).
 
 \subsection{C\#}
 Czy opisywać rodzinę .NET?
