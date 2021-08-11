@@ -57,26 +57,25 @@ Jest to asynchroniczne środowisko uruchomieniowe dla języka JavaScript. Node.j
 \section{Technologie pokrewne}
 Aktualnie istnieje wiele rozwiązań przetwarzających język JavaScript jak i narzędzi, dzięki którymi można budować, jak i uruchamiać aplikacje dedykowane na platformę .NET. W tym rozdziale zostaną opisane niektóre z tych technologii.
 
-% Najpierw technologie konkurencyjne, następnie istniejące rozwiązania a na końcu rozwiązania podobne/nawiązujące w jakiś sposób do tematu.
-
-\subsection{ActionScript}
-Obiektowy język oparty na ECMAScript używany w Adobe Flash/
-
 \subsection{JScript}
-Jest to implementacja JavaScript przez Microsoft która jest uruchomiana w środowisku .NET.
-Istnieją pewne różnice w porównaniu do JavaScript.
+\par Jest to język programowania opracowany przez firmę \textbf{Microsoft} w oparciu o wczesne standardy języka JavaScript. Podstawową i największą różnicą, która wyróżnia język JScript jest to, że nie jest to prosty język skryptowy. Pozwala on na tworzenie w pełni funkcjonalnych aplikacji jako pliki wykonywalne, które można bezpośrednio uruchamiać na komputerach klienckich. \footcite{jscript}
+
+% \subsection{ActionScript}
+% Obiektowy język oparty na ECMAScript używany w Adobe Flash/
 
 \subsection{TypeScript}
-Język programowania stworzony przez Microsoft. Uruchamiany na Node.js lub Deno. Może być przekompilowany do js es5 przez Babel.
+\par Jest to język programowania o otwartym kodzie, który opiera się na JavaScript. Wzbogaca składnię JavaScript o statyczne definicje typów. Definiowane typy umożliwiają opisanie kształtu obiektów, tworzenie lepszej dokumentacji kodu oraz sprawdzanie poprawności kodu jeszcze przed jego uruchomieniem. 
+\par Kod TypeScript jest przekształcany na kod JavaScript przy pomocy kompilatora \textit{TypeScript} lub \textit{Babel}. Przekształcony kod może być uruchamiany jako zwykły JavaScript na przeglądarkach czy też na maszynie wirtualnej Node.js. \footcite{typescript}
 
-\subsection{?CoffeeScript}
-Język programowania kompilowany do JavaScript.
-Nie wiem czy warto wspominać.
+% \subsection{?CoffeeScript}
+% Język programowania kompilowany do JavaScript.
+% Nie wiem czy warto wspominać.
 
-Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
+% Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
 
 \subsection{Babel}
 Kompiluje przykładowo TypeScript do JavaScript lub JavaScript ES6 do ES5.
+% https://www.tutorialspoint.com/babeljs/babeljs_quick_guide.htm
 
 % Maszyna inna niż Node.js
 \subsection{Deno}
