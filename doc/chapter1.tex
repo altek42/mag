@@ -4,7 +4,7 @@
 \section{Zakres projektu}
 \index{Zakres projektu}
 
-Projekt będzie realizował zaprojektowanie i implementację kompilatora języka JavaScript na platformę uruchomieniową .NET core. W tym rozdziale zostaną opisane pojęcia oraz technologie, które będą wykorzystywane w realizacji tego projektu. Na początku opisane będą takie pojęcia jak \textit{kompilator} oraz \textit{maszyna wirtualna}. Następie zostaną omówione technologie wiodące w projekcie takie jak \textit{JavaScript}, \textit{Node.js}, \textit{.NET Core} oraz \textit{IL Assembler}.
+Projekt będzie realizował zaprojektowanie i implementację kompilatora języka JavaScript na platformę uruchomieniową \textit{.NET}. W tym rozdziale zostaną opisane pojęcia oraz technologie, które będą wykorzystywane w realizacji tego projektu. Na początku opisane będą takie pojęcia jak \textit{kompilator} oraz \textit{maszyna wirtualna}. Następie zostaną omówione technologie wiodące w projekcie takie jak \textit{JavaScript}, \textit{Node.js}, \textit{.NET Framework} oraz \textit{IL Assembler}.
 
 \subsection{Kompilator}
 \index{Kompilator}
@@ -37,16 +37,15 @@ Jest to asynchroniczne środowisko uruchomieniowe dla języka JavaScript. Node.j
 \par Środowisko Node.js oparte jest na implementacji silnika ``V8'' stworzonego przez Google. Zaimplementowany głownie jest w języku C i C++, koncentrując się na wydajności i niskim zużyciu pamięci. Różnica polega na tym, że silnik ``V8'' obsługuje głównie JavaScript w przeglądarkach internetowych, a Node.js został stworzony z myślą o obsłudze długotrwałych procesów serwerowych.
 \par W celu obsługi jednoczesnego wykonywania logiki biznesowej, Node.js opiera się na asynchronicznym modelu zdarzeń wejścia i wyjścia, w przeciwieństwie do większości innych współczesnych środowisk, które oparte są na wielowątkowości. Model zdarzeń jest obsługiwany na poziomie języka, a jest to możliwe ponieważ JavaScript obsługuje wywołania zwrotne zdarzeń oraz funkcjonalny charakter JavaScript sprawia, że niezwykle łatwo jest tworzyć anonimowe obiekty funkcji, które można zarejestrować jako programy obsługi zdarzeń. \footcite{Tilkov2010}
 
-\subsection{.NET Core}
+\subsection{.NET Framework}
+\par Jest to platforma programistyczna, która pozwala na tworzenie i uruchamianie aplikacji i usług dla systemu operacyjnego Windows. Zawiera wiele narzędzi pozwalających na tworzenie aplikacji w różnych językach programowania, które mogą być następnie uruchamiane na dostarczonej maszynie wirtualnej. \footcite{dotNetFr}
 
-\par Jest to platforma programistyczna ogólnego zastosowania z otwartymi kodami źródłowymi. Pozwala na tworzenie aplikacji dla systemów Windows, macOS oraz Linux przy wykorzystaniu różnych języków programowania.\footcite{dotNetvsFramework}
 \par Architektura środowiska .NET składa się z takich komponentów jak:
 \begin{itemize}
   \item CTS (Common Type System) - opisuje wszystkie wspierane przez platformę typy. Definiuje zasady korzystania z danych typów, dostarcza zorientowany obiektowo model dla różnych języków implementowanych w .NET oraz zapewnia bibliotekę zawierającą prymitywne typy danych (takich jak \texttt{Boolean}, \texttt{char} itp.).
   \item CLS (Common Language Specyfication) - definiuje w jaki sposób mają być definiowane obiekty i funkcje, w języku przeznaczonym na platformę .NET. CLS jest podzbiorem CTS, co oznacza, że wszystkie opisane zasady CTS dotyczą również CLS.\footcite{dotNetCLS}
   \item FCL (Framework Class Library) - jest to standardowa biblioteka zawierająca podstawę implementacji klas, interfejsów, typów wartości czy usług, które wykorzystywane są do tworzenia aplikacji.\footcite{dotNetFCL}
   \item CLR (Common Language Runtime) - jest to środowisko uruchomieniowe, które uruchamia kod i zapewnia usługi ułatwiające proces programowania. Środowisko wykonawcze automatycznie obsługuje układ obiektów i zarządza referencjami no nich, zwalniając je w przypadku kiedy już nie są używane.\footcite{dotNetCLR}
-  
 \end{itemize}
 
 \subsection{IL Assembler}
@@ -60,54 +59,23 @@ Aktualnie istnieje wiele rozwiązań przetwarzających język JavaScript jak i n
 \subsection{JScript}
 \par Jest to język programowania opracowany przez firmę \textbf{Microsoft} w oparciu o wczesne standardy języka JavaScript. Podstawową i największą różnicą, która wyróżnia język JScript jest to, że nie jest to prosty język skryptowy. Pozwala on na tworzenie w pełni funkcjonalnych aplikacji jako pliki wykonywalne, które można bezpośrednio uruchamiać na komputerach klienckich. \footcite{jscript}
 
-% \subsection{ActionScript}
-% Obiektowy język oparty na ECMAScript używany w Adobe Flash/
-
 \subsection{TypeScript}
 \par Jest to język programowania o otwartym kodzie, który opiera się na JavaScript. Wzbogaca składnię JavaScript o statyczne definicje typów. Definiowane typy umożliwiają opisanie kształtu obiektów, tworzenie lepszej dokumentacji kodu oraz sprawdzanie poprawności kodu jeszcze przed jego uruchomieniem. 
 \par Kod TypeScript jest przekształcany na kod JavaScript przy pomocy kompilatora \textit{TypeScript} lub \textit{Babel}. Przekształcony kod może być uruchamiany jako zwykły JavaScript na przeglądarkach czy też na maszynie wirtualnej Node.js. \footcite{typescript}
-
-% \subsection{?CoffeeScript}
-% Język programowania kompilowany do JavaScript.
-% Nie wiem czy warto wspominać.
-
-% Inne języki kompilowane do JavaScript: Roy, Kaffeine, Clojure, Opal
 
 \subsection{Babel}
 \par Jest to transkompilator języka JavaScript pozwalający na transpilacje nowych funkcjonalności do starego standardu. Dzięki temu narzędziu można między innymi na uruchomienie kodu zarówno w nowych, jak i starych przeglądarkach. Zawiera wiele opcji konfiguracji, które poza zmianą samych funkcjonalności \textit{JavaScript}, pozwala również zamienić kod \textit{TypeScript} czy kod \textit{React} do kodu \textit{JavaScript}. \footcite{babel}
 
 \subsection{Deno}
-\par Jest to środowisko uruchomieniowe pozwalające uruchamiać kod dla JavaScript oraz TypeScript. Stworzone zostało w oparciu o silnik \textit{JavaScript V8} oraz języku programowania \textit{Rust}. Deno jest oprogramowaniem o otwartym kodzie, które ma być wydajnym i bezpiecznym środowiskiem skryptowym. \footcite{deno}
-
-% \subsection{asm.js}
-% Jeśli dobrze zrozumiałem jest to okrojony JavaScript który tak samo może być uruchamiany w przeglądarkach czy Node.js/Deno.
-% Wykorzystywany przy kompilacji kodu c++ do uruchamiania na tych maszynach.
+\par Jest to środowisko uruchomieniowe pozwalające uruchamiać kod dla JavaScript oraz TypeScript. Stworzone zostało w oparciu o silnik \textit{JavaScript V8} oraz języku programowania \textit{Rust}. Deno jest oprogramowaniem o otwartym kodzie, które ma być wydajnym i bezpiecznym środowiskiem skryptowym. Jest to alternatywa dla środowiska \textit{Node.js}. \footcite{deno}
 
 \subsection{Emscripten}
-Jest to kompilator o otwartych źródłach, pozwalający kompilować kod w języku \textit{C\\C++} do \textit{WebAssembly} oraz uruchamiać go w przeglądarkach internetowych, \textit{Node.js} lub innych środowiskach uruchomieniowych \textit{WebAssembly}. 
+\par Jest to kompilator o otwartych źródłach, pozwalający kompilować kod w języku \textit{C\\C++} do \textit{WebAssembly} oraz uruchamiać go w przeglądarkach internetowych, \textit{Node.js} lub innych środowiskach uruchomieniowych \textit{WebAssembly}. 
 \par Praktycznie każda przenośna baza kodu \textit{C} lub \textit{C++} może zostać skompilowana do WebAssembly przy użyciu \textit{Emscripten}, począwszy od gier o wysokiej wydajności, które muszą renderować grafikę, odtwarzać dźwięki oraz ładować i przetwarzać pliki, aż po frameworki aplikacji, takie jak \textit{Qt}. \footcite{emscripten}
 
-
-% \subsection{WebAssembly}
-% % https://devenv.pl/webassembly-nadciaga-rewolucja/
-% Język niskopoziomowy, który działa z szybkością zbliżoną do rozwiązań natywnych i pozwala na kompilację kodu napisanego w C/C++ do kodu binarnego działającego w przeglądarce internetowej.
-% (Pomija JavaScript).
-
-\subsection{C\#}
-Czy opisywać rodzinę .NET?
-
-Na maszynę .NET istnieją implementacje języków takich jak Python, Java, C++ i inne.
-
-\subsection{.NET Framework}
-Platforma programistyczna.
-
 \subsection{Mono}
-Implementacja open source platformy .NET Framework.
+\par Jest to platforma programistyczna o otwartych kodach źródłowych, która wzorowana jest na platformie \textit{.NET Framework}. Umożliwia tworzenie aplikacji międzyplatformowych. Implementacja platform \textit{.NET} w \textit{Mono} opiera się na standardach \textit{ECMA} dla \textit{C\#} i \textit{Common Language Infrastructure}. Tak jak platforma \textit{.NET Framework} dostarcza kompilator, gotowe biblioteki oraz środowisko uruchomieniowe. \footcite{mono}
 
 \subsection{DotGNU}
-Alternatywa dla Mono.
-
-\subsection{?Roslyn}
-.NET Compiler Platform
-
+\par Projekt \textit{GNU} mający na celu stworzenie i rozwijanie implementacji platformy \textit{.NET}, która będzie stanowić wolne oprogramowanie. Narzędzia \textit{DotGNU} są tworzone zgodnie ze standardami \textit{ECMA}, dając możliwość, swobodnego tworzenia i uruchamiania aplikacji w technologii \textit{.NET}. Platforma \textit{DotGNU} jest bardzo podobna do platformy \textit{Mono}. \footcite{DotGNU}
 
