@@ -97,7 +97,7 @@
   ...
 \end{lstlisting}
 
-\par Dalej analizując poszczególne moduły, można zauważyć, że w generowanym kodzie assemblera dla programów kompilowanych przy pomocy narzędzi środowiska \textit{.NET Framework}, naturalnie wykorzystywane są wszystkie dostępne instrukcje. Szczególnie widoczne jest to przy instrukcjach warunkowych. W tworzonym kompilatorze warunki zawsze są sprowadzane do pojedynczej wartości logicznej, a następnie na jej podstawie wykonywany jest skok. W przypadku kompilatora \textit{.NET}, przykładowo wykorzystywane są instrukcje które od razu porównują dwie wartości na jej podstawie wykonują skok.
+\par Dalej analizując poszczególne moduły, można zauważyć, że w generowanym kodzie assemblera dla programów kompilowanych przy pomocy narzędzi środowiska \textit{.NET Framework}, naturalnie wykorzystywane są wszystkie dostępne instrukcje. Szczególnie widoczne jest to przy instrukcjach warunkowych. W tworzonym kompilatorze warunki zawsze są sprowadzane do pojedynczej wartości logicznej, a następnie na jej podstawie wykonywany jest skok. W przypadku kompilatora \textit{.NET}, przykładowo wykorzystywane są instrukcje które od razu porównują dwie wartości i na ich podstawie wykonują skok.
 
 \begin{lstlisting}[language=IL, caption={Fragment kodu deasemblerowanego testu programu C\#, przedstawiający instrukcje \texttt{if ... else}}, label=alg:asm]
 
@@ -353,6 +353,7 @@ namespace dotnet
 \newpage
 \par Tak ja w poprzednim teście, wyniki pokazują, że pomiędzy programem C\# oraz programem JavaScript nie występuje znaczna różnica. Inaczej jest z programem JScript który zużywa w piku ponad dwukrotnie więcej pamięci.
 
+\newpage
 \par Ostatnim z kryteriów jest zmierzenie wielkości plików skompilowanych programów. Wyniki prezentują się następująco:
 
 \begin{table}[h!]
