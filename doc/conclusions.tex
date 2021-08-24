@@ -14,11 +14,17 @@
 
 \chapter*{Podsumowanie}
 
-Podsumowanie pracy powinno na maksymalnie dwóch stronach przedstawić główne wyniki pracy dyplomowej. Struktura zakończenia to:
-\begin{enumerate}
-\item Przypomnienie celu i hipotez
-\item Co w pracy wykonano by cel osiągnąć (analiza, projekt, oprogramowanie, badania eksperymentalne)
-\item Omówienie głównych wyników pracy
-\item Jak wyniki wzbogacają dziedzinę
-\item Zamknięcie np. poprzez wskazanie dalszych kierunków badań.
-\end{enumerate}
+\par Celem niniejszej pracy było zaprojektowanie oraz implementacja kompilatora języka JavaScript na kod IL Assembler uruchamianego na platformie .NET. Praca przedstawia dostępne narzędzia, technologie oraz języki programowania wykorzystane w projekcie oraz technologie pokrewne które mogły by być wykorzystane.
+\par W pracy została przeprowadzona częściowa analiza języka JavaScript na podstawie której został ustalony zakres implementacji kompilatora. Zostało również zaprojektowany oraz wyjaśniony sposób implementacji tworzonego kompilatora.
+\par W celu zweryfikowania poprawności działania kompilatora, zostały stworzone skrypty testujące dla poszczególnych funkcjonalności oraz ich odpowiedniki w języku C\#. Sposób działania utworzonego pliku wykonywalnego przez kompilator został porównany do wywołania danego skryptu testowego na platformie Node.js oraz do wywołania odpowiednika kodu w C\# na platformie .NET. Przy analizie wyników poszczególnych testów funkcjonalności zostały wykazane niewielkie różnice przy wyświetlaniu elementów na konsoli. Zostało również przeprowadzone porównanie generowanego kodu assemblera, które wykazało słabą optymalizację stworzonego kompilatora.
+\par Zostały również przeprowadzone testy na kodzie JavaScript odnalezionym w Internecie. Dla tych kodów zostały utworzone również odpowiedniki w języku C\# oraz JScript. Programy zostały przetestowane pod względem szybkości działania, zużycia pamięci oraz wykorzystania przestrzeni dyskowej. Testy wykazały, że utworzony kompilator osiąga porównywalne wyniki dla kodu kompilowanego z języka C\# oraz lepsze wyniki w porównaniu do kodu JScript.
+\par Kolejnym krokiem rozwijającym stworzony kompilator jest zaimplementowanie pełnej funkcjonalności języka JavaScript oraz zastosowanie pełnej gamy instrukcji asemblerowych udostępnianych przez środowisko .NET. Dzięki temu można by było sprawdzić kompilator na bardziej złożonych programach JavaScript, czy też dostępnych zewnętrznych bibliotekach oraz frameworków dla tego języka.
+
+% Podsumowanie pracy powinno na maksymalnie dwóch stronach przedstawić główne wyniki pracy dyplomowej. Struktura zakończenia to:
+% \begin{enumerate}
+% \item Przypomnienie celu i hipotez
+% \item Co w pracy wykonano by cel osiągnąć (analiza, projekt, oprogramowanie, badania eksperymentalne)
+% \item Omówienie głównych wyników pracy
+% \item Jak wyniki wzbogacają dziedzinę
+% \item Zamknięcie np. poprzez wskazanie dalszych kierunków badań.
+% \end{enumerate}
