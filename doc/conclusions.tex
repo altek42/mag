@@ -18,7 +18,17 @@
 \par W pracy została przeprowadzona częściowa analiza języka JavaScript na podstawie której został ustalony zakres implementacji kompilatora. Zostało również zaprojektowany oraz wyjaśniony sposób implementacji tworzonego kompilatora.
 \par W celu zweryfikowania poprawności działania kompilatora, zostały stworzone skrypty testujące dla poszczególnych funkcjonalności oraz ich odpowiedniki w języku C\#. Sposób działania utworzonego pliku wykonywalnego przez kompilator został porównany do wywołania danego skryptu testowego na platformie Node.js oraz do wywołania odpowiednika kodu w C\# na platformie .NET. Przy analizie wyników poszczególnych testów funkcjonalności zostały wykazane niewielkie różnice przy wyświetlaniu elementów na konsoli. Zostało również przeprowadzone porównanie generowanego kodu assemblera, które wykazało słabą optymalizację stworzonego kompilatora.
 \par Zostały również przeprowadzone testy na kodzie JavaScript odnalezionym w Internecie. Dla tych kodów zostały utworzone również odpowiedniki w języku C\# oraz JScript. Programy zostały przetestowane pod względem szybkości działania, zużycia pamięci oraz wykorzystania przestrzeni dyskowej. Testy wykazały, że utworzony kompilator osiąga porównywalne wyniki dla kodu kompilowanego z języka C\# oraz lepsze wyniki w porównaniu do kodu JScript.
+
+\newpage
+\section*{Kierunki dalszych prac}
+
 \par Kolejnym krokiem rozwijającym stworzony kompilator jest zaimplementowanie pełnej funkcjonalności języka JavaScript oraz zastosowanie pełnej gamy instrukcji asemblerowych udostępnianych przez środowisko .NET. Dzięki temu można by było sprawdzić kompilator na bardziej złożonych programach JavaScript, czy też dostępnych zewnętrznych bibliotekach oraz frameworków dla tego języka.
+
+\par Inną z możliwości rozwoju projektu jest w pełni zoptymalizowanie tworzonego kodu asemblerowego, do tego stopnia, aby w przeprowadzonych testach wykazywał prawie identyczne lub lepsze wyniki, w porównaniu do odpowiednika programu kompilowanego z kodu C\#. Można przykładowo również, stworzyć mechanizm automatycznego zrównoleglania fragmentów kodu, dzięki czemu, prawdopodobnie osiągane będą lepsze wyniki w testach pomiaru czasu wykonywania programu.
+
+\par Można zauważyć że temat pracy jest obszerny, związku z czym można go rozwinąć w wielu płaszczyznach. Dotychczasowo osiągnięta implementacja może stać się fundamentem dla dalszych prac badawczych w tym kierunku.
+
+
 
 % Podsumowanie pracy powinno na maksymalnie dwóch stronach przedstawić główne wyniki pracy dyplomowej. Struktura zakończenia to:
 % \begin{enumerate}
