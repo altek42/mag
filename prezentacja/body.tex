@@ -137,21 +137,91 @@
 \begin{frame}
   \frametitle{Wyniki testów algorytmów}
   \begin{block}{Pomiar czasu wykonywania programów}
-    
+    \scriptsize
+    \begin{table}[h!]
+      \centering
+      \caption{Algorytm sortowania}
+      \begin{tabular}{|l|l|l|l|}
+      \hline
+      Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+      Oryginalne (7)  & 01.0280485 & 01.0211699 & 01.0249265 \\ \hline
+      1000            & 01.0267120 & 01.0209711 & 01.0281652 \\ \hline
+      5000            & 01.0231339 & 01.0286513 & 11.1320074 \\ \hline
+      10000           & 01.0331534 & 01.0466795 & 47.3928596 \\ \hline
+      \end{tabular}
+    \end{table}
+    \begin{table}[!h]
+      \centering
+      \caption{Algorytm przeszukiwania}
+      \begin{tabular}{|l|l|l|l|}
+      \hline
+      Ilość elementów & C\#              & JavaScript       & JScript          \\ \hline
+      Oryginalne(13)  & 01.0156735 & 01.0262087 & 01.0222548 \\ \hline
+      1000            & 01.0101172 & 01.0150919 & 01.0134737 \\ \hline
+      5000            & 01.0183013 & 01.0163112 & 01.0146355 \\ \hline
+      10000           & 01.0167586 & 01.0116767 & 01.0203511 \\ \hline
+      \end{tabular}
+    \end{table}
   \end{block}
 \end{frame}
 
 \begin{frame}
   \frametitle{Wyniki testów algorytmów}
   \begin{block}{Pomiar zużycia pamięci}
-    
+    \scriptsize
+    \begin{table}[h!]
+      \centering
+      \caption{Algorytm sortowania}
+      \begin{tabular}{|l|r|}
+      \hline
+      Kompilator & Zużycie pamięci \\ \hline
+      C\# & 11,26 MB \\ \hline
+      JavaScript & 11,25 MB \\ \hline
+      JScript & 28,72 MB \\ \hline
+      \end{tabular}
+    \end{table}
+    \begin{table}[h!]
+      \centering
+      \caption{Algorytm przeszukiwania}
+      \begin{tabular}{|l|r|}
+      \hline
+      Kompilator & Zużycie pamięci \\ \hline
+      C\# & 10,52 MB \\ \hline
+      JavaScript & 10,53 MB \\ \hline
+      JScript & 22,36 MB \\ \hline
+      \end{tabular}
+    \end{table}
   \end{block}
 \end{frame}
 
 \begin{frame}
   \frametitle{Wyniki testów algorytmów}
+  \scriptsize
   \begin{block}{Pomiar wielkości plików programów}
-    
+    \begin{table}[h!]
+      \centering
+      \caption{Algorytm sortowania}
+      \begin{tabular}{|l|r|r|r|}
+      \hline
+      \multicolumn{1}{|c|}{Ilość elementów} & \multicolumn{1}{|c|}{C\#} & \multicolumn{1}{|c|}{JavaScript}& \multicolumn{1}{|c|}{JScript} \\ \hline
+      Oryginalne (7)  & 4,00 kB & 3,00 kB & 7,00 kB \\ \hline
+      1000            & 15,00 kB & 16,50 kB & 23,00 kB \\ \hline
+      5000            & 57,50 kB & 71,00 kB & 89,50 kB \\ \hline
+      10000           & 111,00 kB & 139,50 kB & 172,00 kB \\ \hline
+      \end{tabular}
+    \end{table}
+    \begin{table}[!h]
+      \centering
+      \caption{Algorytm przeszukiwania}
+      \begin{tabular}{|l|r|r|r|}
+      \hline
+      Ilość elementów & \multicolumn{1}{l|}{C\#} & \multicolumn{1}{l|}{JavaScript} & \multicolumn{1}{l|}{JScript} \\ \hline
+      Oryginalne(13)  & 4,00 kB    & 2,50 kB       & 6,00 kB    \\ \hline
+      1000            & 14,50 kB   & 16,00 kB      & 22,00 kB   \\ \hline
+      5000            & 57,50 kB   & 71,00 kB      & 88,50 kB   \\ \hline
+      10000           & 111,00 kB  & 139,00 kB     & 171,50 kB  \\ \hline
+      \end{tabular}
+    \end{table}
   \end{block}
 \end{frame}
 
